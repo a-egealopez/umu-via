@@ -163,6 +163,67 @@ model.train(
     Tras ejecutar `train.py`, abre `runs/detect/train/results.csv` y copia los valores de la **última fila** en las tarjetas de arriba:
     `metrics/mAP50(B)` → mAP50, `metrics/mAP50-95(B)` → mAP50-95, `metrics/precision(B)` → Precisión, `metrics/recall(B)` → Recall.
 
+
+## Análisis de las gráficas { #analisis }
+ 
+### Curvas de entrenamiento (`training_curves.png`)
+ 
+**Pérdidas de entrenamiento (fila superior izquierda):**
+ 
+Las tres pérdidas de entrenamiento (`box_loss`, `cls_loss`, `dfl_loss`) descienden de forma consistente a lo largo de las 100 épocas, lo que indica que el modelo aprende correctamente. La `cls_loss` es la que más cae en términos absolutos (de ~3.3 a ~0.5), reflejando que la clasificación entre las tres clases mejora progresivamente.
+ 
+**Pérdidas de validación (fila inferior izquierda):**
+ 
+La `val/box_loss` y la `val/cls_loss` también descienden, aunque con más ruido que las de entrenamiento. La `val/dfl_loss` presenta un pico pronunciado alrededor de la época 55 seguido de recuperación; esto es habitual con datasets muy pequeños donde un solo ejemplo difícil puede distorsionar la métrica. El hecho de que las pérdidas de validación no suban sostenidamente indica que no hay sobreajuste severo, aunque el margen entre train y val es estrecho precisamente por el pequeño tamaño del dataset.
+ 
+**Métricas (columnas derechas):**
+ 
+- `metrics/precision(B)`: Muy inestable en las primeras épocas (sube a ~1.0 y cae a ~0.0 antes de estabilizarse). Esto es característico de datasets pequeños donde pocas predicciones correctas o incorrectas cambian la precisión drásticamente. Se estabiliza en torno a 0.85–0.93 a partir de la época 40.
+- `metrics/recall(B)`: Parte alto (~0.96), cae bruscamente (~época 5) y recupera gradualmente hasta ~0.63 al final. La caída coincide con la inestabilidad de precisión; el modelo al principio detecta casi todo (recall alto, precisión baja) y luego calibra su umbral.
+- `metrics/mAP50(B)`: Crece desde ~0.2 hasta ~0.67–0.75 con oscilaciones. La tendencia es claramente ascendente, confirmando que el entrenamiento es beneficioso.
+- `metrics/mAP50-95(B)`: Comportamiento similar al mAP50 pero con valores menores (~0.20 → ~0.65), lo cual es esperado ya que mide precisión a umbrales de IoU más estrictos.
+ 
+!!! warning "Interpretación con cautela"
+    Las oscilaciones fuertes en precisión y recall no indican inestabilidad del entrenamiento, sino la alta varianza estadística causada por el pequeño conjunto de validación. Con 30 imágenes en total, el split val puede contener apenas 5–8 imágenes, haciendo que cada falso positivo o negativo mueva la métrica varios puntos porcentuales.
+ 
+---
+ 
+### Matriz de confusión (`training_confusion_matrix.png`)
+ 
+La matriz está normalizada por columnas (true label), por lo que cada columna suma 1.0 en las clases con predicciones.
+ 
+**Resultados por clase:**
+ 
+- **`fruit`**: Recall perfecto (1.00) — todas las instancias de fruta son correctamente detectadas como `fruit`. No hay confusión con otras clases de objeto.
+- **`toy`**: Recall perfecto (1.00) — ídem para juguetes.
+- **`book`**: **Problema.** Ninguna instancia de `book` se detecta correctamente como tal. En cambio, el 37% se predice como `book` cuando la etiqueta real es `background`, y el 62% de las predicciones de `book` corresponden también a `background`. Esto indica que el modelo no ha aprendido bien la clase `book`: confunde regiones de fondo con libros, pero no detecta los libros reales.
+- **`background`**: Recall perfecto (1.00) — las regiones de fondo se rechazan correctamente.
+ 
+!!! danger "Clase `book` problemática"
+    La ausencia de detecciones correctas de `book` (diagonal vacía para esa clase) es la principal debilidad del modelo. Las causas posibles son: pocas imágenes de entrenamiento de esa clase, variabilidad alta en apariencia (tamaño, color, orientación del libro), o solapamiento visual con el fondo. Soluciones: ampliar el dataset de `book`, o aplicar aumentaciones específicas como recortes aleatorios más agresivos.
+ 
+---
+ 
+### Curva Precisión-Recall (`training_pr_curve.png`)
+ 
+La curva muestra el área bajo la curva (AP@0.5) por clase:
+ 
+| Clase | AP@0.5 | Interpretación |
+|-------|--------|----------------|
+| `book` | 0.249 | Muy bajo — consistente con la matriz de confusión |
+| `fruit` | 0.913 | Excelente — el modelo detecta frutas con alta confiabilidad |
+| `toy` | 0.995 | Casi perfecto — detección de juguetes muy robusta |
+| **all classes** | **0.719** | **mAP@0.5 global — razonable para 30 imágenes** |
+ 
+**Observaciones:**
+ 
+- La curva de `toy` (verde) es prácticamente un cuadrado perfecto: precisión alta para todo el rango de recall, indicando detecciones muy confiables a cualquier umbral.
+- La curva de `fruit` (naranja) mantiene precisión ~0.75 hasta recall ~0.65, luego sube a 1.0 (solo detecta cuando está muy seguro) antes de caer. Comportamiento típico de una clase bien aprendida con pocos ejemplos.
+- La curva de `book` (azul claro) es casi plana y baja (~0.25), confirmando que el modelo apenas discrimina esta clase del fondo.
+- El **mAP50 global de 0.719** es un resultado razonable considerando el dataset de solo 30 imágenes, pero está muy sesgado al alza por el excelente rendimiento en `toy` y `fruit`. Sin `book`, el modelo no sería útil en un entorno real.
+ 
+---
+
 ### Inferencia en tiempo real
 
 <figure markdown>
