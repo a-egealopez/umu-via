@@ -95,16 +95,18 @@ classDiagram
 
 ### Método 1 — Embedding MediaPipe
 
-<div class="img-grid-2">
 <figure markdown>
   ![Embedding libro](clasificador_embedding_book.png)
-  <figcaption>Método embedding reconociendo un libro. La barra verde indica la similitud con el modelo más cercano.</figcaption>
+  <figcaption>Embedding sobre la portada del libro: score 0.83 para <code>libro_5</code>, con separación clara respecto al resto (libro_4: 0.51). Funciona bien porque la red captura semántica visual global.</figcaption>
 </figure>
 <figure markdown>
-  ![Embedding objeto oficina](clasificador_embedding_office.png)
-  <figcaption>Reconocimiento de objeto de oficina con el método embedding.</figcaption>
+  ![Embedding móvil](clasificador_embedding_movil.png)
+  <figcaption>Embedding sobre el móvil Nokia: identifica correctamente <code>oficina_movil</code> con score 0.42. Pese a ser un score moderado, la separación con el segundo candidato es suficiente para clasificar bien.</figcaption>
 </figure>
-</div>
+<figure markdown>
+  ![Embedding mano abierta](clasificador_embedding_mano-abierta.png)
+  <figcaption>Embedding sobre mano abierta: score 0.56. Reconoce el gesto pero con menos margen que Procrustes (0.90), ya que el embedding no está especializado en formas geométricas de landmarks.</figcaption>
+</figure>
 
 ```python title="clasificador/methods/mp_embedding.py" linenums="1"
 class EmbeddingMethod:
@@ -128,20 +130,17 @@ class EmbeddingMethod:
 
 ### Método 2 — Gestos de mano (Procrustes)
 
-<div class="img-grid-2">
 <figure markdown>
-  ![Gesto rock](clasificador_hands_rock.png)
-  <figcaption>Reconocimiento del gesto "rock" mediante distancia Procrustes.</figcaption>
+  ![Hands libro](clasificador_hands_book.png)
+  <figcaption>Procrustes sobre el libro: todos los scores son 0.00. Sin mano visible en el frame, MediaPipe no detecta landmarks y el método devuelve similitud nula para todos los modelos.</figcaption>
 </figure>
 <figure markdown>
-  ![Gesto paz](clasificador_hands_paz.png)
-  <figcaption>Reconocimiento del gesto "paz". Los landmarks son invariantes a traslación, rotación y escala.</figcaption>
+  ![Hands móvil](clasificador_hands_movil.png)
+  <figcaption>Procrustes sobre el móvil Nokia: mismo resultado, scores a 0.00. El método es ciego a objetos que no sean manos.</figcaption>
 </figure>
-</div>
-
 <figure markdown>
-  ![Gesto ok](clasificador_hands_ok.png)
-  <figcaption>Dataset de gestos: rock, puño, paz, ok, índice, meñique.</figcaption>
+  ![Hands mano abierta](clasificador_hands_mano-abierta.png)
+  <figcaption>Procrustes sobre mano abierta: score 0.90 para <code>mano_abierta</code>, con gran separación respecto al segundo candidato (mano_tres: 0.25). La normalización de traslación, escala y rotación hace que la forma pura del gesto se compare de forma muy precisa.</figcaption>
 </figure>
 
 ```python title="clasificador/methods/hand_procrustes.py — compare()" linenums="1"
@@ -155,16 +154,18 @@ def compare(self, frame_bgr, descriptor) -> float:
 
 ### Método 3 — SIFT
 
-<div class="img-grid-2">
 <figure markdown>
-  ![SIFT portada libro](clasificador_sift_libro.png)
-  <figcaption>SIFT reconociendo portada de libro. Funciona bien con objetos de alta textura.</figcaption>
+  ![SIFT libro](clasificador_sift_book.png)
+  <figcaption>SIFT sobre la portada del libro: score 0.43 para <code>libro_5</code>, con separación clara (libro_4: 0.03). La portada tiene abundante textura tipográfica e imagen, lo que genera muchos keypoints coincidentes tras el filtro de Lowe.</figcaption>
 </figure>
 <figure markdown>
-  ![SIFT keypoints](clasificador_sift_keypoints.png)
-  <figcaption>Keypoints SIFT detectados en el frame. Solo los que superan el ratio de Lowe se cuentan.</figcaption>
+  ![SIFT móvil](clasificador_sift_movil.png)
+  <figcaption>SIFT sobre el móvil Nokia: score 0.12 para <code>oficina_movil</code>. El teclado numérico ofrece algo de textura, pero la carcasa lisa limita el número de keypoints válidos, reduciendo el score respecto a embedding.</figcaption>
 </figure>
-</div>
+<figure markdown>
+  ![SIFT mano abierta](clasificador_sift_mano-abierta.png)
+  <figcaption>SIFT sobre mano abierta: score 0.14 para <code>mano_abierta</code>, con poca separación respecto a otros candidatos. La piel es una superficie casi sin textura: pocos keypoints detectables y resultado poco fiable.</figcaption>
+</figure>
 
 ```python title="clasificador/methods/sift_matching.py — compare()" linenums="1"
 _LOWE_RATIO = 0.75
@@ -184,16 +185,51 @@ def compare(self, frame_bgr, descriptor) -> float:
 
 ### Interfaz
 
-<div class="img-grid-2">
-<figure markdown>
-  ![Barra de confianza](clasificador_confidence_bar.png)
-  <figcaption>Barra de similitud global. El modelo ganador aparece en verde.</figcaption>
-</figure>
 <figure markdown>
   ![Añadir modelo dinámico](clasificador_add_model.png)
-  <figcaption>Captura de nuevo modelo con la tecla <code>S</code>.</figcaption>
+  <figcaption>Captura de nuevo modelo con la tecla <code>m</code>. En la terminal se ve el flujo completo: el sistema solicita el nombre, guarda la imagen y la tiene disponible inmediatamente.</figcaption>
 </figure>
-</div>
+
+---
+
+## Análisis comparativo por tipo de objeto { #analisis }
+
+Las capturas muestran de forma muy clara por qué cada método es más adecuado para un tipo de objeto concreto.
+
+### Libro — SIFT gana
+
+| Método | Score libro | Segundo candidato | Margen |
+|--------|-------------|-------------------|--------|
+| Embedding | 0.83 | 0.51 | +0.32 |
+| SIFT | 0.43 | 0.03 | **+0.40** |
+| Procrustes | 0.00 | 0.00 | — |
+
+SIFT obtiene el mayor margen de separación sobre el libro (+0.40 frente a +0.32 de embedding). La portada es rica en textura: tipografía, contraste y fotografía con bordes definidos generan decenas de keypoints estables y reproducibles entre el modelo y el frame actual. Esa abundancia de puntos de anclaje locales es exactamente el escenario para el que SIFT está diseñado. Embedding también clasifica bien, pero al comparar semántica global puede confundir portadas de libros similares; SIFT los distingue por sus keypoints concretos. Procrustes es completamente ciego: sin mano, devuelve 0.00.
+
+### Mano abierta — Procrustes gana
+
+| Método | Score mano | Segundo candidato | Margen |
+|--------|------------|-------------------|--------|
+| Procrustes | **0.90** | 0.25 | **+0.65** |
+| Embedding | 0.56 | 0.45 | +0.11 |
+| SIFT | 0.14 | 0.12 | +0.02 |
+
+Procrustes domina con un margen de +0.65, muy superior al +0.11 de embedding y al casi nulo +0.02 de SIFT. La razón es estructural: Procrustes no mira píxeles sino la *forma geométrica* de los 21 landmarks que MediaPipe extrae de la mano. Al normalizar traslación, escala y rotación, compara únicamente la configuración relativa de los dedos, invariante a distancia, orientación e iluminación. Embedding lo intenta con semántica visual pero la piel es visualmente muy parecida entre gestos distintos, lo que comprime los scores (0.56 vs 0.45). SIFT falla porque la piel es una superficie sin textura: apenas hay keypoints que detectar.
+
+### Móvil — Embedding gana
+
+| Método | Score móvil | Segundo candidato | Margen |
+|--------|-------------|-------------------|--------|
+| Embedding | **0.42** | 0.17 | **+0.25** |
+| SIFT | 0.12 | 0.09 | +0.03 |
+| Procrustes | 0.00 | 0.00 | — |
+
+Embedding es el único método que clasifica el móvil con un margen útil (+0.25). El Nokia tiene una carcasa lisa con muy poca textura repetible: la pantalla apagada y el plástico gris apenas generan keypoints SIFT estables entre tomas, de ahí el score de 0.12 con margen casi nulo (+0.03). Embedding, en cambio, captura la *forma global* del objeto: su silueta rectangular, la disposición del teclado y la pantalla quedan codificados en el vector de 1024 dimensiones de MobileNet, lo que permite reconocerlo aunque el ángulo o la iluminación varíen ligeramente. Procrustes, como siempre con objetos sin mano, devuelve 0.00.
+
+!!! tip "Regla práctica"
+    - Usa **SIFT** para objetos con superficie rica en textura (portadas, etiquetas, circuitos).
+    - Usa **Procrustes** para gestos de mano: es el único método que ve forma y no apariencia.
+    - Usa **Embedding** para objetos con forma global distintiva pero superficie lisa (electrónica, packaging).
 
 ---
 

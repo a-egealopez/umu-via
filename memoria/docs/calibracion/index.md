@@ -131,7 +131,6 @@ def draw_grid(img, K, w_z, c_h, cell):
 
 ### Ajuste del plano y medición
 
-<div class="img-grid-2">
 <figure markdown>
   ![Cuadrícula Z grande](grid_z_grande.png)
   <figcaption>Distancia Z demasiado grande: la línea gruesa de base no coincide con el suelo real.</figcaption>
@@ -140,7 +139,6 @@ def draw_grid(img, K, w_z, c_h, cell):
   ![Cuadrícula Z correcta](grid_z_correcta.png)
   <figcaption>Z ajustada correctamente: la línea gruesa de base se alinea con el plano de interés.</figcaption>
 </figure>
-</div>
 
 <figure markdown>
   ![Medición con 2 clics](grid_measurement.png)

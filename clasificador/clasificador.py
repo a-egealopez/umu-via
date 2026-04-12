@@ -17,6 +17,13 @@ from umucv.stream import autoStream
 from umucv.util import putText, parser, parse
 from ui import draw_hud
 
+# ── Métodos disponibles ───────────────────────────────────────────────────────
+_METHOD_MAP = {
+    "embedding": "methods.mp_embedding",
+    "hands":     "methods.hand_procrustes",
+    "sift":      "methods.sift_matching",
+}
+
 # ── Argumentos ────────────────────────────────────────────────────────────────
 if len(sys.argv) == 1:
     print(f"Uso: python clasificador.py [--method {'|'.join(_METHOD_MAP)}] [--models CARPETA]")
@@ -24,13 +31,6 @@ if len(sys.argv) == 1:
 
 if len(sys.argv) == 3:
     ensure_dev_arg(CAMERA_URL)
-
-# ── Métodos disponibles ───────────────────────────────────────────────────────
-_METHOD_MAP = {
-    "embedding": "methods.mp_embedding",
-    "hands":     "methods.hand_procrustes",
-    "sift":      "methods.sift_matching",
-}
 
 # ── Argumentos obligatorios ───────────────────────────────────────────────────
 parser.add_argument(

@@ -41,19 +41,18 @@ flowchart LR
 
 <figure markdown>
   ![Muestras del dataset](dataset_samples.png)
-  <figcaption>Muestra representativa de las 30 imágenes etiquetadas en Roboflow.</figcaption>
+  <figcaption>Muestra representativa de las 3 clases etiquetadas en Roboflow.</figcaption>
 </figure>
 
-<div class="img-grid-2">
 <figure markdown>
   ![Etiquetas book](dataset_labels_book.png)
   <figcaption>Clase <em>book</em> con bounding boxes en formato YOLO.</figcaption>
 </figure>
+
 <figure markdown>
   ![Etiquetas fruit](dataset_labels_fruit.png)
   <figcaption>Clase <em>fruit</em>. La variedad de frutas hace esta clase más difícil de generalizar.</figcaption>
 </figure>
-</div>
 
 <figure markdown>
   ![Etiquetas toy](dataset_labels_toy.png)
@@ -131,16 +130,15 @@ model.train(
   <figcaption>Curvas de pérdida (box_loss, cls_loss, dfl_loss) y métricas mAP50 / mAP50-95 a lo largo de las 100 épocas.</figcaption>
 </figure>
 
-<div class="img-grid-2">
 <figure markdown>
   ![Matriz de confusión](training_confusion_matrix.png)
   <figcaption>Matriz de confusión normalizada sobre el conjunto de validación.</figcaption>
 </figure>
+
 <figure markdown>
   ![Curva PR](training_pr_curve.png)
   <figcaption>Curva Precisión-Recall por clase. El área bajo la curva equivale al mAP50.</figcaption>
 </figure>
-</div>
 
 <div class="metric-grid">
   <div class="metric-card">
@@ -172,7 +170,6 @@ model.train(
   <figcaption>Inferencia simultánea con múltiples objetos. Azul = book, verde = fruit, rojo = toy.</figcaption>
 </figure>
 
-<div class="img-grid-2">
 <figure markdown>
   ![Inferencia book](yolo_inference_book.png)
   <figcaption>Detección de la clase <em>book</em> con confianza mostrada sobre el bbox.</figcaption>
@@ -181,7 +178,6 @@ model.train(
   ![Inferencia fruit](yolo_inference_fruit.png)
   <figcaption>Detección de la clase <em>fruit</em>.</figcaption>
 </figure>
-</div>
 
 <figure markdown>
   ![Inferencia toy](yolo_inference_toy.png)

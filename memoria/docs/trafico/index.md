@@ -102,7 +102,6 @@ El orden de los tres pasos no es intercambiable:
   <figcaption>Sistema con todos los elementos configurados. El HUD inferior muestra los contadores en tiempo real: <code>&lt;--:N --&gt;:M</code>.</figcaption>
 </figure>
 
-<div class="img-grid-2">
 <figure markdown>
   ![Máscara MOG2](trafico_mask.png)
   <figcaption>Máscara binaria del foreground dentro del ROI.</figcaption>
@@ -111,7 +110,6 @@ El orden de los tres pasos no es intercambiable:
   ![Tracks con IDs](trafico_tracks.png)
   <figcaption>Tracks activos con IDs en amarillo y bounding boxes en verde.</figcaption>
 </figure>
-</div>
 
 ### Tracker de centroides
 
@@ -166,7 +164,6 @@ def count_crossings():
 
 ### Gráficas de análisis
 
-<div class="img-grid-2">
 <figure markdown>
   ![Vehículos por hora](trafico_graph_hourly.png)
   <figcaption>Histograma de vehículos detectados por hora. Permite identificar horas punta.</figcaption>
@@ -175,7 +172,6 @@ def count_crossings():
   ![Por sentido](trafico_graph_direction.png)
   <figcaption>Comparativa de flujo por sentido a lo largo del tiempo.</figcaption>
 </figure>
-</div>
 
 ---
 

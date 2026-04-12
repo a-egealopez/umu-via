@@ -81,6 +81,7 @@ def main():
     for key, frame in autoStream():
         buf.write(frame)
         draw_boxes(frame, thread.boxes, model)
+        cv.imshow("YOLO Detector", frame)
 
     thread.stop()
     thread.join(timeout=2.0)

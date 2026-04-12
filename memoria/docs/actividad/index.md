@@ -93,7 +93,6 @@ flowchart TD
 
 ### Detección y clasificación
 
-<div class="img-grid-2">
 <figure markdown>
   ![Detección persona](actividad_persona_detected.png)
   <figcaption>Persona detectada dentro de la ROI (bbox rojo).</figcaption>
@@ -102,7 +101,6 @@ flowchart TD
   ![Detección objeto](actividad_objeto_detected.png)
   <figcaption>Objeto detectado dentro de la ROI (bbox azul).</figcaption>
 </figure>
-</div>
 
 <figure markdown>
   ![Máscara MOG2](actividad_mask_mog2.png)
@@ -162,7 +160,6 @@ def anonymize(frame, face_state, face_queue):
 
 ### Grabación y alertas
 
-<div class="img-grid-2">
 <figure markdown>
   ![Grabación activa](actividad_recording.png)
   <figcaption>Indicador de grabación activo en el HUD.</figcaption>
@@ -171,7 +168,6 @@ def anonymize(frame, face_state, face_queue):
   ![Notificación Telegram](actividad_telegram_photo.png)
   <figcaption>Notificación recibida en Telegram con la captura del evento y la categoría detectada.</figcaption>
 </figure>
-</div>
 
 <figure markdown>
   ![Carpeta events](actividad_events_folder.png)
