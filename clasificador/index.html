@@ -325,7 +325,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../imagenes/" class="md-tabs__link">
+      <a href="../imagenes.md" class="md-tabs__link">
         
   
   
@@ -689,6 +689,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#analisis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Análisis comparativo por tipo de objeto
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Análisis comparativo por tipo de objeto">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#libro-sift-gana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Libro — SIFT gana
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mano-abierta-procrustes-gana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mano abierta — Procrustes gana
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#movil-embedding-gana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Móvil — Embedding gana
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#decisiones" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -813,7 +863,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../imagenes/" class="md-nav__link">
+      <a href="../imagenes.md" class="md-nav__link">
         
   
   
@@ -994,17 +1044,21 @@
 <hr />
 <h2 id="codigo">Código clave<a class="headerlink" href="#codigo" title="Permanent link">&para;</a></h2>
 <h3 id="metodo-1-embedding-mediapipe">Método 1 — Embedding MediaPipe<a class="headerlink" href="#metodo-1-embedding-mediapipe" title="Permanent link">&para;</a></h3>
-<div class="img-grid-2">
-<figure markdown>
-  ![Embedding libro](clasificador_embedding_book.png)
-  <figcaption>Método embedding reconociendo un libro. La barra verde indica la similitud con el modelo más cercano.</figcaption>
+<figure>
+<p><img alt="Embedding libro" src="clasificador_embedding_book.png" />
+  </p>
+<figcaption>Embedding sobre la portada del libro: score 0.83 para <code>libro_5</code>, con separación clara respecto al resto (libro_4: 0.51). Funciona bien porque la red captura semántica visual global.</figcaption>
 </figure>
-<figure markdown>
-  ![Embedding objeto oficina](clasificador_embedding_office.png)
-  <figcaption>Reconocimiento de objeto de oficina con el método embedding.</figcaption>
+<figure>
+<p><img alt="Embedding móvil" src="clasificador_embedding_movil.png" />
+  </p>
+<figcaption>Embedding sobre el móvil Nokia: identifica correctamente <code>oficina_movil</code> con score 0.42. Pese a ser un score moderado, la separación con el segundo candidato es suficiente para clasificar bien.</figcaption>
 </figure>
-</div>
-
+<figure>
+<p><img alt="Embedding mano abierta" src="clasificador_embedding_mano-abierta.png" />
+  </p>
+<figcaption>Embedding sobre mano abierta: score 0.56. Reconoce el gesto pero con menos margen que Procrustes (0.90), ya que el embedding no está especializado en formas geométricas de landmarks.</figcaption>
+</figure>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">clasificador/methods/mp_embedding.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
@@ -1040,21 +1094,20 @@
 </span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17"></a>        <span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
 <h3 id="metodo-2-gestos-de-mano-procrustes">Método 2 — Gestos de mano (Procrustes)<a class="headerlink" href="#metodo-2-gestos-de-mano-procrustes" title="Permanent link">&para;</a></h3>
-<div class="img-grid-2">
-<figure markdown>
-  ![Gesto rock](clasificador_hands_rock.png)
-  <figcaption>Reconocimiento del gesto "rock" mediante distancia Procrustes.</figcaption>
-</figure>
-<figure markdown>
-  ![Gesto paz](clasificador_hands_paz.png)
-  <figcaption>Reconocimiento del gesto "paz". Los landmarks son invariantes a traslación, rotación y escala.</figcaption>
-</figure>
-</div>
-
 <figure>
-<p><img alt="Gesto ok" src="clasificador_hands_ok.png" />
+<p><img alt="Hands libro" src="clasificador_hands_book.png" />
   </p>
-<figcaption>Dataset de gestos: rock, puño, paz, ok, índice, meñique.</figcaption>
+<figcaption>Procrustes sobre el libro: todos los scores son 0.00. Sin mano visible en el frame, MediaPipe no detecta landmarks y el método devuelve similitud nula para todos los modelos.</figcaption>
+</figure>
+<figure>
+<p><img alt="Hands móvil" src="clasificador_hands_movil.png" />
+  </p>
+<figcaption>Procrustes sobre el móvil Nokia: mismo resultado, scores a 0.00. El método es ciego a objetos que no sean manos.</figcaption>
+</figure>
+<figure>
+<p><img alt="Hands mano abierta" src="clasificador_hands_mano-abierta.png" />
+  </p>
+<figcaption>Procrustes sobre mano abierta: score 0.90 para <code>mano_abierta</code>, con gran separación respecto al segundo candidato (mano_tres: 0.25). La normalización de traslación, escala y rotación hace que la forma pura del gesto se compare de forma muy precisa.</figcaption>
 </figure>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">clasificador/methods/hand_procrustes.py — compare()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
 <span class="normal"><a href="#__codelineno-2-2">2</a></span>
@@ -1069,17 +1122,21 @@
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="k">return</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">disparity</span> <span class="o">*</span> <span class="n">_DISPARITY_SCALE</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
 <h3 id="metodo-3-sift">Método 3 — SIFT<a class="headerlink" href="#metodo-3-sift" title="Permanent link">&para;</a></h3>
-<div class="img-grid-2">
-<figure markdown>
-  ![SIFT portada libro](clasificador_sift_libro.png)
-  <figcaption>SIFT reconociendo portada de libro. Funciona bien con objetos de alta textura.</figcaption>
+<figure>
+<p><img alt="SIFT libro" src="clasificador_sift_book.png" />
+  </p>
+<figcaption>SIFT sobre la portada del libro: score 0.43 para <code>libro_5</code>, con separación clara (libro_4: 0.03). La portada tiene abundante textura tipográfica e imagen, lo que genera muchos keypoints coincidentes tras el filtro de Lowe.</figcaption>
 </figure>
-<figure markdown>
-  ![SIFT keypoints](clasificador_sift_keypoints.png)
-  <figcaption>Keypoints SIFT detectados en el frame. Solo los que superan el ratio de Lowe se cuentan.</figcaption>
+<figure>
+<p><img alt="SIFT móvil" src="clasificador_sift_movil.png" />
+  </p>
+<figcaption>SIFT sobre el móvil Nokia: score 0.12 para <code>oficina_movil</code>. El teclado numérico ofrece algo de textura, pero la carcasa lisa limita el número de keypoints válidos, reduciendo el score respecto a embedding.</figcaption>
 </figure>
-</div>
-
+<figure>
+<p><img alt="SIFT mano abierta" src="clasificador_sift_mano-abierta.png" />
+  </p>
+<figcaption>SIFT sobre mano abierta: score 0.14 para <code>mano_abierta</code>, con poca separación respecto a otros candidatos. La piel es una superficie casi sin textura: pocos keypoints detectables y resultado poco fiable.</figcaption>
+</figure>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">clasificador/methods/sift_matching.py — compare()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
@@ -1107,17 +1164,118 @@
 </span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13"></a>    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">good</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">descs</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">descriptor</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
 <h3 id="interfaz">Interfaz<a class="headerlink" href="#interfaz" title="Permanent link">&para;</a></h3>
-<div class="img-grid-2">
-<figure markdown>
-  ![Barra de confianza](clasificador_confidence_bar.png)
-  <figcaption>Barra de similitud global. El modelo ganador aparece en verde.</figcaption>
+<figure>
+<p><img alt="Añadir modelo dinámico" src="clasificador_add_model.png" />
+  </p>
+<figcaption>Captura de nuevo modelo con la tecla <code>m</code>. En la terminal se ve el flujo completo: el sistema solicita el nombre, guarda la imagen y la tiene disponible inmediatamente.</figcaption>
 </figure>
-<figure markdown>
-  ![Añadir modelo dinámico](clasificador_add_model.png)
-  <figcaption>Captura de nuevo modelo con la tecla <code>S</code>.</figcaption>
-</figure>
+<hr />
+<h2 id="analisis">Análisis comparativo por tipo de objeto<a class="headerlink" href="#analisis" title="Permanent link">&para;</a></h2>
+<p>Las capturas muestran de forma muy clara por qué cada método es más adecuado para un tipo de objeto concreto.</p>
+<h3 id="libro-sift-gana">Libro — SIFT gana<a class="headerlink" href="#libro-sift-gana" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Score libro</th>
+<th>Segundo candidato</th>
+<th>Margen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Embedding</td>
+<td>0.83</td>
+<td>0.51</td>
+<td>+0.32</td>
+</tr>
+<tr>
+<td>SIFT</td>
+<td>0.43</td>
+<td>0.03</td>
+<td><strong>+0.40</strong></td>
+</tr>
+<tr>
+<td>Procrustes</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>SIFT obtiene el mayor margen de separación sobre el libro (+0.40 frente a +0.32 de embedding). La portada es rica en textura: tipografía, contraste y fotografía con bordes definidos generan decenas de keypoints estables y reproducibles entre el modelo y el frame actual. Esa abundancia de puntos de anclaje locales es exactamente el escenario para el que SIFT está diseñado. Embedding también clasifica bien, pero al comparar semántica global puede confundir portadas de libros similares; SIFT los distingue por sus keypoints concretos. Procrustes es completamente ciego: sin mano, devuelve 0.00.</p>
+<h3 id="mano-abierta-procrustes-gana">Mano abierta — Procrustes gana<a class="headerlink" href="#mano-abierta-procrustes-gana" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Score mano</th>
+<th>Segundo candidato</th>
+<th>Margen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Procrustes</td>
+<td><strong>0.90</strong></td>
+<td>0.25</td>
+<td><strong>+0.65</strong></td>
+</tr>
+<tr>
+<td>Embedding</td>
+<td>0.56</td>
+<td>0.45</td>
+<td>+0.11</td>
+</tr>
+<tr>
+<td>SIFT</td>
+<td>0.14</td>
+<td>0.12</td>
+<td>+0.02</td>
+</tr>
+</tbody>
+</table>
+<p>Procrustes domina con un margen de +0.65, muy superior al +0.11 de embedding y al casi nulo +0.02 de SIFT. La razón es estructural: Procrustes no mira píxeles sino la <em>forma geométrica</em> de los 21 landmarks que MediaPipe extrae de la mano. Al normalizar traslación, escala y rotación, compara únicamente la configuración relativa de los dedos, invariante a distancia, orientación e iluminación. Embedding lo intenta con semántica visual pero la piel es visualmente muy parecida entre gestos distintos, lo que comprime los scores (0.56 vs 0.45). SIFT falla porque la piel es una superficie sin textura: apenas hay keypoints que detectar.</p>
+<h3 id="movil-embedding-gana">Móvil — Embedding gana<a class="headerlink" href="#movil-embedding-gana" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Score móvil</th>
+<th>Segundo candidato</th>
+<th>Margen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Embedding</td>
+<td><strong>0.42</strong></td>
+<td>0.17</td>
+<td><strong>+0.25</strong></td>
+</tr>
+<tr>
+<td>SIFT</td>
+<td>0.12</td>
+<td>0.09</td>
+<td>+0.03</td>
+</tr>
+<tr>
+<td>Procrustes</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Embedding es el único método que clasifica el móvil con un margen útil (+0.25). El Nokia tiene una carcasa lisa con muy poca textura repetible: la pantalla apagada y el plástico gris apenas generan keypoints SIFT estables entre tomas, de ahí el score de 0.12 con margen casi nulo (+0.03). Embedding, en cambio, captura la <em>forma global</em> del objeto: su silueta rectangular, la disposición del teclado y la pantalla quedan codificados en el vector de 1024 dimensiones de MobileNet, lo que permite reconocerlo aunque el ángulo o la iluminación varíen ligeramente. Procrustes, como siempre con objetos sin mano, devuelve 0.00.</p>
+<div class="admonition tip">
+<p class="admonition-title">Regla práctica</p>
+<ul>
+<li>Usa <strong>SIFT</strong> para objetos con superficie rica en textura (portadas, etiquetas, circuitos).</li>
+<li>Usa <strong>Procrustes</strong> para gestos de mano: es el único método que ve forma y no apariencia.</li>
+<li>Usa <strong>Embedding</strong> para objetos con forma global distintiva pero superficie lisa (electrónica, packaging).</li>
+</ul>
 </div>
-
 <hr />
 <h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
 <h3 id="interfaz-comun-para-los-tres-metodos">Interfaz común para los tres métodos<a class="headerlink" href="#interfaz-comun-para-los-tres-metodos" title="Permanent link">&para;</a></h3>

@@ -14,8 +14,6 @@
         <link rel="prev" href="../clasificador/">
       
       
-        <link rel="next" href="../imagenes/">
-      
       
         
       
@@ -325,7 +323,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../imagenes/" class="md-tabs__link">
+      <a href="../imagenes.md" class="md-tabs__link">
         
   
   
@@ -819,7 +817,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../imagenes/" class="md-nav__link">
+      <a href="../imagenes.md" class="md-nav__link">
         
   
   
@@ -890,19 +888,18 @@
 <figure>
 <p><img alt="Muestras del dataset" src="dataset_samples.png" />
   </p>
-<figcaption>Muestra representativa de las 30 imágenes etiquetadas en Roboflow.</figcaption>
+<figcaption>Muestra representativa de las 3 clases etiquetadas en Roboflow.</figcaption>
 </figure>
-<div class="img-grid-2">
-<figure markdown>
-  ![Etiquetas book](dataset_labels_book.png)
-  <figcaption>Clase <em>book</em> con bounding boxes en formato YOLO.</figcaption>
+<figure>
+<p><img alt="Etiquetas book" src="dataset_labels_book.png" />
+  </p>
+<figcaption>Clase <em>book</em> con bounding boxes en formato YOLO.</figcaption>
 </figure>
-<figure markdown>
-  ![Etiquetas fruit](dataset_labels_fruit.png)
-  <figcaption>Clase <em>fruit</em>. La variedad de frutas hace esta clase más difícil de generalizar.</figcaption>
+<figure>
+<p><img alt="Etiquetas fruit" src="dataset_labels_fruit.png" />
+  </p>
+<figcaption>Clase <em>fruit</em>. La variedad de frutas hace esta clase más difícil de generalizar.</figcaption>
 </figure>
-</div>
-
 <figure>
 <p><img alt="Etiquetas toy" src="dataset_labels_toy.png" />
   </p>
@@ -1057,17 +1054,16 @@
   </p>
 <figcaption>Curvas de pérdida (box_loss, cls_loss, dfl_loss) y métricas mAP50 / mAP50-95 a lo largo de las 100 épocas.</figcaption>
 </figure>
-<div class="img-grid-2">
-<figure markdown>
-  ![Matriz de confusión](training_confusion_matrix.png)
-  <figcaption>Matriz de confusión normalizada sobre el conjunto de validación.</figcaption>
+<figure>
+<p><img alt="Matriz de confusión" src="training_confusion_matrix.png" />
+  </p>
+<figcaption>Matriz de confusión normalizada sobre el conjunto de validación.</figcaption>
 </figure>
-<figure markdown>
-  ![Curva PR](training_pr_curve.png)
-  <figcaption>Curva Precisión-Recall por clase. El área bajo la curva equivale al mAP50.</figcaption>
+<figure>
+<p><img alt="Curva PR" src="training_pr_curve.png" />
+  </p>
+<figcaption>Curva Precisión-Recall por clase. El área bajo la curva equivale al mAP50.</figcaption>
 </figure>
-</div>
-
 <div class="metric-grid">
   <div class="metric-card">
     <span class="metric-value">—</span>
@@ -1098,17 +1094,16 @@
   </p>
 <figcaption>Inferencia simultánea con múltiples objetos. Azul = book, verde = fruit, rojo = toy.</figcaption>
 </figure>
-<div class="img-grid-2">
-<figure markdown>
-  ![Inferencia book](yolo_inference_book.png)
-  <figcaption>Detección de la clase <em>book</em> con confianza mostrada sobre el bbox.</figcaption>
+<figure>
+<p><img alt="Inferencia book" src="yolo_inference_book.png" />
+  </p>
+<figcaption>Detección de la clase <em>book</em> con confianza mostrada sobre el bbox.</figcaption>
 </figure>
-<figure markdown>
-  ![Inferencia fruit](yolo_inference_fruit.png)
-  <figcaption>Detección de la clase <em>fruit</em>.</figcaption>
+<figure>
+<p><img alt="Inferencia fruit" src="yolo_inference_fruit.png" />
+  </p>
+<figcaption>Detección de la clase <em>fruit</em>.</figcaption>
 </figure>
-</div>
-
 <figure>
 <p><img alt="Inferencia toy" src="yolo_inference_toy.png" />
   </p>
@@ -1205,22 +1200,6 @@
             </div>
           </a>
         
-        
-          
-          <a href="../imagenes/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: 🖼️ Guía de imágenes">
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Siguiente
-              </span>
-              <div class="md-ellipsis">
-                🖼️ Guía de imágenes
-              </div>
-            </div>
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
-            </div>
-          </a>
         
       </nav>
     

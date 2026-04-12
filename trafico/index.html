@@ -325,7 +325,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../imagenes/" class="md-tabs__link">
+      <a href="../imagenes.md" class="md-tabs__link">
         
   
   
@@ -819,7 +819,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../imagenes/" class="md-nav__link">
+      <a href="../imagenes.md" class="md-nav__link">
         
   
   
@@ -987,17 +987,16 @@
   </p>
 <figcaption>Sistema con todos los elementos configurados. El HUD inferior muestra los contadores en tiempo real: <code>&lt;--:N --&gt;:M</code>.</figcaption>
 </figure>
-<div class="img-grid-2">
-<figure markdown>
-  ![Máscara MOG2](trafico_mask.png)
-  <figcaption>Máscara binaria del foreground dentro del ROI.</figcaption>
+<figure>
+<p><img alt="Máscara MOG2" src="trafico_mask.png" />
+  </p>
+<figcaption>Máscara binaria del foreground dentro del ROI.</figcaption>
 </figure>
-<figure markdown>
-  ![Tracks con IDs](trafico_tracks.png)
-  <figcaption>Tracks activos con IDs en amarillo y bounding boxes en verde.</figcaption>
+<figure>
+<p><img alt="Tracks con IDs" src="trafico_tracks.png" />
+  </p>
+<figcaption>Tracks activos con IDs en amarillo y bounding boxes en verde.</figcaption>
 </figure>
-</div>
-
 <h3 id="tracker-de-centroides">Tracker de centroides<a class="headerlink" href="#tracker-de-centroides" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">trafico/trafico.py — update_tracks()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
@@ -1083,17 +1082,16 @@
 </span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="n">prev_pos</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">tid</span><span class="p">:</span> <span class="n">t</span><span class="p">[</span><span class="s2">&quot;cx&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">tid</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tracks</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
 </span></code></pre></div></td></tr></table></div>
 <h3 id="graficas-de-analisis">Gráficas de análisis<a class="headerlink" href="#graficas-de-analisis" title="Permanent link">&para;</a></h3>
-<div class="img-grid-2">
-<figure markdown>
-  ![Vehículos por hora](trafico_graph_hourly.png)
-  <figcaption>Histograma de vehículos detectados por hora. Permite identificar horas punta.</figcaption>
+<figure>
+<p><img alt="Vehículos por hora" src="trafico_graph_hourly.png" />
+  </p>
+<figcaption>Histograma de vehículos detectados por hora. Permite identificar horas punta.</figcaption>
 </figure>
-<figure markdown>
-  ![Por sentido](trafico_graph_direction.png)
-  <figcaption>Comparativa de flujo por sentido a lo largo del tiempo.</figcaption>
+<figure>
+<p><img alt="Por sentido" src="trafico_graph_direction.png" />
+  </p>
+<figcaption>Comparativa de flujo por sentido a lo largo del tiempo.</figcaption>
 </figure>
-</div>
-
 <hr />
 <h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
 <h3 id="mog2-frente-a-frame-differencing">MOG2 frente a frame differencing<a class="headerlink" href="#mog2-frente-a-frame-differencing" title="Permanent link">&para;</a></h3>
