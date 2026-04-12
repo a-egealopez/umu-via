@@ -695,6 +695,56 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#analisis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Análisis de las gráficas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Análisis de las gráficas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#curvas-de-entrenamiento-training_curvespng" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Curvas de entrenamiento (training_curves.png)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matriz-de-confusion-training_confusion_matrixpng" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matriz de confusión (training_confusion_matrix.png)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#curva-precision-recall-training_pr_curvepng" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Curva Precisión-Recall (training_pr_curve.png)
+      
+    </span>
+  </a>
+  
+</li>
+        
           <li class="md-nav__item">
   <a href="#inferencia-en-tiempo-real" class="md-nav__link">
     <span class="md-ellipsis">
@@ -1042,6 +1092,79 @@
 <p>Tras ejecutar <code>train.py</code>, abre <code>runs/detect/train/results.csv</code> y copia los valores de la <strong>última fila</strong> en las tarjetas de arriba:
 <code>metrics/mAP50(B)</code> → mAP50, <code>metrics/mAP50-95(B)</code> → mAP50-95, <code>metrics/precision(B)</code> → Precisión, <code>metrics/recall(B)</code> → Recall.</p>
 </div>
+<h2 id="analisis">Análisis de las gráficas<a class="headerlink" href="#analisis" title="Permanent link">&para;</a></h2>
+<h3 id="curvas-de-entrenamiento-training_curvespng">Curvas de entrenamiento (<code>training_curves.png</code>)<a class="headerlink" href="#curvas-de-entrenamiento-training_curvespng" title="Permanent link">&para;</a></h3>
+<p><strong>Pérdidas de entrenamiento (fila superior izquierda):</strong></p>
+<p>Las tres pérdidas de entrenamiento (<code>box_loss</code>, <code>cls_loss</code>, <code>dfl_loss</code>) descienden de forma consistente a lo largo de las 100 épocas, lo que indica que el modelo aprende correctamente. La <code>cls_loss</code> es la que más cae en términos absolutos (de ~3.3 a ~0.5), reflejando que la clasificación entre las tres clases mejora progresivamente.</p>
+<p><strong>Pérdidas de validación (fila inferior izquierda):</strong></p>
+<p>La <code>val/box_loss</code> y la <code>val/cls_loss</code> también descienden, aunque con más ruido que las de entrenamiento. La <code>val/dfl_loss</code> presenta un pico pronunciado alrededor de la época 55 seguido de recuperación; esto es habitual con datasets muy pequeños donde un solo ejemplo difícil puede distorsionar la métrica. El hecho de que las pérdidas de validación no suban sostenidamente indica que no hay sobreajuste severo, aunque el margen entre train y val es estrecho precisamente por el pequeño tamaño del dataset.</p>
+<p><strong>Métricas (columnas derechas):</strong></p>
+<ul>
+<li><code>metrics/precision(B)</code>: Muy inestable en las primeras épocas (sube a ~1.0 y cae a ~0.0 antes de estabilizarse). Esto es característico de datasets pequeños donde pocas predicciones correctas o incorrectas cambian la precisión drásticamente. Se estabiliza en torno a 0.85–0.93 a partir de la época 40.</li>
+<li><code>metrics/recall(B)</code>: Parte alto (~0.96), cae bruscamente (~época 5) y recupera gradualmente hasta ~0.63 al final. La caída coincide con la inestabilidad de precisión; el modelo al principio detecta casi todo (recall alto, precisión baja) y luego calibra su umbral.</li>
+<li><code>metrics/mAP50(B)</code>: Crece desde ~0.2 hasta ~0.67–0.75 con oscilaciones. La tendencia es claramente ascendente, confirmando que el entrenamiento es beneficioso.</li>
+<li><code>metrics/mAP50-95(B)</code>: Comportamiento similar al mAP50 pero con valores menores (~0.20 → ~0.65), lo cual es esperado ya que mide precisión a umbrales de IoU más estrictos.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Interpretación con cautela</p>
+<p>Las oscilaciones fuertes en precisión y recall no indican inestabilidad del entrenamiento, sino la alta varianza estadística causada por el pequeño conjunto de validación. Con 30 imágenes en total, el split val puede contener apenas 5–8 imágenes, haciendo que cada falso positivo o negativo mueva la métrica varios puntos porcentuales.</p>
+</div>
+<hr />
+<h3 id="matriz-de-confusion-training_confusion_matrixpng">Matriz de confusión (<code>training_confusion_matrix.png</code>)<a class="headerlink" href="#matriz-de-confusion-training_confusion_matrixpng" title="Permanent link">&para;</a></h3>
+<p>La matriz está normalizada por columnas (true label), por lo que cada columna suma 1.0 en las clases con predicciones.</p>
+<p><strong>Resultados por clase:</strong></p>
+<ul>
+<li><strong><code>fruit</code></strong>: Recall perfecto (1.00) — todas las instancias de fruta son correctamente detectadas como <code>fruit</code>. No hay confusión con otras clases de objeto.</li>
+<li><strong><code>toy</code></strong>: Recall perfecto (1.00) — ídem para juguetes.</li>
+<li><strong><code>book</code></strong>: <strong>Problema.</strong> Ninguna instancia de <code>book</code> se detecta correctamente como tal. En cambio, el 37% se predice como <code>book</code> cuando la etiqueta real es <code>background</code>, y el 62% de las predicciones de <code>book</code> corresponden también a <code>background</code>. Esto indica que el modelo no ha aprendido bien la clase <code>book</code>: confunde regiones de fondo con libros, pero no detecta los libros reales.</li>
+<li><strong><code>background</code></strong>: Recall perfecto (1.00) — las regiones de fondo se rechazan correctamente.</li>
+</ul>
+<div class="admonition danger">
+<p class="admonition-title">Clase <code>book</code> problemática</p>
+<p>La ausencia de detecciones correctas de <code>book</code> (diagonal vacía para esa clase) es la principal debilidad del modelo. Las causas posibles son: pocas imágenes de entrenamiento de esa clase, variabilidad alta en apariencia (tamaño, color, orientación del libro), o solapamiento visual con el fondo. Soluciones: ampliar el dataset de <code>book</code>, o aplicar aumentaciones específicas como recortes aleatorios más agresivos.</p>
+</div>
+<hr />
+<h3 id="curva-precision-recall-training_pr_curvepng">Curva Precisión-Recall (<code>training_pr_curve.png</code>)<a class="headerlink" href="#curva-precision-recall-training_pr_curvepng" title="Permanent link">&para;</a></h3>
+<p>La curva muestra el área bajo la curva (AP@0.5) por clase:</p>
+<table>
+<thead>
+<tr>
+<th>Clase</th>
+<th>AP@0.5</th>
+<th>Interpretación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>book</code></td>
+<td>0.249</td>
+<td>Muy bajo — consistente con la matriz de confusión</td>
+</tr>
+<tr>
+<td><code>fruit</code></td>
+<td>0.913</td>
+<td>Excelente — el modelo detecta frutas con alta confiabilidad</td>
+</tr>
+<tr>
+<td><code>toy</code></td>
+<td>0.995</td>
+<td>Casi perfecto — detección de juguetes muy robusta</td>
+</tr>
+<tr>
+<td><strong>all classes</strong></td>
+<td><strong>0.719</strong></td>
+<td><strong>mAP@0.5 global — razonable para 30 imágenes</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Observaciones:</strong></p>
+<ul>
+<li>La curva de <code>toy</code> (verde) es prácticamente un cuadrado perfecto: precisión alta para todo el rango de recall, indicando detecciones muy confiables a cualquier umbral.</li>
+<li>La curva de <code>fruit</code> (naranja) mantiene precisión ~0.75 hasta recall ~0.65, luego sube a 1.0 (solo detecta cuando está muy seguro) antes de caer. Comportamiento típico de una clase bien aprendida con pocos ejemplos.</li>
+<li>La curva de <code>book</code> (azul claro) es casi plana y baja (~0.25), confirmando que el modelo apenas discrimina esta clase del fondo.</li>
+<li>El <strong>mAP50 global de 0.719</strong> es un resultado razonable considerando el dataset de solo 30 imágenes, pero está muy sesgado al alza por el excelente rendimiento en <code>toy</code> y <code>fruit</code>. Sin <code>book</code>, el modelo no sería útil en un entorno real.</li>
+</ul>
+<hr />
 <h3 id="inferencia-en-tiempo-real">Inferencia en tiempo real<a class="headerlink" href="#inferencia-en-tiempo-real" title="Permanent link">&para;</a></h3>
 <figure>
 <p><img alt="Inferencia múltiples objetos" src="yolo_inference_multi.png" />
