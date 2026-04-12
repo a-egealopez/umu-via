@@ -1,0 +1,1234 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica de la entrega parcial de Visión Artificial">
+      
+      
+      
+      
+        <link rel="prev" href="../trafico/">
+      
+      
+        <link rel="next" href="../clasificador/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Detector de Actividad - Visión Artificial — Memoria de Prácticas</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/css/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#detector-de-actividad" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href=".." title="Visión Artificial — Memoria de Prácticas" class="md-header__button md-logo" aria-label="Visión Artificial — Memoria de Prácticas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0 9.821 9.821 0 0 0-17.64 0"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Visión Artificial — Memoria de Prácticas
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Detector de Actividad
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../calibracion/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Calibración
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../trafico/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Análisis de Tráfico
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Detector de Actividad
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../clasificador/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Clasificador
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../dl/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Deep Learning
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../imagenes/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  🖼️ Guía de imágenes
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Visión Artificial — Memoria de Prácticas" class="md-nav__button md-logo" aria-label="Visión Artificial — Memoria de Prácticas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0 9.821 9.821 0 0 0-17.64 0"/></svg>
+
+    </a>
+    Visión Artificial — Memoria de Prácticas
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calibracion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trafico/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análisis de Tráfico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detector de Actividad
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detector de Actividad
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="En esta página">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      En esta página
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#descripcion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Descripción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requisitos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requisitos y ejecución
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parametros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parámetros clave
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parámetros clave">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#clasificacion-de-movimiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clasificación de movimiento
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anonimizacion-de-caras" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anonimización de caras
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grabacion-de-eventos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grabación de eventos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Código clave
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Código clave">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deteccion-y-clasificacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detección y clasificación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anonimizacion-de-caras_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anonimización de caras
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grabacion-y-alertas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grabación y alertas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decisiones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decisiones de diseño
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decisiones de diseño">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#clasificacion-heuristica-frente-a-detector-neural" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clasificación heurística frente a detector neural
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deteccion-de-caras-en-hilo-separado-con-cache-de-100-frames" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detección de caras en hilo separado con caché de 100 frames
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pre-buffer-con-deque-de-tamano-dinamico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pre-buffer con deque de tamaño dinámico
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frames-pares-descartados-del-procesamiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frames pares descartados del procesamiento
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#telegram-como-canal-de-alertas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Telegram como canal de alertas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitaciones
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clasificador/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clasificador
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../imagenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🖼️ Guía de imágenes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="detector-de-actividad">Detector de Actividad<a class="headerlink" href="#detector-de-actividad" title="Permanent link">&para;</a></h1>
+<h2 id="descripcion">Descripción<a class="headerlink" href="#descripcion" title="Permanent link">&para;</a></h2>
+<p><code>actividad/actividad.py</code> detecta movimiento en una ROI manual, clasifica objetos detectados (persona / objeto), <strong>anonimiza caras</strong> y envía notificaciones con foto y clip de vídeo vía <strong>bot de Telegram</strong>.</p>
+<hr />
+<h2 id="requisitos">Requisitos y ejecución<a class="headerlink" href="#requisitos" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">Entorno</p>
+<p>Python 3.10+, OpenCV 4.9, NumPy 1.26, <code>face_recognition</code>, <code>python-telegram-bot</code>.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Credenciales necesarias</p>
+<p>Antes de ejecutar, crea el fichero <code>token.env</code> en la raíz del proyecto con el token de tu bot de Telegram:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>TELEGRAM_TOKEN=&lt;tu_token&gt;
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>TELEGRAM_CHAT_ID=&lt;tu_chat_id&gt;
+</span></code></pre></div>
+Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rápido e intencionado).</p>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python<span class="w"> </span>actividad/actividad.py
+</span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Configuración de la ROI</p>
+<p>Al arrancar, haz <strong>dos clics</strong> sobre la imagen para definir la región de interés rectangular. Solo se procesará el movimiento dentro de esa región.</p>
+</div>
+<hr />
+<h2 id="arquitectura">Arquitectura<a class="headerlink" href="#arquitectura" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    A[autoStream] --&gt; B[cv.resize 640×480]
+    B --&gt; C{¿Frame par?}
+    C -- Sí --&gt; D[Reutilizar frame\nanonimizado cacheado]
+    C -- No --&gt; E[anonymize\nhilo face_recognition]
+    E --&gt; F[MOG2 + morfología]
+    F --&gt; G{¿ROI activa?}
+    G -- Sí --&gt; H[classify_motion\npersona / objeto]
+    H --&gt; I{¿Categoría\nde interés?}
+    I -- Sí --&gt; J[EventRecorder.start\nfoto Telegram]
+    I -- No --&gt; K[Dibujar HUD]
+    J --&gt; L[Grabar pre+post buffer]
+    L --&gt; M{¿Evento\nacabado?}
+    M -- Sí --&gt; N[save_frames_to_video\nevents/*.avi]
+    M -- No --&gt; K
+    N --&gt; K</code></pre>
+<figure>
+<p><img alt="Setup ROI" src="actividad_roi_setup.png" />
+  </p>
+<figcaption>Definición de la ROI rectangular mediante dos clics.</figcaption>
+</figure>
+<hr />
+<h2 id="parametros">Parámetros clave<a class="headerlink" href="#parametros" title="Permanent link">&para;</a></h2>
+<h3 id="clasificacion-de-movimiento">Clasificación de movimiento<a class="headerlink" href="#clasificacion-de-movimiento" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Umbral</th>
+<th>Justificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ratio = h/w</code></td>
+<td>&gt; 1.35</td>
+<td>Las personas son más altas que anchas</td>
+</tr>
+<tr>
+<td><code>h</code></td>
+<td>&gt; 60 px</td>
+<td>Descarta detecciones diminutas</td>
+</tr>
+<tr>
+<td><code>fill = área/(w×h)</code></td>
+<td>&lt; 0.80</td>
+<td>Las personas son menos compactas que cajas</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Parámetro más sensible: ratio h/w</p>
+<p>Una persona agachada o sentada puede tener <code>ratio &lt; 1.35</code> y clasificarse como objeto. Para vigilancia estática donde las personas pasan de pie, los umbrales actuales funcionan razonablemente bien.</p>
+</div>
+<h3 id="anonimizacion-de-caras">Anonimización de caras<a class="headerlink" href="#anonimizacion-de-caras" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FACE_UPDATE_INTERVAL</code></td>
+<td>100 frames</td>
+<td>Frecuencia de actualización de la detección</td>
+</tr>
+<tr>
+<td><code>FACE_SCALE</code></td>
+<td>0.25</td>
+<td>Resolución de inferencia (1/4 del frame original)</td>
+</tr>
+<tr>
+<td>Margen del bloque</td>
+<td>35%</td>
+<td>Ampliación del bbox antes de censurar</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">HOG vs CNN para detección de caras</p>
+<p>HOG es más rápido (~80 ms) pero falla con caras de perfil o parcialmente tapadas. CNN detecta mejor en condiciones difíciles pero triplica el tiempo de llamada (~300 ms). En exteriores o con cámaras en ángulo, considera cambiar a <code>model="cnn"</code>.</p>
+</div>
+<h3 id="grabacion-de-eventos">Grabación de eventos<a class="headerlink" href="#grabacion-de-eventos" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pre_sec</code></td>
+<td>2 s</td>
+<td>Duración del pre-buffer antes del evento</td>
+</tr>
+<tr>
+<td>Post-buffer</td>
+<td>1 s tras último movimiento</td>
+<td>Tiempo de cola al cerrar el evento</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="codigo">Código clave<a class="headerlink" href="#codigo" title="Permanent link">&para;</a></h2>
+<h3 id="deteccion-y-clasificacion">Detección y clasificación<a class="headerlink" href="#deteccion-y-clasificacion" title="Permanent link">&para;</a></h3>
+<div class="img-grid-2">
+<figure markdown>
+  ![Detección persona](actividad_persona_detected.png)
+  <figcaption>Persona detectada dentro de la ROI (bbox rojo).</figcaption>
+</figure>
+<figure markdown>
+  ![Detección objeto](actividad_objeto_detected.png)
+  <figcaption>Objeto detectado dentro de la ROI (bbox azul).</figcaption>
+</figure>
+</div>
+
+<figure>
+<p><img alt="Máscara MOG2" src="actividad_mask_mog2.png" />
+  </p>
+<figcaption>Máscara de foreground del MOG2 aplicada exclusivamente dentro del ROI.</figcaption>
+</figure>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">actividad/actividad.py — classify_motion()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span>
+<span class="normal"><a href="#__codelineno-2-12">12</a></span>
+<span class="normal"><a href="#__codelineno-2-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">classify_motion</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">mask_roi</span><span class="p">,</span> <span class="n">min_area</span><span class="o">=</span><span class="n">MIN_AREA_MOV</span><span class="p">):</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="k">for</span> <span class="n">cnt</span> <span class="ow">in</span> <span class="n">cv</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="n">mask_roi</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>                                <span class="n">cv</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>        <span class="n">area</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">contourArea</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a>        <span class="k">if</span> <span class="n">area</span> <span class="o">&lt;</span> <span class="n">min_area</span><span class="p">:</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7"></a>            <span class="k">continue</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8"></a>        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9"></a>        <span class="n">ratio</span> <span class="o">=</span> <span class="n">h</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>          <span class="c1"># relación de aspecto</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10"></a>        <span class="n">fill</span>  <span class="o">=</span> <span class="n">area</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">h</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>   <span class="c1"># compacidad</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11"></a>        <span class="n">cat</span> <span class="o">=</span> <span class="s2">&quot;persona&quot;</span> <span class="k">if</span> <span class="n">ratio</span> <span class="o">&gt;</span> <span class="mf">1.35</span> <span class="ow">and</span> <span class="n">h</span> <span class="o">&gt;</span> <span class="mi">60</span> <span class="ow">and</span> <span class="n">fill</span> <span class="o">&lt;</span> <span class="mf">0.8</span> <span class="k">else</span> <span class="s2">&quot;objeto&quot;</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12"></a>        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cat</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="k">return</span> <span class="n">results</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="anonimizacion-de-caras_1">Anonimización de caras<a class="headerlink" href="#anonimizacion-de-caras_1" title="Permanent link">&para;</a></h3>
+<figure>
+<p><img alt="Cara anonimizada" src="actividad_face_anonymized.png" />
+  </p>
+<figcaption>Cara censurada con bloque negro con margen del 35%. La detección se ejecuta en hilo separado cada 100 frames.</figcaption>
+</figure>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">actividad/actividad.py — anonymize()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span>
+<span class="normal"><a href="#__codelineno-3-17">17</a></span>
+<span class="normal"><a href="#__codelineno-3-18">18</a></span>
+<span class="normal"><a href="#__codelineno-3-19">19</a></span>
+<span class="normal"><a href="#__codelineno-3-20">20</a></span>
+<span class="normal"><a href="#__codelineno-3-21">21</a></span>
+<span class="normal"><a href="#__codelineno-3-22">22</a></span>
+<span class="normal"><a href="#__codelineno-3-23">23</a></span>
+<span class="normal"><a href="#__codelineno-3-24">24</a></span>
+<span class="normal"><a href="#__codelineno-3-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">FACE_UPDATE_INTERVAL</span> <span class="o">=</span> <span class="mi">100</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="n">FACE_SCALE</span> <span class="o">=</span> <span class="mf">0.25</span>   <span class="c1"># trabaja a 1/4 de resolución</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">detect_faces</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">inv</span>   <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">FACE_SCALE</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">small</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">fx</span><span class="o">=</span><span class="n">FACE_SCALE</span><span class="p">,</span> <span class="n">fy</span><span class="o">=</span><span class="n">FACE_SCALE</span><span class="p">)</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="n">locations</span> <span class="o">=</span> <span class="n">face_recognition</span><span class="o">.</span><span class="n">face_locations</span><span class="p">(</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8"></a>        <span class="n">cv</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">small</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">),</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9"></a>    <span class="p">)</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="k">return</span> <span class="p">[(</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">inv</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">inv</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">inv</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="o">*</span><span class="n">inv</span><span class="p">))</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11"></a>            <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">locations</span><span class="p">]</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12"></a>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">anonymize</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">face_state</span><span class="p">,</span> <span class="n">face_queue</span><span class="p">):</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="k">if</span> <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;frame_count&quot;</span><span class="p">]</span> <span class="o">%</span> <span class="n">FACE_UPDATE_INTERVAL</span> <span class="o">==</span> <span class="mi">0</span> \
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15"></a>            <span class="ow">and</span> <span class="ow">not</span> <span class="n">face_queue</span><span class="o">.</span><span class="n">full</span><span class="p">():</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16"></a>        <span class="n">face_queue</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;detector&quot;</span><span class="p">]))</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17"></a>    <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;frame_count&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18"></a>    <span class="n">out</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19"></a>    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20"></a>    <span class="k">with</span> <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;lock&quot;</span><span class="p">]:</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21"></a>        <span class="n">faces</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;last_faces&quot;</span><span class="p">])</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22"></a>    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23"></a>        <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">r</span> <span class="o">-</span> <span class="n">l</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.35</span><span class="p">),</span> <span class="nb">int</span><span class="p">((</span><span class="n">b</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.35</span><span class="p">)</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24"></a>        <span class="n">out</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">t</span><span class="o">-</span><span class="n">dy</span><span class="p">):</span><span class="nb">min</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">b</span><span class="o">+</span><span class="n">dy</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">l</span><span class="o">-</span><span class="n">dx</span><span class="p">):</span><span class="nb">min</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">r</span><span class="o">+</span><span class="n">dx</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25"></a>    <span class="k">return</span> <span class="n">out</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="grabacion-y-alertas">Grabación y alertas<a class="headerlink" href="#grabacion-y-alertas" title="Permanent link">&para;</a></h3>
+<div class="img-grid-2">
+<figure markdown>
+  ![Grabación activa](actividad_recording.png)
+  <figcaption>Indicador de grabación activo en el HUD.</figcaption>
+</figure>
+<figure markdown>
+  ![Notificación Telegram](actividad_telegram_photo.png)
+  <figcaption>Notificación recibida en Telegram con la captura del evento y la categoría detectada.</figcaption>
+</figure>
+</div>
+
+<figure>
+<p><img alt="Carpeta events" src="actividad_events_folder.png" />
+  </p>
+<figcaption>Carpeta <code>events/</code> con los clips guardados automáticamente. El nombre incluye la marca de tiempo.</figcaption>
+</figure>
+<hr />
+<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h3 id="clasificacion-heuristica-frente-a-detector-neural">Clasificación heurística frente a detector neural<a class="headerlink" href="#clasificacion-heuristica-frente-a-detector-neural" title="Permanent link">&para;</a></h3>
+<p>En lugar de HOG+SVM o YOLO, los contornos del foreground se clasifican por tres criterios geométricos (→ ver <a href="#codigo"><code>classify_motion()</code></a>, línea 1). Es una apuesta deliberada por velocidad y simplicidad — un detector neural añadiría cientos de milisegundos en CPU. El precio es conocido: personas agachadas o sentadas se clasifican como objeto.</p>
+<h3 id="deteccion-de-caras-en-hilo-separado-con-cache-de-100-frames">Detección de caras en hilo separado con caché de 100 frames<a class="headerlink" href="#deteccion-de-caras-en-hilo-separado-con-cache-de-100-frames" title="Permanent link">&para;</a></h3>
+<p><code>face_recognition</code> tarda ~80 ms (HOG) o ~300 ms (CNN), demasiado para cada frame. La solución es un <code>face_worker</code> dedicado que reutiliza el último resultado durante 100 frames (→ ver <a href="#codigo"><code>anonymize()</code></a>, línea 14). El stream no se bloquea aunque la máscara vaya ligeramente rezagada cuando una cara entra o sale de plano. La detección trabaja además a 1/4 de resolución (<code>FACE_SCALE=0.25</code>) para reducir el tiempo de inferencia.</p>
+<h3 id="pre-buffer-con-deque-de-tamano-dinamico">Pre-buffer con <code>deque</code> de tamaño dinámico<a class="headerlink" href="#pre-buffer-con-deque-de-tamano-dinamico" title="Permanent link">&para;</a></h3>
+<p>El clip guardado incluye los segundos previos al evento gracias a un <code>deque</code> circular. Su tamaño se recalcula cada frame a partir del FPS real (<code>max(1, int(pre_sec * fps))</code>), de forma que el pre-buffer siempre representa los mismos segundos reales independientemente de si la cámara va a 15 o 30 fps.</p>
+<h3 id="frames-pares-descartados-del-procesamiento">Frames pares descartados del procesamiento<a class="headerlink" href="#frames-pares-descartados-del-procesamiento" title="Permanent link">&para;</a></h3>
+<p>El bucle principal salta el procesamiento en frames pares, reutilizando el último frame anonimizado. Esto reduce a la mitad las llamadas a <code>anonymize</code>, <code>clean_mask</code> y <code>classify_motion</code> sin que sea perceptible visualmente a 25+ fps.</p>
+<h3 id="telegram-como-canal-de-alertas">Telegram como canal de alertas<a class="headerlink" href="#telegram-como-canal-de-alertas" title="Permanent link">&para;</a></h3>
+<p>La foto se envía desde el hilo principal para garantizar que corresponde exactamente al frame que disparó el evento; el clip se guarda y envía al terminar la grabación. Si <code>token.env</code> no existe el programa falla en el arranque — fallo rápido y visible antes de que el sistema quede corriendo sin alertas.</p>
+<hr />
+<h2 id="limitaciones">Limitaciones<a class="headerlink" href="#limitaciones" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Limitaciones conocidas</p>
+<ul>
+<li>Clasificación heurística: personas agachadas o sentadas pueden clasificarse como "objeto".</li>
+<li>Con modelo <code>hog</code>, las caras de perfil o parcialmente tapadas pueden quedar sin anonimizar.</li>
+<li>Cualquier vibración de la cámara genera falsos positivos en todo el foreground.</li>
+<li>Si <code>token.env</code> no existe o está mal configurado, el programa lanza excepción al arrancar.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Pie" >
+        
+          
+          <a href="../trafico/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Análisis de Tráfico">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Anterior
+              </span>
+              <div class="md-ellipsis">
+                Análisis de Tráfico
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../clasificador/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Clasificador">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Siguiente
+              </span>
+              <div class="md-ellipsis">
+                Clasificador
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "toc.integrate", "search.suggest", "search.highlight", "content.code.annotate", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

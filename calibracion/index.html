@@ -1,0 +1,1193 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica de la entrega parcial de Visión Artificial">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../trafico/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Calibración - Visión Artificial — Memoria de Prácticas</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/css/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#calibracion-de-camara" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href=".." title="Visión Artificial — Memoria de Prácticas" class="md-header__button md-logo" aria-label="Visión Artificial — Memoria de Prácticas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0 9.821 9.821 0 0 0-17.64 0"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Visión Artificial — Memoria de Prácticas
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Calibración
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Calibración
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../trafico/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Análisis de Tráfico
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../actividad/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Detector de Actividad
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../clasificador/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Clasificador
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../dl/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Deep Learning
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../imagenes/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  🖼️ Guía de imágenes
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Visión Artificial — Memoria de Prácticas" class="md-nav__button md-logo" aria-label="Visión Artificial — Memoria de Prácticas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0 9.821 9.821 0 0 0-17.64 0"/></svg>
+
+    </a>
+    Visión Artificial — Memoria de Prácticas
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibración
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="En esta página">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      En esta página
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#descripcion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Descripción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requisitos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requisitos y ejecución
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parametros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parámetros clave
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parámetros clave">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matriz-intrinseca-k" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matriz intrínseca \(K\)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campo-visual-fov" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Campo visual (FOV)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sliders-de-la-herramienta-interactiva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sliders de la herramienta interactiva
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Código clave
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Código clave">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#proceso-de-deteccion-de-esquinas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proceso de detección de esquinas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proyeccion-de-cuadricula" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proyección de cuadrícula
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ajuste-del-plano-y-medicion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ajuste del plano y medición
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decisiones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decisiones de diseño
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decisiones de diseño">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#getoptimalnewcameramatrix-antes-de-remap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        getOptimalNewCameraMatrix antes de remap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rayos-en-lugar-de-homografia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rayos en lugar de homografía
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medicion-por-interseccion-con-el-plano-mas-cercano" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Medición por intersección con el plano más cercano
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validez-de-la-calibracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validez de la calibración
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitaciones
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trafico/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análisis de Tráfico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../actividad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detector de Actividad
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clasificador/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clasificador
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../imagenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🖼️ Guía de imágenes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="calibracion-de-camara">Calibración de Cámara<a class="headerlink" href="#calibracion-de-camara" title="Permanent link">&para;</a></h1>
+<h2 id="descripcion">Descripción<a class="headerlink" href="#descripcion" title="Permanent link">&para;</a></h2>
+<p>El bloque de calibración abarca tres tareas: obtener los <strong>parámetros intrínsecos</strong> de la cámara mediante un tablero de ajedrez, calcular el <strong>campo visual (FOV)</strong> y desarrollar una herramienta interactiva que superponga una <strong>cuadrícula de medida real</strong> sobre la imagen usando proyección 3D.</p>
+<p>Los scripts relevantes son <code>calibracion/grid.py</code> y el fichero de parámetros <code>calibracion/calib.txt</code>.</p>
+<hr />
+<h2 id="requisitos">Requisitos y ejecución<a class="headerlink" href="#requisitos" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">Entorno</p>
+<p>Python 3.10+, OpenCV 4.9, NumPy 1.26.</p>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Lanzar herramienta interactiva de cuadrícula</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>python<span class="w"> </span>calibracion/grid.py
+</span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Primera ejecución</p>
+<p>Asegúrate de tener al menos 10 imágenes del tablero desde ángulos distintos antes de calibrar. Con menos imágenes los coeficientes de distorsión son poco fiables.</p>
+</div>
+<hr />
+<h2 id="arquitectura">Arquitectura<a class="headerlink" href="#arquitectura" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    A[autoStream: frame] --&gt; B[cv.remap\ncorrección distorsión]
+    B --&gt; C[draw_grid\nproyección 3D → píxeles]
+    C --&gt; D{¿2 clics?}
+    D -- Sí --&gt; E[Calcular distancia 3D\nentre puntos]
+    D -- No --&gt; F[draw_hud + SliderPanel]
+    E --&gt; F
+    F --&gt; A</code></pre>
+<hr />
+<h2 id="parametros">Parámetros clave<a class="headerlink" href="#parametros" title="Permanent link">&para;</a></h2>
+<h3 id="matriz-intrinseca-k">Matriz intrínseca <span class="arithmatex">\(K\)</span><a class="headerlink" href="#matriz-intrinseca-k" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+K = \begin{pmatrix}
+480.1 &amp; 0     &amp; 319.8 \\
+0     &amp; 480.1 &amp; 236.7 \\
+0     &amp; 0     &amp; 1
+\end{pmatrix}
+\]</div>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(f_x\)</span></td>
+<td>480.15 px</td>
+<td>Distancia focal horizontal</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(f_y\)</span></td>
+<td>480.06 px</td>
+<td>Distancia focal vertical</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(c_x\)</span></td>
+<td>319.85 px</td>
+<td>Centro óptico X</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(c_y\)</span></td>
+<td>236.66 px</td>
+<td>Centro óptico Y</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(k_1\)</span></td>
+<td>0.0558</td>
+<td>Distorsión radial 1er orden</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(k_2\)</span></td>
+<td>−0.3856</td>
+<td>Distorsión radial 2º orden</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(k_3\)</span></td>
+<td>0.4551</td>
+<td>Distorsión radial 3er orden</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Parámetros sensibles</p>
+<p><code>k2</code> y <code>k3</code> tienen valores altos y signos opuestos — esto es normal en objetivos con distorsión en barril moderada. Un <code>k2</code> muy negativo sin <code>k3</code> que lo compense generaría una corrección excesiva en los bordes.</p>
+</div>
+<h3 id="campo-visual-fov">Campo visual (FOV)<a class="headerlink" href="#campo-visual-fov" title="Permanent link">&para;</a></h3>
+<p>La calibración se realizó a <strong>640 × 480 px</strong>.</p>
+<div class="arithmatex">\[
+\text{FOV}_h = 2 \arctan\!\left(\frac{640}{2 \times 480.1}\right) \approx 67.4°
+\]</div>
+<div class="arithmatex">\[
+\text{FOV}_v = 2 \arctan\!\left(\frac{480}{2 \times 480.1}\right) \approx 53.1°
+\]</div>
+<h3 id="sliders-de-la-herramienta-interactiva">Sliders de la herramienta interactiva<a class="headerlink" href="#sliders-de-la-herramienta-interactiva" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Slider</th>
+<th>Variable</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Z</strong></td>
+<td><code>w_z</code></td>
+<td>Distancia al plano de interés (cm)</td>
+</tr>
+<tr>
+<td><strong>A</strong></td>
+<td><code>c_h</code></td>
+<td>Altura de la cámara sobre el suelo (cm)</td>
+</tr>
+<tr>
+<td><strong>X</strong></td>
+<td><code>cell</code></td>
+<td>Tamaño de celda de la cuadrícula (cm)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Parámetro más sensible: A (altura)</p>
+<p>Un error de pocos centímetros en <code>c_h</code> se amplifica con la distancia: las líneas horizontales de la cuadrícula se descuadran progresivamente hacia el fondo. Ajusta <code>A</code> hasta que la línea base gruesa coincida visualmente con el suelo real.</p>
+</div>
+<hr />
+<h2 id="codigo">Código clave<a class="headerlink" href="#codigo" title="Permanent link">&para;</a></h2>
+<h3 id="proceso-de-deteccion-de-esquinas">Proceso de detección de esquinas<a class="headerlink" href="#proceso-de-deteccion-de-esquinas" title="Permanent link">&para;</a></h3>
+<figure>
+<p><img alt="Detección de esquinas chessboard" src="chessboard_detection.png" />
+  </p>
+<figcaption>Esquinas detectadas con <code>cv2.findChessboardCorners</code> y refinadas con <code>cornerSubPix</code>.</figcaption>
+</figure>
+<figure>
+<p><img alt="Comparativa undistort" src="undistort_comparison.png" />
+  </p>
+<figcaption>Comparativa antes / después de aplicar <code>cv2.undistort</code>. Nótese la corrección de la distorsión radial en los bordes.</figcaption>
+</figure>
+<h3 id="proyeccion-de-cuadricula">Proyección de cuadrícula<a class="headerlink" href="#proyeccion-de-cuadricula" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">calibracion/grid.py — proyección de cuadrícula</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-1-10">10</a></span>
+<span class="normal"><a href="#__codelineno-1-11">11</a></span>
+<span class="normal"><a href="#__codelineno-1-12">12</a></span>
+<span class="normal"><a href="#__codelineno-1-13">13</a></span>
+<span class="normal"><a href="#__codelineno-1-14">14</a></span>
+<span class="normal"><a href="#__codelineno-1-15">15</a></span>
+<span class="normal"><a href="#__codelineno-1-16">16</a></span>
+<span class="normal"><a href="#__codelineno-1-17">17</a></span>
+<span class="normal"><a href="#__codelineno-1-18">18</a></span>
+<span class="normal"><a href="#__codelineno-1-19">19</a></span>
+<span class="normal"><a href="#__codelineno-1-20">20</a></span>
+<span class="normal"><a href="#__codelineno-1-21">21</a></span>
+<span class="normal"><a href="#__codelineno-1-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">ray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Rayo normalizado que pasa por el píxel (x, y).&quot;&quot;&quot;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">x</span> <span class="o">-</span> <span class="n">cx</span><span class="p">)</span><span class="o">/</span><span class="n">fx</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">cy</span><span class="p">)</span><span class="o">/</span><span class="n">fy</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">floor_pt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">ray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1e-6</span> <span class="k">else</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">h</span> <span class="o">/</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">draw_grid</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">w_z</span><span class="p">,</span> <span class="n">c_h</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10"></a>    <span class="n">w</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="n">lx</span> <span class="o">=</span> <span class="o">-</span><span class="n">w_z</span> <span class="o">*</span> <span class="n">cx</span> <span class="o">/</span> <span class="n">fx</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="n">rx</span> <span class="o">=</span>  <span class="n">w_z</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="n">cx</span><span class="p">)</span> <span class="o">/</span> <span class="n">fx</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13"></a>    <span class="n">xs</span> <span class="o">=</span> <span class="n">grid</span><span class="p">(</span><span class="n">lx</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14"></a>    <span class="k">for</span> <span class="n">xg</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">:</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15"></a>        <span class="n">line3d</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">[</span><span class="n">xg</span><span class="p">,</span> <span class="n">c_h</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span> <span class="p">[</span><span class="n">xg</span><span class="p">,</span> <span class="n">c_h</span><span class="p">,</span> <span class="n">w_z</span><span class="p">],</span> <span class="n">K</span><span class="p">,</span> <span class="n">UI_THEME</span><span class="p">[</span><span class="s2">&quot;C_TRACK&quot;</span><span class="p">])</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16"></a>    <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">w_z</span> <span class="o">+</span> <span class="n">cell</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17"></a>        <span class="n">lx2</span> <span class="o">=</span> <span class="o">-</span><span class="n">z</span> <span class="o">*</span> <span class="n">cx</span> <span class="o">/</span> <span class="n">fx</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18"></a>        <span class="n">rx2</span> <span class="o">=</span>  <span class="n">z</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="n">cx</span><span class="p">)</span> <span class="o">/</span> <span class="n">fx</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19"></a>        <span class="n">pts</span> <span class="o">=</span> <span class="n">line3d</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">[</span><span class="n">lx2</span><span class="p">,</span> <span class="n">c_h</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="p">[</span><span class="n">rx2</span><span class="p">,</span> <span class="n">c_h</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="n">K</span><span class="p">,</span> <span class="n">UI_THEME</span><span class="p">[</span><span class="s2">&quot;C_TRACK&quot;</span><span class="p">])</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20"></a>        <span class="k">if</span> <span class="n">pts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21"></a>            <span class="n">txt</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">z</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">5</span><span class="p">],</span> <span class="n">UI_THEME</span><span class="p">[</span><span class="s2">&quot;C_TEXT&quot;</span><span class="p">],</span> <span class="mf">0.35</span><span class="p">)</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22"></a>    <span class="n">line3d</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">[</span><span class="n">lx</span><span class="p">,</span> <span class="n">c_h</span><span class="p">,</span> <span class="n">w_z</span><span class="p">],</span> <span class="p">[</span><span class="n">rx</span><span class="p">,</span> <span class="n">c_h</span><span class="p">,</span> <span class="n">w_z</span><span class="p">],</span> <span class="n">K</span><span class="p">,</span> <span class="n">UI_THEME</span><span class="p">[</span><span class="s2">&quot;C_LINE&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="ajuste-del-plano-y-medicion">Ajuste del plano y medición<a class="headerlink" href="#ajuste-del-plano-y-medicion" title="Permanent link">&para;</a></h3>
+<div class="img-grid-2">
+<figure markdown>
+  ![Cuadrícula Z grande](grid_z_grande.png)
+  <figcaption>Distancia Z demasiado grande: la línea gruesa de base no coincide con el suelo real.</figcaption>
+</figure>
+<figure markdown>
+  ![Cuadrícula Z correcta](grid_z_correcta.png)
+  <figcaption>Z ajustada correctamente: la línea gruesa de base se alinea con el plano de interés.</figcaption>
+</figure>
+</div>
+
+<figure>
+<p><img alt="Medición con 2 clics" src="grid_measurement.png" />
+  </p>
+<figcaption>Medición de distancia real entre dos puntos mediante doble clic.</figcaption>
+</figure>
+<hr />
+<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h3 id="getoptimalnewcameramatrix-antes-de-remap"><code>getOptimalNewCameraMatrix</code> antes de <code>remap</code><a class="headerlink" href="#getoptimalnewcameramatrix-antes-de-remap" title="Permanent link">&para;</a></h3>
+<p><code>cv.undistort</code> recorta píxeles en los bordes sin dar control sobre cuánto. <code>getOptimalNewCameraMatrix</code> con <code>alpha=1</code> conserva todos los píxeles originales aunque aparezcan zonas negras en las esquinas. Después, <code>initUndistortRectifyMap</code> precomputa los mapas de remapeo una sola vez antes del bucle, de forma que cada frame solo cuesta un <code>cv.remap</code> (&lt;2 ms) en lugar de recalcular la corrección en cada iteración.</p>
+<table>
+<thead>
+<tr>
+<th>Enfoque</th>
+<th>Ventaja</th>
+<th>Inconveniente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cv.undistort</code></td>
+<td>Simple, una línea</td>
+<td>Recorta bordes sin control</td>
+</tr>
+<tr>
+<td><code>getOptimalNewCameraMatrix</code> + <code>remap</code></td>
+<td>Conserva todos los píxeles, &lt;2 ms/frame</td>
+<td>Requiere precomputar mapas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rayos-en-lugar-de-homografia">Rayos en lugar de homografía<a class="headerlink" href="#rayos-en-lugar-de-homografia" title="Permanent link">&para;</a></h3>
+<p>La cuadrícula podría calcularse con una homografía suelo→imagen, pero requeriría elegir cuatro puntos manualmente y solo sería válida para un plano concreto. Con rayos, dado un píxel <code>(x, y)</code>, el rayo normalizado es <code>[(x-cx)/fx, (y-cy)/fy, 1]</code> y la intersección con el plano a altura <code>c_h</code> da las coordenadas 3D directamente. Los sliders Z y A pueden cambiarse en tiempo real sin recalibrar nada.</p>
+<h3 id="medicion-por-interseccion-con-el-plano-mas-cercano">Medición por intersección con el plano más cercano<a class="headerlink" href="#medicion-por-interseccion-con-el-plano-mas-cercano" title="Permanent link">&para;</a></h3>
+<p>Cuando el usuario hace clic, el punto puede estar en el suelo o en una pared. El código calcula la intersección del rayo con ambos planos y se queda con el más cercano a la cámara (<code>min</code> por norma del vector 3D). Es una heurística razonable para interiores donde suelo y pared son los únicos planos de interés.</p>
+<h3 id="validez-de-la-calibracion">Validez de la calibración<a class="headerlink" href="#validez-de-la-calibracion" title="Permanent link">&para;</a></h3>
+<p>Los parámetros en <code>calib.txt</code> son válidos solo para la resolución y modo de cámara con que se tomaron las imágenes (640×480). <code>fx</code>, <code>fy</code>, <code>cx</code>, <code>cy</code> escalan proporcionalmente al cambiar resolución, pero los coeficientes de distorsión <code>k1</code>, <code>k2</code>, <code>k3</code> no cambian porque describen la geometría del objetivo. Aun así, lo más seguro es recalibrar si se cambia la resolución.</p>
+<hr />
+<h2 id="limitaciones">Limitaciones<a class="headerlink" href="#limitaciones" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Limitaciones conocidas</p>
+<ul>
+<li>La cuadrícula asume que la cámara apunta <strong>horizontalmente</strong>. Inclinaciones generan errores de medida crecientes con la distancia.</li>
+<li>El valor de altura <strong>A</strong> debe introducirse manualmente; un error de pocos centímetros se amplifica con Z.</li>
+<li>La calibración es válida <strong>solo</strong> en el modo y resolución en que se tomaron las imágenes.</li>
+<li>Con poca iluminación o tablero con reflejos, <code>findChessboardCorners</code> puede fallar completamente.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Pie" >
+        
+          
+          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Anterior: Inicio">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Anterior
+              </span>
+              <div class="md-ellipsis">
+                Inicio
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../trafico/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Análisis de Tráfico">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Siguiente
+              </span>
+              <div class="md-ellipsis">
+                Análisis de Tráfico
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "toc.integrate", "search.suggest", "search.highlight", "content.code.annotate", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
