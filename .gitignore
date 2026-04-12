@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.env
+actividad/token.env
+
+# mkdocs build
+memoria/site/
+
+# basura python
+*.egg-info
