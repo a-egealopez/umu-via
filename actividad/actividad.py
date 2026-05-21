@@ -90,6 +90,29 @@ def face_worker(face_state, face_queue):
         faces = detect_faces(frame, model)
         with face_state["lock"]:
             face_state["last_faces"] = faces
+'''
+def face_worker(face_state, face_queue):
+    grace_frames = 0
+    MAX_GRACE = 3
+
+    while True:
+        item = face_queue.get()
+        if item is None: break
+        
+        frame, model = item
+        faces = detect_faces(frame, model)
+        
+        with face_state["lock"]:
+            if faces:
+                face_state["last_faces"] = faces
+                grace_frames = MAX_GRACE # reseteamos el seguro
+            else:
+                # Si no hay caras, restamos un crédito de gracia
+                if grace_frames > 0:
+                    grace_frames -= 1
+                else:
+                    face_state["last_faces"] = []
+'''
 
 
 # ── Clasificación ─────────────────────────────────────────────────────────────
