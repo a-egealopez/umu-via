@@ -1,0 +1,33 @@
+# Archivo de referencias para gol-eder.png (402x235)
+# Uso: python rectificacion.py --refs=gol_refs.txt --units=cm --dev=gol-eder.png
+#
+# Formato: pixel_x  pixel_y  real_x  real_y
+# Unidades: centímetros (cm)
+#
+# Sistema de coordenadas:
+#   Origen (0, 0) → centro de la línea de meta (portería)
+#   Eje X → horizontal, positivo hacia la derecha mirando desde dentro del campo
+#   Eje Y → perpendicular al campo, positivo hacia el interior
+#
+# Medidas reglamentarias FIFA (en cm):
+#   Portería: ancho=732cm, alto=244cm
+#   Área pequeña (6 yardas): 1832cm × 550cm
+#   Área de penalti: 4032cm × 1650cm
+#   Punto de penalti: Y=1100cm desde línea de meta
+#   Punto de penalti → esquina del área: X=±2016cm, Y=0
+#
+# CÓMO OBTENER VALORES PRECISOS:
+#   1. Ejecuta: python pick_refs.py --dev=gol-eder.png --out=gol_refs.txt
+#   2. Identifica en la imagen las esquinas del área de penalti y la línea de meta
+#   3. Sustituye los pixel_x, pixel_y por los que obtengas al hacer clic
+#   4. Los real_x, real_y ya están rellenos con medidas FIFA
+#
+# Puntos de referencia identificados en la imagen:
+#   La línea blanca horizontal en y≈82 corresponde al borde frontal del área
+#   La zona superior (y≈22) corresponde a la línea de meta / portería
+#
+# pixel_x   pixel_y   real_x   real_y
+    0.0      82.0    -2016.0   1650.0   # izq-frontal area penalti
+  395.0      82.0     2016.0   1650.0   # der-frontal area penalti
+   50.0      22.0    -2016.0      0.0   # izq-linea de meta
+  350.0      22.0     2016.0      0.0   # der-linea de meta
