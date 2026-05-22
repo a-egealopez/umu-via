@@ -822,12 +822,12 @@
   <a href="#decisiones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Decisiones de diseño
+        Decisiones de diseno
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Decisiones de diseño">
+    <nav class="md-nav" aria-label="Decisiones de diseno">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1112,7 +1112,7 @@
 <tbody>
 <tr>
 <td>LClick</td>
-<td>Añadir punto (pide coords reales en consola)</td>
+<td>Anadir punto (pide coords reales en consola)</td>
 </tr>
 <tr>
 <td>RClick</td>
@@ -1237,7 +1237,7 @@
 <tr>
 <td>Canvas de salida</td>
 <td>640 × 480 px</td>
-<td>Tamaño fijo de la ventana rectificada</td>
+<td>Tamano fijo de la ventana rectificada</td>
 </tr>
 <tr>
 <td>Margen</td>
@@ -1253,7 +1253,7 @@
 </table>
 <div class="admonition tip">
 <p class="admonition-title">Calidad de la homografía</p>
-<p>Al arrancar, el programa imprime <code>Homografía calculada: N/M inliers</code>. Si <code>N &lt; M</code>, algún punto de referencia fue marcado con poca precisión y fue descartado por RANSAC. Con exactamente 4 puntos, RANSAC no tiene efecto pero tampoco daña.</p>
+<p>Al arrancar, el programa imprime <code>Homografía calculada: N/M inliers</code>. Si <code>N &lt; M</code>, algún punto de referencia fue marcado con poca precisión y fue descartado por RANSAC. Con exactamente 4 puntos, RANSAC no tiene efecto pero tampoco dana.</p>
 </div>
 <hr />
 <h2 id="casos">Casos de uso<a class="headerlink" href="#casos" title="Permanent link">&para;</a></h2>
@@ -1299,7 +1299,7 @@
   </p>
 <figcaption>Medición de elementos de la calle (escalones, anchura de paso) usando el farol como referencia. Unidades en mm.</figcaption>
 </figure>
-<p>Referencia: rectángulo circunscrito al farol típico de calle española con dimensiones conocidas: <strong>400 × 550 mm</strong> (ancho × alto). El plano de referencia es el plano vertical de la fachada donde está anclado el farol.</p>
+<p>Referencia: rectángulo circunscrito al farol típico de calle espanola con dimensiones conocidas: <strong>400 × 550 mm</strong> (ancho × alto). El plano de referencia es el plano vertical de la fachada donde está anclado el farol.</p>
 <hr />
 <h3 id="gol-de-eder-euro-2016-gol-ederpng">Gol de Éder — Euro 2016 (<code>gol-eder.png</code>)<a class="headerlink" href="#gol-de-eder-euro-2016-gol-ederpng" title="Permanent link">&para;</a></h3>
 <figure>
@@ -1388,7 +1388,7 @@
 </span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16"></a>    <span class="k">return</span> <span class="n">H_disp</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">mn</span><span class="p">,</span> <span class="p">(</span><span class="n">OUT_W</span><span class="p">,</span> <span class="n">OUT_H</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
 <hr />
-<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h2 id="decisiones">Decisiones de diseno<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
 <h3 id="dos-scripts-independientes-pick_refs-rectificacion">Dos scripts independientes: <code>pick_refs</code> + <code>rectificacion</code><a class="headerlink" href="#dos-scripts-independientes-pick_refs-rectificacion" title="Permanent link">&para;</a></h3>
 <p>Separar la creación del fichero de referencias del proceso de medición permite reutilizar el mismo <code>.txt</code> en múltiples sesiones sin repetir el marcado. Las referencias son persistentes y editables a mano.</p>
 <h3 id="ransac-en-findhomography">RANSAC en <code>findHomography</code><a class="headerlink" href="#ransac-en-findhomography" title="Permanent link">&para;</a></h3>
@@ -1396,7 +1396,7 @@
 <h3 id="vista-rectificada-calculada-una-sola-vez">Vista rectificada calculada una sola vez<a class="headerlink" href="#vista-rectificada-calculada-una-sola-vez" title="Permanent link">&para;</a></h3>
 <p><code>build_rectified_transform</code> se llama al inicio sobre el primer frame. La homografía H_disp compone H con la transformación de escala/traslación al canvas, por lo que <code>warpPerspective</code> aplica todo en una sola pasada sin recomputar nada por cada pulsación de <code>r</code>.</p>
 <h3 id="plano-unico-de-referencia">Plano único de referencia<a class="headerlink" href="#plano-unico-de-referencia" title="Permanent link">&para;</a></h3>
-<p>Toda la medición asume que los puntos marcados y los puntos a medir son coplanares. Esta restricción es explícita por diseño: no hay corrección de distorsión de lente ni reconstrucción 3D.</p>
+<p>Toda la medición asume que los puntos marcados y los puntos a medir son coplanares. Esta restricción es explícita por diseno: no hay corrección de distorsión de lente ni reconstrucción 3D.</p>
 <hr />
 <h2 id="limitaciones">Limitaciones<a class="headerlink" href="#limitaciones" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">

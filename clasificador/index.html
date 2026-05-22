@@ -762,12 +762,12 @@
   <a href="#decisiones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Decisiones de diseño
+        Decisiones de diseno
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Decisiones de diseño">
+    <nav class="md-nav" aria-label="Decisiones de diseno">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1095,7 +1095,7 @@
 
 <h1 id="clasificador-de-imagenes">Clasificador de Imágenes<a class="headerlink" href="#clasificador-de-imagenes" title="Permanent link">&para;</a></h1>
 <h2 id="descripcion">Descripción<a class="headerlink" href="#descripcion" title="Permanent link">&para;</a></h2>
-<p><code>clasificador/clasificador.py</code> es una aplicación modular de reconocimiento en tiempo real. Acepta <code>--models</code> y <code>--method</code> como argumentos. Cada método implementa la misma interfaz (<code>precompute</code>, <code>compare</code>, <code>best_match</code>), lo que permite añadir nuevos métodos sin tocar el código principal.</p>
+<p><code>clasificador/clasificador.py</code> es una aplicación modular de reconocimiento en tiempo real. Acepta <code>--models</code> y <code>--method</code> como argumentos. Cada método implementa la misma interfaz (<code>precompute</code>, <code>compare</code>, <code>best_match</code>), lo que permite anadir nuevos métodos sin tocar el código principal.</p>
 <hr />
 <h2 id="requisitos">Requisitos y ejecución<a class="headerlink" href="#requisitos" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
@@ -1358,7 +1358,7 @@
 </span></code></pre></div></td></tr></table></div>
 <h3 id="interfaz">Interfaz<a class="headerlink" href="#interfaz" title="Permanent link">&para;</a></h3>
 <figure>
-<p><img alt="Añadir modelo dinámico" src="clasificador_add_model.png" />
+<p><img alt="Anadir modelo dinámico" src="clasificador_add_model.png" />
   </p>
 <figcaption>Captura de nuevo modelo con la tecla <code>m</code>. En la terminal se ve el flujo completo: el sistema solicita el nombre, guarda la imagen y la tiene disponible inmediatamente.</figcaption>
 </figure>
@@ -1396,7 +1396,7 @@
 </tr>
 </tbody>
 </table>
-<p>SIFT obtiene el mayor margen de separación sobre el libro (+0.40 frente a +0.32 de embedding). La portada es rica en textura: tipografía, contraste y fotografía con bordes definidos generan decenas de keypoints estables y reproducibles entre el modelo y el frame actual. Esa abundancia de puntos de anclaje locales es exactamente el escenario para el que SIFT está diseñado. Embedding también clasifica bien, pero al comparar semántica global puede confundir portadas de libros similares; SIFT los distingue por sus keypoints concretos. Procrustes es completamente ciego: sin mano, devuelve 0.00.</p>
+<p>SIFT obtiene el mayor margen de separación sobre el libro (+0.40 frente a +0.32 de embedding). La portada es rica en textura: tipografía, contraste y fotografía con bordes definidos generan decenas de keypoints estables y reproducibles entre el modelo y el frame actual. Esa abundancia de puntos de anclaje locales es exactamente el escenario para el que SIFT está disenado. Embedding también clasifica bien, pero al comparar semántica global puede confundir portadas de libros similares; SIFT los distingue por sus keypoints concretos. Procrustes es completamente ciego: sin mano, devuelve 0.00.</p>
 <h3 id="mano-abierta-procrustes-gana">Mano abierta — Procrustes gana<a class="headerlink" href="#mano-abierta-procrustes-gana" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1470,13 +1470,13 @@
 </ul>
 </div>
 <hr />
-<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h2 id="decisiones">Decisiones de diseno<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
 <h3 id="interfaz-comun-para-los-tres-metodos">Interfaz común para los tres métodos<a class="headerlink" href="#interfaz-comun-para-los-tres-metodos" title="Permanent link">&para;</a></h3>
-<p>Los tres métodos implementan <code>precompute</code>, <code>compare</code> y <code>best_match</code>. <code>precompute</code> se llama una sola vez al cargar o capturar un modelo; <code>compare</code> lo usa en cada frame. Añadir un método nuevo es implementar esa interfaz y registrarlo en <code>--method</code> argparse, sin tocar el código principal.</p>
+<p>Los tres métodos implementan <code>precompute</code>, <code>compare</code> y <code>best_match</code>. <code>precompute</code> se llama una sola vez al cargar o capturar un modelo; <code>compare</code> lo usa en cada frame. Anadir un método nuevo es implementar esa interfaz y registrarlo en <code>--method</code> argparse, sin tocar el código principal.</p>
 <h3 id="embedding-similitud-del-coseno">Embedding: similitud del coseno<a class="headerlink" href="#embedding-similitud-del-coseno" title="Permanent link">&para;</a></h3>
 <p>MobileNet V3 Small produce vectores de 1024 dimensiones donde la dirección importa más que la magnitud — dos imágenes del mismo objeto bajo distinta iluminación tendrán vectores de módulo diferente pero orientación parecida. La distancia euclidiana penalizaría esa diferencia de módulo innecesariamente; el coseno la ignora. La contrapartida es que objetos semánticamente parecidos (un libro y una revista) pueden quedar cerca en el espacio de embeddings.</p>
 <h3 id="procrustes-invarianza-como-descriptor">Procrustes: invarianza como descriptor<a class="headerlink" href="#procrustes-invarianza-como-descriptor" title="Permanent link">&para;</a></h3>
-<p>MediaPipe Hands devuelve 21 landmarks en coordenadas de imagen. Usarlos directamente no funcionaría porque el mismo gesto cambia de posición, tamaño y orientación. Procrustes normaliza traslación, escala y rotación antes de comparar, de forma que lo que se mide es solo la <em>forma</em> de la configuración de dedos (→ ver <a href="#codigo"><code>compare()</code></a>, línea 28).</p>
+<p>MediaPipe Hands devuelve 21 landmarks en coordenadas de imagen. Usarlos directamente no funcionaría porque el mismo gesto cambia de posición, tamano y orientación. Procrustes normaliza traslación, escala y rotación antes de comparar, de forma que lo que se mide es solo la <em>forma</em> de la configuración de dedos (→ ver <a href="#codigo"><code>compare()</code></a>, línea 28).</p>
 <h3 id="sift-filtro-de-lowe">SIFT: filtro de Lowe<a class="headerlink" href="#sift-filtro-de-lowe" title="Permanent link">&para;</a></h3>
 <p>El filtro de Lowe (<code>_LOWE_RATIO=0.75</code>) descarta los emparejamientos ambiguos: si el keypoint más cercano no es significativamente mejor que el segundo, el match se rechaza (→ ver <a href="#codigo"><code>compare()</code></a>, línea 42). Sin este filtro el número de coincidencias falsas sube mucho, especialmente en fondos con patrones repetitivos.</p>
 <h3 id="inferencia-cada-30-frames">Inferencia cada 30 frames<a class="headerlink" href="#inferencia-cada-30-frames" title="Permanent link">&para;</a></h3>

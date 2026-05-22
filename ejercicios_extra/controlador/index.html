@@ -921,12 +921,12 @@
   <a href="#decisiones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Decisiones de diseño
+        Decisiones de diseno
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Decisiones de diseño">
+    <nav class="md-nav" aria-label="Decisiones de diseno">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1054,11 +1054,11 @@
 </div>
 <hr />
 <h2 id="gdl">Grados de libertad<a class="headerlink" href="#gdl" title="Permanent link">&para;</a></h2>
-<p><code>HandController</code> extrae <strong>4 grados de libertad</strong> a partir de los 21 landmarks que MediaPipe estima en cada frame. El enunciado pide al menos distancia y ángulo; la implementación añade roll y posición XY de la palma para un control más completo.</p>
+<p><code>HandController</code> extrae <strong>4 grados de libertad</strong> a partir de los 21 landmarks que MediaPipe estima en cada frame. El enunciado pide al menos distancia y ángulo; la implementación anade roll y posición XY de la palma para un control más completo.</p>
 <figure>
 <p><img alt="Landmarks de mano con GDL anotados" src="../extra_hand_gdl.png" />
   </p>
-<figcaption>Los 21 landmarks de MediaPipe con los 4 GDL anotados: diagonal del bounding box (distancia), vector palma→dedo medio (yaw), diferencia de profundidad índice–meñique (roll) y centroide de la palma (XY).</figcaption>
+<figcaption>Los 21 landmarks de MediaPipe con los 4 GDL anotados: diagonal del bounding box (distancia), vector palma→dedo medio (yaw), diferencia de profundidad índice–menique (roll) y centroide de la palma (XY).</figcaption>
 </figure>
 <h3 id="gdl-1-distancia-distance-0-1">GDL 1 — Distancia (<code>distance ∈ [0, 1]</code>)<a class="headerlink" href="#gdl-1-distancia-distance-0-1" title="Permanent link">&para;</a></h3>
 <figure>
@@ -1081,19 +1081,19 @@
 <figure>
 <p><img alt="Ángulo de orientación de la mano" src="../extra_hand_angle.png" />
   </p>
-<figcaption>El ángulo se mide entre la muñeca (landmark 0) y el nudillo del dedo corazón (landmark 9). Vertical hacia arriba = 0°; rotar la mano en el plano de la imagen varía el ángulo.</figcaption>
+<figcaption>El ángulo se mide entre la muneca (landmark 0) y el nudillo del dedo corazón (landmark 9). Vertical hacia arriba = 0°; rotar la mano en el plano de la imagen varía el ángulo.</figcaption>
 </figure>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">extra_8_7_2/hand_controller.py — yaw</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">dv</span>        <span class="o">=</span> <span class="n">pts</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">-</span> <span class="n">pts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                          <span class="c1"># muñeca → nudillo medio</span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">dv</span>        <span class="o">=</span> <span class="n">pts</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">-</span> <span class="n">pts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                          <span class="c1"># muneca → nudillo medio</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">angle_deg</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">dv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">dv</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
 </span></code></pre></div></td></tr></table></div>
 <p>Controla la <strong>rotación Y</strong> del objeto AR.</p>
 <h3 id="gdl-3-roll-roll_deg-80-80">GDL 3 — Roll (<code>roll_deg ∈ [-80°, +80°]</code>)<a class="headerlink" href="#gdl-3-roll-roll_deg-80-80" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">extra_8_7_2/hand_controller.py — roll</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
 <span class="normal"><a href="#__codelineno-2-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">roll_deg</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">z</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">-</span> <span class="n">z</span><span class="p">[</span><span class="mi">17</span><span class="p">])</span> <span class="o">*</span> <span class="mi">500</span><span class="p">,</span> <span class="o">-</span><span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="c1"># z[5]=nudillo índice, z[17]=nudillo meñique</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="c1"># z[5]=nudillo índice, z[17]=nudillo menique</span>
 </span></code></pre></div></td></tr></table></div>
-<p>La diferencia de coordenada Z (profundidad estimada por MediaPipe) entre el nudillo del índice (landmark 5) y el del meñique (landmark 17) indica cuánto está girada la mano sobre el eje muñeca-dedos. Controla la <strong>rotación X</strong> del objeto AR.</p>
+<p>La diferencia de coordenada Z (profundidad estimada por MediaPipe) entre el nudillo del índice (landmark 5) y el del menique (landmark 17) indica cuánto está girada la mano sobre el eje muneca-dedos. Controla la <strong>rotación X</strong> del objeto AR.</p>
 <h3 id="gdl-4-posicion-xy-de-la-palma-norm_x-norm_y-0-1">GDL 4 — Posición XY de la palma (<code>norm_x, norm_y ∈ [0, 1]</code>)<a class="headerlink" href="#gdl-4-posicion-xy-de-la-palma-norm_x-norm_y-0-1" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">extra_8_7_2/hand_controller.py — posición XY</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">palm</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>   <span class="c1"># centroide de los 5 puntos de palma</span>
 </span></code></pre></div></td></tr></table></div>
@@ -1168,11 +1168,11 @@
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>python<span class="w"> </span>extra_8_7_2/run.py<span class="w"> </span>--model<span class="o">=</span>vggt_model.obj
 </span></code></pre></div>
 <hr />
-<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h2 id="decisiones">Decisiones de diseno<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
 <h3 id="inferencia-a-media-resolucion">Inferencia a media resolución<a class="headerlink" href="#inferencia-a-media-resolucion" title="Permanent link">&para;</a></h3>
 <p>MediaPipe Hands se ejecuta sobre el frame reducido al 50 % (<code>_INFER_SCALE=0.5</code>). Las coordenadas de landmarks se normalizan internamente por MediaPipe, por lo que la reducción no afecta a los cálculos de GDL. El resultado es aproximadamente 4× menos píxeles procesados respecto a resolución completa.</p>
 <h3 id="bounding-box-como-proxy-de-distancia">Bounding box como proxy de distancia<a class="headerlink" href="#bounding-box-como-proxy-de-distancia" title="Permanent link">&para;</a></h3>
-<p>La distancia real de la mano a la cámara requeriría calibración de la cámara y conocimiento del tamaño físico de la mano. El tamaño del bounding box en coordenadas normalizadas es un proxy robusto y calibración-libre: siempre cae en el rango [0.10, 0.55] con independencia de la resolución del frame.</p>
+<p>La distancia real de la mano a la cámara requeriría calibración de la cámara y conocimiento del tamano físico de la mano. El tamano del bounding box en coordenadas normalizadas es un proxy robusto y calibración-libre: siempre cae en el rango [0.10, 0.55] con independencia de la resolución del frame.</p>
 <hr />
 <h2 id="limitaciones">Limitaciones<a class="headerlink" href="#limitaciones" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">

@@ -664,12 +664,12 @@
   <a href="#decisiones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Decisiones de diseño
+        Decisiones de diseno
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Decisiones de diseño">
+    <nav class="md-nav" aria-label="Decisiones de diseno">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1281,7 +1281,7 @@
 <figcaption>Comparativa de flujo por sentido a lo largo del tiempo.</figcaption>
 </figure>
 <hr />
-<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h2 id="decisiones">Decisiones de diseno<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
 <h3 id="mog2-frente-a-frame-differencing">MOG2 frente a frame differencing<a class="headerlink" href="#mog2-frente-a-frame-differencing" title="Permanent link">&para;</a></h3>
 <p>Frame differencing genera demasiado ruido en exteriores: cualquier cambio de iluminación —una nube, una sombra— produce falsas detecciones. MOG2 modela el fondo como una mezcla de gaussianas que se actualiza frame a frame, lo que le da tolerancia a esos cambios lentos. El pipeline completo corre en ~12 ms/frame en CPU.</p>
 <p>El precio de MOG2 es que no distingue "fondo" de "objeto estático": un vehículo parado empieza a incorporarse al modelo y desaparece de la máscara. Por eso <code>learningRate</code> se fija a 0 cuando el vídeo está pausado.</p>
@@ -1312,9 +1312,9 @@
 <h3 id="orden-de-la-cadena-morfologica">Orden de la cadena morfológica<a class="headerlink" href="#orden-de-la-cadena-morfologica" title="Permanent link">&para;</a></h3>
 <p><code>MORPH_OPEN</code> va primero para eliminar ruido antes de que los pasos siguientes lo amplíen. <code>MORPH_CLOSE</code> actúa después porque MOG2 suele dejar huecos en zonas de textura homogénea (el capó liso de un coche) y un vehículo con agujeros puede fragmentarse en varios blobs y contarse dos veces. <code>separate()</code> va al final, cuando los blobs ya son coherentes, para romper los puentes finos entre vehículos que circulan pegados.</p>
 <h3 id="tracker-sin-kalman">Tracker sin Kalman<a class="headerlink" href="#tracker-sin-kalman" title="Permanent link">&para;</a></h3>
-<p>Con 5–10 vehículos en el ROI, la asignación por distancia euclidiana mínima es suficiente. El algoritmo húngaro daría una asignación globalmente óptima cuando dos tracks se cruzan, pero eso es raro en tráfico normal y añadiría complejidad sin beneficio claro. <code>MAX_AGE=5</code> cubre los casos de oclusión manteniendo el track vivo durante 5 frames sin detección.</p>
+<p>Con 5–10 vehículos en el ROI, la asignación por distancia euclidiana mínima es suficiente. El algoritmo húngaro daría una asignación globalmente óptima cuando dos tracks se cruzan, pero eso es raro en tráfico normal y anadiría complejidad sin beneficio claro. <code>MAX_AGE=5</code> cubre los casos de oclusión manteniendo el track vivo durante 5 frames sin detección.</p>
 <h3 id="doble-conteo-en-la-linea">Doble conteo en la línea<a class="headerlink" href="#doble-conteo-en-la-linea" title="Permanent link">&para;</a></h3>
-<p>Un vehículo parado sobre la línea puede disparar conteos repetidos porque el centroide oscila ±1–2 px entre frames por variaciones de la máscara. En carretera fluida casi nunca ocurre, pero en retenciones podría ser un problema. La solución sería añadir un cooldown por <code>tid</code>: ignorar nuevos cruces del mismo vehículo durante N frames tras el primero.</p>
+<p>Un vehículo parado sobre la línea puede disparar conteos repetidos porque el centroide oscila ±1–2 px entre frames por variaciones de la máscara. En carretera fluida casi nunca ocurre, pero en retenciones podría ser un problema. La solución sería anadir un cooldown por <code>tid</code>: ignorar nuevos cruces del mismo vehículo durante N frames tras el primero.</p>
 <h3 id="linea-divisoria-y-perspectiva">Línea divisoria y perspectiva<a class="headerlink" href="#linea-divisoria-y-perspectiva" title="Permanent link">&para;</a></h3>
 <p><code>split_y(cx)</code> interpola linealmente entre los dos puntos que define el usuario, lo que permite trazar una divisoria oblicua adaptada a la perspectiva. En curvas pronunciadas o con la cámara muy inclinada la separación real deja de ser lineal y la asignación izq/der puede fallar. La solución correcta sería una homografía a vista cenital previa al procesamiento.</p>
 <hr />

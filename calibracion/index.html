@@ -631,12 +631,12 @@
   <a href="#decisiones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Decisiones de diseño
+        Decisiones de diseno
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Decisiones de diseño">
+    <nav class="md-nav" aria-label="Decisiones de diseno">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1150,7 +1150,7 @@ K = \begin{pmatrix}
 <tr>
 <td><strong>X</strong></td>
 <td><code>cell</code></td>
-<td>Tamaño de celda de la cuadrícula (cm)</td>
+<td>Tamano de celda de la cuadrícula (cm)</td>
 </tr>
 </tbody>
 </table>
@@ -1233,7 +1233,7 @@ K = \begin{pmatrix}
 <figcaption>Medición de distancia real entre dos puntos mediante doble clic.</figcaption>
 </figure>
 <hr />
-<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h2 id="decisiones">Decisiones de diseno<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
 <h3 id="getoptimalnewcameramatrix-antes-de-remap"><code>getOptimalNewCameraMatrix</code> antes de <code>remap</code><a class="headerlink" href="#getoptimalnewcameramatrix-antes-de-remap" title="Permanent link">&para;</a></h3>
 <p><code>cv.undistort</code> recorta píxeles en los bordes sin dar control sobre cuánto. <code>getOptimalNewCameraMatrix</code> con <code>alpha=1</code> conserva todos los píxeles originales aunque aparezcan zonas negras en las esquinas. Después, <code>initUndistortRectifyMap</code> precomputa los mapas de remapeo una sola vez antes del bucle, de forma que cada frame solo cuesta un <code>cv.remap</code> (&lt;2 ms) en lugar de recalcular la corrección en cada iteración.</p>
 <table>

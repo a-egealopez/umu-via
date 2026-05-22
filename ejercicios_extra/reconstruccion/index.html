@@ -811,12 +811,12 @@
   <a href="#decisiones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Decisiones de diseño
+        Decisiones de diseno
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Decisiones de diseño">
+    <nav class="md-nav" aria-label="Decisiones de diseno">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1001,7 +1001,7 @@
 </table>
 <div class="admonition tip">
 <p class="admonition-title">Parámetro más sensible: <code>CONF_THRESH</code></p>
-<p>Bajar <code>CONF_THRESH</code> de 0.5 a 0.3 incluye más puntos pero añade ruido de fondo. Subirlo a 0.7 da nubes más limpias pero puede dejar huecos en zonas de baja confianza (bordes, reflejos).</p>
+<p>Bajar <code>CONF_THRESH</code> de 0.5 a 0.3 incluye más puntos pero anade ruido de fondo. Subirlo a 0.7 da nubes más limpias pero puede dejar huecos en zonas de baja confianza (bordes, reflejos).</p>
 </div>
 <hr />
 <h2 id="flujo">Flujo de trabajo en Colab<a class="headerlink" href="#flujo" title="Permanent link">&para;</a></h2>
@@ -1168,9 +1168,9 @@
 <figcaption>Visualización interactiva Plotly del notebook: ambas mallas superpuestas con opacidad 0.6. Permite inspeccionar la completitud y el nivel de detalle de cada reconstrucción.</figcaption>
 </figure>
 <hr />
-<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h2 id="decisiones">Decisiones de diseno<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
 <h3 id="colmap-sin-reconstruccion-densa">COLMAP sin reconstrucción densa<a class="headerlink" href="#colmap-sin-reconstruccion-densa" title="Permanent link">&para;</a></h3>
-<p>El binario de COLMAP disponible en <code>apt</code> de Colab no tiene CUDA habilitado en <code>patch_match_stereo</code>. En lugar de forzar una compilación desde fuente (que añadiría 20-30 min al proceso), se usa la nube sparse como entrada a Poisson, obteniendo una malla cerrada con calidad suficiente para visualización.</p>
+<p>El binario de COLMAP disponible en <code>apt</code> de Colab no tiene CUDA habilitado en <code>patch_match_stereo</code>. En lugar de forzar una compilación desde fuente (que anadiría 20-30 min al proceso), se usa la nube sparse como entrada a Poisson, obteniendo una malla cerrada con calidad suficiente para visualización.</p>
 <h3 id="vggt-con-umbral-de-confianza-adaptable">VGGT con umbral de confianza adaptable<a class="headerlink" href="#vggt-con-umbral-de-confianza-adaptable" title="Permanent link">&para;</a></h3>
 <p>VGGT devuelve <code>world_points_conf</code> para cada punto. Usar <code>conf &gt; 0.5</code> descarta puntos en zonas de fondo y oclusiones donde el modelo no está seguro, reduciendo el ruido en la malla final. El subsampling a 400 k puntos evita OOM al construir la malla Poisson en GPU T4.</p>
 <hr />

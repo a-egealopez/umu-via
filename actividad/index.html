@@ -685,13 +685,24 @@
   <a href="#decisiones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Decisiones de diseño
+        Decisiones de diseno
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Decisiones de diseño">
+    <nav class="md-nav" aria-label="Decisiones de diseno">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deteccion-de-personas-con-doble-criterio-mog2-cara" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detección de personas con doble criterio (MOG2 + cara)
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#clasificacion-heuristica-frente-a-detector-neural" class="md-nav__link">
@@ -719,7 +730,7 @@
   <a href="#pre-buffer-con-deque-de-tamano-dinamico" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pre-buffer con deque de tamaño dinámico
+        Pre-buffer con deque de tamano dinámico
       
     </span>
   </a>
@@ -1045,7 +1056,7 @@
 
 <h1 id="detector-de-actividad">Detector de Actividad<a class="headerlink" href="#detector-de-actividad" title="Permanent link">&para;</a></h1>
 <h2 id="descripcion">Descripción<a class="headerlink" href="#descripcion" title="Permanent link">&para;</a></h2>
-<p><code>actividad/actividad.py</code> detecta movimiento en una ROI manual, clasifica objetos detectados (persona / objeto), <strong>anonimiza caras</strong> y envía notificaciones con foto y clip de vídeo vía <strong>bot de Telegram</strong>.</p>
+<p><code>actividad/actividad.py</code> detecta actividad en una ROI manual y dispara un evento cuando clasifica un contorno como <strong>persona</strong> (por forma del contorno MOG2) <strong>o</strong> cuando <code>face_recognition</code> reconoce una cara, lo que ocurra primero. Además <strong>anonimiza</strong> las caras detectadas y envía notificaciones con foto y clip de vídeo vía <strong>bot de Telegram</strong>.</p>
 <hr />
 <h2 id="requisitos">Requisitos y ejecución<a class="headerlink" href="#requisitos" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
@@ -1076,9 +1087,14 @@ Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rá
     E --&gt; F[MOG2 + morfología]
     F --&gt; G{¿ROI activa?}
     G -- Sí --&gt; H[classify_motion\npersona / objeto]
-    H --&gt; I{¿Categoría\nde interés?}
-    I -- Sí --&gt; J[EventRecorder.start\nfoto Telegram]
-    I -- No --&gt; K[Dibujar HUD]
+    H --&gt; I{¿'persona'\nen motion_cats?}
+    E --&gt; FR{¿Cara\ndetectada?}
+    I -- Sí --&gt; EV[evento = True]
+    FR -- Sí --&gt; EV
+    I -- No --&gt; EV2[evento = False]
+    FR -- No --&gt; EV2
+    EV --&gt; J[EventRecorder.start\nfoto Telegram]
+    EV2 --&gt; K[Dibujar HUD]
     J --&gt; L[Grabar pre+post buffer]
     L --&gt; M{¿Evento\nacabado?}
     M -- Sí --&gt; N[save_frames_to_video\nevents/*.avi]
@@ -1188,11 +1204,6 @@ Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rá
   </p>
 <figcaption>Objeto detectado dentro de la ROI (bbox azul).</figcaption>
 </figure>
-<figure>
-<p><img alt="Máscara MOG2" src="actividad_mask_mog2.png" />
-  </p>
-<figcaption>Máscara de foreground del MOG2 aplicada exclusivamente dentro del ROI.</figcaption>
-</figure>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">actividad/actividad.py — classify_motion()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
 <span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
@@ -1219,61 +1230,67 @@ Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rá
 </span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12"></a>        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cat</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
 </span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13"></a>    <span class="k">return</span> <span class="n">results</span>
 </span></code></pre></div></td></tr></table></div>
+<p>La detección de personas combina la clasificación por contorno con el reconocimiento facial. Si cualquiera de las dos condiciones se cumple, se dispara el evento:</p>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">actividad/actividad.py — condición de evento</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">face_detected</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;last_faces&quot;</span><span class="p">])</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="n">evento</span> <span class="o">=</span> <span class="n">detection_mode</span> <span class="ow">in</span> <span class="n">motion_cats</span> <span class="ow">or</span> <span class="p">(</span><span class="n">detection_mode</span> <span class="o">==</span> <span class="s2">&quot;persona&quot;</span> <span class="ow">and</span> <span class="n">face_detected</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Esto cubre casos que MOG2 no detecta: una persona que entra despacio en el encuadre (sin movimiento brusco suficiente para superar el umbral de área) o una cara visible aunque la silueta no cumpla el ratio h/w &gt; 1.35.</p>
 <h3 id="anonimizacion-de-caras_1">Anonimización de caras<a class="headerlink" href="#anonimizacion-de-caras_1" title="Permanent link">&para;</a></h3>
 <figure>
 <p><img alt="Cara anonimizada" src="actividad_face_anonymized.png" />
   </p>
 <figcaption>Cara censurada con bloque negro con margen del 35%. La detección se ejecuta en hilo separado cada 8 frames.</figcaption>
 </figure>
-<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">actividad/actividad.py — anonymize()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-3-10">10</a></span>
-<span class="normal"><a href="#__codelineno-3-11">11</a></span>
-<span class="normal"><a href="#__codelineno-3-12">12</a></span>
-<span class="normal"><a href="#__codelineno-3-13">13</a></span>
-<span class="normal"><a href="#__codelineno-3-14">14</a></span>
-<span class="normal"><a href="#__codelineno-3-15">15</a></span>
-<span class="normal"><a href="#__codelineno-3-16">16</a></span>
-<span class="normal"><a href="#__codelineno-3-17">17</a></span>
-<span class="normal"><a href="#__codelineno-3-18">18</a></span>
-<span class="normal"><a href="#__codelineno-3-19">19</a></span>
-<span class="normal"><a href="#__codelineno-3-20">20</a></span>
-<span class="normal"><a href="#__codelineno-3-21">21</a></span>
-<span class="normal"><a href="#__codelineno-3-22">22</a></span>
-<span class="normal"><a href="#__codelineno-3-23">23</a></span>
-<span class="normal"><a href="#__codelineno-3-24">24</a></span>
-<span class="normal"><a href="#__codelineno-3-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">FACE_UPDATE_INTERVAL</span> <span class="o">=</span> <span class="mi">8</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="n">FACE_SCALE</span> <span class="o">=</span> <span class="mf">0.25</span>   <span class="c1"># trabaja a 1/4 de resolución</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">detect_faces</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">inv</span>   <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">FACE_SCALE</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">small</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">fx</span><span class="o">=</span><span class="n">FACE_SCALE</span><span class="p">,</span> <span class="n">fy</span><span class="o">=</span><span class="n">FACE_SCALE</span><span class="p">)</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a>    <span class="n">locations</span> <span class="o">=</span> <span class="n">face_recognition</span><span class="o">.</span><span class="n">face_locations</span><span class="p">(</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8"></a>        <span class="n">cv</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">small</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">),</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9"></a>    <span class="p">)</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="k">return</span> <span class="p">[(</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">inv</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">inv</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">inv</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="o">*</span><span class="n">inv</span><span class="p">))</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11"></a>            <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">locations</span><span class="p">]</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12"></a>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">anonymize</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">face_state</span><span class="p">,</span> <span class="n">face_queue</span><span class="p">):</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="k">if</span> <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;frame_count&quot;</span><span class="p">]</span> <span class="o">%</span> <span class="n">FACE_UPDATE_INTERVAL</span> <span class="o">==</span> <span class="mi">0</span> \
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15"></a>            <span class="ow">and</span> <span class="ow">not</span> <span class="n">face_queue</span><span class="o">.</span><span class="n">full</span><span class="p">():</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16"></a>        <span class="n">face_queue</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;detector&quot;</span><span class="p">]))</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17"></a>    <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;frame_count&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18"></a>    <span class="n">out</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19"></a>    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20"></a>    <span class="k">with</span> <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;lock&quot;</span><span class="p">]:</span>
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21"></a>        <span class="n">faces</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;last_faces&quot;</span><span class="p">])</span>
-</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22"></a>    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
-</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23"></a>        <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">r</span> <span class="o">-</span> <span class="n">l</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.35</span><span class="p">),</span> <span class="nb">int</span><span class="p">((</span><span class="n">b</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.35</span><span class="p">)</span>
-</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24"></a>        <span class="n">out</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">t</span><span class="o">-</span><span class="n">dy</span><span class="p">):</span><span class="nb">min</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">b</span><span class="o">+</span><span class="n">dy</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">l</span><span class="o">-</span><span class="n">dx</span><span class="p">):</span><span class="nb">min</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">r</span><span class="o">+</span><span class="n">dx</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25"></a>    <span class="k">return</span> <span class="n">out</span>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">actividad/actividad.py — anonymize()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span>
+<span class="normal"><a href="#__codelineno-4-12">12</a></span>
+<span class="normal"><a href="#__codelineno-4-13">13</a></span>
+<span class="normal"><a href="#__codelineno-4-14">14</a></span>
+<span class="normal"><a href="#__codelineno-4-15">15</a></span>
+<span class="normal"><a href="#__codelineno-4-16">16</a></span>
+<span class="normal"><a href="#__codelineno-4-17">17</a></span>
+<span class="normal"><a href="#__codelineno-4-18">18</a></span>
+<span class="normal"><a href="#__codelineno-4-19">19</a></span>
+<span class="normal"><a href="#__codelineno-4-20">20</a></span>
+<span class="normal"><a href="#__codelineno-4-21">21</a></span>
+<span class="normal"><a href="#__codelineno-4-22">22</a></span>
+<span class="normal"><a href="#__codelineno-4-23">23</a></span>
+<span class="normal"><a href="#__codelineno-4-24">24</a></span>
+<span class="normal"><a href="#__codelineno-4-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="n">FACE_UPDATE_INTERVAL</span> <span class="o">=</span> <span class="mi">8</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="n">FACE_SCALE</span> <span class="o">=</span> <span class="mf">0.25</span>   <span class="c1"># trabaja a 1/4 de resolución</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">detect_faces</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">inv</span>   <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">FACE_SCALE</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">small</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">fx</span><span class="o">=</span><span class="n">FACE_SCALE</span><span class="p">,</span> <span class="n">fy</span><span class="o">=</span><span class="n">FACE_SCALE</span><span class="p">)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">locations</span> <span class="o">=</span> <span class="n">face_recognition</span><span class="o">.</span><span class="n">face_locations</span><span class="p">(</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8"></a>        <span class="n">cv</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">small</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">),</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9"></a>    <span class="p">)</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10"></a>    <span class="k">return</span> <span class="p">[(</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="n">inv</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">inv</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">inv</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="o">*</span><span class="n">inv</span><span class="p">))</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11"></a>            <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">locations</span><span class="p">]</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12"></a>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13"></a><span class="k">def</span><span class="w"> </span><span class="nf">anonymize</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">face_state</span><span class="p">,</span> <span class="n">face_queue</span><span class="p">):</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14"></a>    <span class="k">if</span> <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;frame_count&quot;</span><span class="p">]</span> <span class="o">%</span> <span class="n">FACE_UPDATE_INTERVAL</span> <span class="o">==</span> <span class="mi">0</span> \
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15"></a>            <span class="ow">and</span> <span class="ow">not</span> <span class="n">face_queue</span><span class="o">.</span><span class="n">full</span><span class="p">():</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16"></a>        <span class="n">face_queue</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;detector&quot;</span><span class="p">]))</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17"></a>    <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;frame_count&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18"></a>    <span class="n">out</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19"></a>    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20"></a>    <span class="k">with</span> <span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;lock&quot;</span><span class="p">]:</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21"></a>        <span class="n">faces</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">face_state</span><span class="p">[</span><span class="s2">&quot;last_faces&quot;</span><span class="p">])</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22"></a>    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23"></a>        <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">r</span> <span class="o">-</span> <span class="n">l</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.35</span><span class="p">),</span> <span class="nb">int</span><span class="p">((</span><span class="n">b</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.35</span><span class="p">)</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24"></a>        <span class="n">out</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">t</span><span class="o">-</span><span class="n">dy</span><span class="p">):</span><span class="nb">min</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">b</span><span class="o">+</span><span class="n">dy</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">l</span><span class="o">-</span><span class="n">dx</span><span class="p">):</span><span class="nb">min</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">r</span><span class="o">+</span><span class="n">dx</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25"></a>    <span class="k">return</span> <span class="n">out</span>
 </span></code></pre></div></td></tr></table></div>
 <h3 id="grabacion-y-alertas">Grabación y alertas<a class="headerlink" href="#grabacion-y-alertas" title="Permanent link">&para;</a></h3>
 <figure>
@@ -1292,13 +1309,20 @@ Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rá
 <figcaption>Carpeta <code>events/</code> con los clips guardados automáticamente. El nombre incluye la marca de tiempo.</figcaption>
 </figure>
 <hr />
-<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h2 id="decisiones">Decisiones de diseno<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h3 id="deteccion-de-personas-con-doble-criterio-mog2-cara">Detección de personas con doble criterio (MOG2 + cara)<a class="headerlink" href="#deteccion-de-personas-con-doble-criterio-mog2-cara" title="Permanent link">&para;</a></h3>
+<p>Para que el modo "persona" sea robusto, el evento se dispara si <strong>cualquiera</strong> de las dos condiciones es cierta:</p>
+<ol>
+<li><code>classify_motion()</code> clasifica un contorno MOG2 como "persona" (ratio h/w &gt; 1.35, h &gt; 60 px, fill &lt; 0.80).</li>
+<li><code>face_recognition</code> detecta al menos una cara en el frame actual.</li>
+</ol>
+<p>El criterio de silueta falla con personas agachadas o sentadas; el de cara falla si la persona está de espaldas o fuera de encuadre. Juntos se complementan. El criterio facial aprovecha el hilo de detección que ya existe para la anonimización, sin coste extra.</p>
 <h3 id="clasificacion-heuristica-frente-a-detector-neural">Clasificación heurística frente a detector neural<a class="headerlink" href="#clasificacion-heuristica-frente-a-detector-neural" title="Permanent link">&para;</a></h3>
-<p>En lugar de HOG+SVM o YOLO, los contornos del foreground se clasifican por tres criterios geométricos (→ ver <a href="#codigo"><code>classify_motion()</code></a>, línea 1). Es una apuesta deliberada por velocidad y simplicidad — un detector neural añadiría cientos de milisegundos en CPU. El precio es conocido: personas agachadas o sentadas se clasifican como objeto.</p>
+<p>En lugar de HOG+SVM o YOLO, los contornos del foreground se clasifican por tres criterios geométricos (→ ver <a href="#codigo"><code>classify_motion()</code></a>, línea 1). Es una apuesta deliberada por velocidad y simplicidad — un detector neural anadiría cientos de milisegundos en CPU. El precio es conocido: personas agachadas o sentadas se clasifican como objeto; en ese caso el criterio de cara actúa como respaldo.</p>
 <h3 id="deteccion-de-caras-en-hilo-separado-con-cache-de-8-frames">Detección de caras en hilo separado con caché de 8 frames<a class="headerlink" href="#deteccion-de-caras-en-hilo-separado-con-cache-de-8-frames" title="Permanent link">&para;</a></h3>
 <p><code>face_recognition</code> tarda ~80 ms (HOG) o ~300 ms (CNN), demasiado para cada frame. La solución es un <code>face_worker</code> dedicado que reutiliza el último resultado durante 8 frames (→ ver <a href="#codigo"><code>anonymize()</code></a>, línea 14). El stream no se bloquea aunque la máscara vaya ligeramente rezagada cuando una cara entra o sale de plano. La detección trabaja además a 1/4 de resolución (<code>FACE_SCALE=0.25</code>) para reducir el tiempo de inferencia. Además, <code>face_worker</code> implementa un periodo de gracia de 3 ciclos (<code>MAX_GRACE=3</code>): si la detección devuelve cero caras, mantiene las posiciones anteriores durante 3 actualizaciones antes de borrarlas, evitando parpadeos cuando una cara queda momentáneamente fuera del campo de la cámara.</p>
-<h3 id="pre-buffer-con-deque-de-tamano-dinamico">Pre-buffer con <code>deque</code> de tamaño dinámico<a class="headerlink" href="#pre-buffer-con-deque-de-tamano-dinamico" title="Permanent link">&para;</a></h3>
-<p>El clip guardado incluye los segundos previos al evento gracias a un <code>deque</code> circular. Su tamaño se recalcula cada frame a partir del FPS real (<code>max(1, int(pre_sec * fps))</code>), de forma que el pre-buffer siempre representa los mismos segundos reales independientemente de si la cámara va a 15 o 30 fps.</p>
+<h3 id="pre-buffer-con-deque-de-tamano-dinamico">Pre-buffer con <code>deque</code> de tamano dinámico<a class="headerlink" href="#pre-buffer-con-deque-de-tamano-dinamico" title="Permanent link">&para;</a></h3>
+<p>El clip guardado incluye los segundos previos al evento gracias a un <code>deque</code> circular. Su tamano se recalcula cada frame a partir del FPS real (<code>max(1, int(pre_sec * fps))</code>), de forma que el pre-buffer siempre representa los mismos segundos reales independientemente de si la cámara va a 15 o 30 fps.</p>
 <h3 id="frames-pares-descartados-del-procesamiento">Frames pares descartados del procesamiento<a class="headerlink" href="#frames-pares-descartados-del-procesamiento" title="Permanent link">&para;</a></h3>
 <p>El bucle principal salta el procesamiento en frames pares, reutilizando el último frame anonimizado. Esto reduce a la mitad las llamadas a <code>anonymize</code>, <code>clean_mask</code> y <code>classify_motion</code> sin que sea perceptible visualmente a 25+ fps.</p>
 <h3 id="telegram-como-canal-de-alertas">Telegram como canal de alertas<a class="headerlink" href="#telegram-como-canal-de-alertas" title="Permanent link">&para;</a></h3>
@@ -1317,7 +1341,7 @@ Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rá
 <p class="admonition-title">Dificultades de anonimización</p>
 <p>La anonimización de caras es inherentemente imperfecta en las condiciones actuales:</p>
 <ul>
-<li><strong>Resolución de inferencia reducida</strong> (<code>FACE_SCALE=0.25</code>): detectar caras a 1/4 del tamaño original hace que caras pequeñas o lejanas pasen desapercibidas, dejando rostros sin censurar.</li>
+<li><strong>Resolución de inferencia reducida</strong> (<code>FACE_SCALE=0.25</code>): detectar caras a 1/4 del tamano original hace que caras pequenas o lejanas pasen desapercibidas, dejando rostros sin censurar.</li>
 <li><strong>Modelo HOG</strong>: no detecta caras de perfil, caras parcialmente tapadas ni caras en condiciones de poca luz. Cambiar a <code>cnn</code> mejora la cobertura pero multiplica el tiempo de inferencia (~300 ms).</li>
 <li><strong>Retraso de hasta 8 frames</strong>: la detección solo se lanza cada 8 frames. A 25 fps, una cara puede aparecer y desaparecer en pantalla sin haber sido nunca anonimizada si su tránsito dura menos de ~320 ms.</li>
 <li><strong>Descarte de frames pares</strong>: el bucle principal salta el procesamiento en frames pares, por lo que en fotogramas de buffer de pre-evento puede quedar almacenado el último frame anonimizado en lugar del frame real en esos instantes.</li>

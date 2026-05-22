@@ -806,12 +806,12 @@
   <a href="#decisiones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Decisiones de diseño
+        Decisiones de diseno
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Decisiones de diseño">
+    <nav class="md-nav" aria-label="Decisiones de diseno">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -829,7 +829,7 @@
   <a href="#aumentacion-agresiva-para-compensar-el-dataset-pequeno" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Aumentación agresiva para compensar el dataset pequeño
+        Aumentación agresiva para compensar el dataset pequeno
       
     </span>
   </a>
@@ -1254,7 +1254,7 @@
 </table>
 <div class="admonition tip">
 <p class="admonition-title">INFER_SIZE: precisión vs latencia</p>
-<p>A <code>imgsz=640</code> la inferencia tarda ~250 ms en CPU — demasiado para el bucle principal. Con <code>INFER_SIZE=320</code> baja a ~80 ms a costa de algo de precisión en objetos pequeños.</p>
+<p>A <code>imgsz=640</code> la inferencia tarda ~250 ms en CPU — demasiado para el bucle principal. Con <code>INFER_SIZE=320</code> baja a ~80 ms a costa de algo de precisión en objetos pequenos.</p>
 </div>
 <hr />
 <h2 id="codigo">Código clave<a class="headerlink" href="#codigo" title="Permanent link">&para;</a></h2>
@@ -1338,17 +1338,17 @@
 <p><strong>Pérdidas de entrenamiento (fila superior izquierda):</strong></p>
 <p>Las tres pérdidas de entrenamiento (<code>box_loss</code>, <code>cls_loss</code>, <code>dfl_loss</code>) descienden de forma consistente a lo largo de las 100 épocas, lo que indica que el modelo aprende correctamente. La <code>cls_loss</code> es la que más cae en términos absolutos (de ~3.3 a ~0.5), reflejando que la clasificación entre las tres clases mejora progresivamente.</p>
 <p><strong>Pérdidas de validación (fila inferior izquierda):</strong></p>
-<p>La <code>val/box_loss</code> y la <code>val/cls_loss</code> también descienden, aunque con más ruido que las de entrenamiento. La <code>val/dfl_loss</code> presenta un pico pronunciado alrededor de la época 55 seguido de recuperación; esto es habitual con datasets muy pequeños donde un solo ejemplo difícil puede distorsionar la métrica. El hecho de que las pérdidas de validación no suban sostenidamente indica que no hay sobreajuste severo, aunque el margen entre train y val es estrecho precisamente por el pequeño tamaño del dataset.</p>
+<p>La <code>val/box_loss</code> y la <code>val/cls_loss</code> también descienden, aunque con más ruido que las de entrenamiento. La <code>val/dfl_loss</code> presenta un pico pronunciado alrededor de la época 55 seguido de recuperación; esto es habitual con datasets muy pequenos donde un solo ejemplo difícil puede distorsionar la métrica. El hecho de que las pérdidas de validación no suban sostenidamente indica que no hay sobreajuste severo, aunque el margen entre train y val es estrecho precisamente por el pequeno tamano del dataset.</p>
 <p><strong>Métricas (columnas derechas):</strong></p>
 <ul>
-<li><code>metrics/precision(B)</code>: Muy inestable en las primeras épocas (sube a ~1.0 y cae a ~0.0 antes de estabilizarse). Esto es característico de datasets pequeños donde pocas predicciones correctas o incorrectas cambian la precisión drásticamente. Se estabiliza en torno a 0.85–0.93 a partir de la época 40.</li>
+<li><code>metrics/precision(B)</code>: Muy inestable en las primeras épocas (sube a ~1.0 y cae a ~0.0 antes de estabilizarse). Esto es característico de datasets pequenos donde pocas predicciones correctas o incorrectas cambian la precisión drásticamente. Se estabiliza en torno a 0.85–0.93 a partir de la época 40.</li>
 <li><code>metrics/recall(B)</code>: Parte alto (~0.96), cae bruscamente (~época 5) y recupera gradualmente hasta ~0.63 al final. La caída coincide con la inestabilidad de precisión; el modelo al principio detecta casi todo (recall alto, precisión baja) y luego calibra su umbral.</li>
 <li><code>metrics/mAP50(B)</code>: Crece desde ~0.2 hasta ~0.67–0.75 con oscilaciones. La tendencia es claramente ascendente, confirmando que el entrenamiento es beneficioso.</li>
 <li><code>metrics/mAP50-95(B)</code>: Comportamiento similar al mAP50 pero con valores menores (~0.20 → ~0.65), lo cual es esperado ya que mide precisión a umbrales de IoU más estrictos.</li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Interpretación con cautela</p>
-<p>Las oscilaciones fuertes en precisión y recall no indican inestabilidad del entrenamiento, sino la alta varianza estadística causada por el pequeño conjunto de validación. Con 30 imágenes en total, el split val puede contener apenas 5–8 imágenes, haciendo que cada falso positivo o negativo mueva la métrica varios puntos porcentuales.</p>
+<p>Las oscilaciones fuertes en precisión y recall no indican inestabilidad del entrenamiento, sino la alta varianza estadística causada por el pequeno conjunto de validación. Con 30 imágenes en total, el split val puede contener apenas 5–8 imágenes, haciendo que cada falso positivo o negativo mueva la métrica varios puntos porcentuales.</p>
 </div>
 <hr />
 <h3 id="matriz-de-confusion-training_confusion_matrixpng">Matriz de confusión (<code>training_confusion_matrix.png</code>)<a class="headerlink" href="#matriz-de-confusion-training_confusion_matrixpng" title="Permanent link">&para;</a></h3>
@@ -1362,7 +1362,7 @@
 </ul>
 <div class="admonition danger">
 <p class="admonition-title">Clase <code>book</code> problemática</p>
-<p>La ausencia de detecciones correctas de <code>book</code> (diagonal vacía para esa clase) es la principal debilidad del modelo. Las causas posibles son: pocas imágenes de entrenamiento de esa clase, variabilidad alta en apariencia (tamaño, color, orientación del libro), o solapamiento visual con el fondo. Soluciones: ampliar el dataset de <code>book</code>, o aplicar aumentaciones específicas como recortes aleatorios más agresivos.</p>
+<p>La ausencia de detecciones correctas de <code>book</code> (diagonal vacía para esa clase) es la principal debilidad del modelo. Las causas posibles son: pocas imágenes de entrenamiento de esa clase, variabilidad alta en apariencia (tamano, color, orientación del libro), o solapamiento visual con el fondo. Soluciones: ampliar el dataset de <code>book</code>, o aplicar aumentaciones específicas como recortes aleatorios más agresivos.</p>
 </div>
 <hr />
 <h3 id="curva-precision-recall-training_pr_curvepng">Curva Precisión-Recall (<code>training_pr_curve.png</code>)<a class="headerlink" href="#curva-precision-recall-training_pr_curvepng" title="Permanent link">&para;</a></h3>
@@ -1446,21 +1446,21 @@
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9"></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_boxes</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">boxes</span>   <span class="c1"># compartido con hilo principal</span>
 </span></code></pre></div></td></tr></table></div>
 <hr />
-<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h2 id="decisiones">Decisiones de diseno<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
 <h3 id="yolo11n-y-fine-tuning-sobre-coco">YOLO11n y fine-tuning sobre COCO<a class="headerlink" href="#yolo11n-y-fine-tuning-sobre-coco" title="Permanent link">&para;</a></h3>
 <p>YOLO11n es la variante más ligera — menos parámetros, más rápida en CPU, suficiente para tres clases sobre objetos domésticos grandes. Partir de los pesos preentrenados en COCO tiene sentido porque COCO ya incluye categorías visualmente parecidas a <code>book</code>, <code>fruit</code> y <code>toy</code>; el fine-tuning solo ajusta las capas finales a las clases propias. Con 30 imágenes, entrenar desde cero no sería viable.</p>
-<h3 id="aumentacion-agresiva-para-compensar-el-dataset-pequeno">Aumentación agresiva para compensar el dataset pequeño<a class="headerlink" href="#aumentacion-agresiva-para-compensar-el-dataset-pequeno" title="Permanent link">&para;</a></h3>
-<p>Con solo 30 imágenes el modelo vería exactamente los mismos ejemplos cientos de veces en 100 épocas sin aumentación (→ ver parámetros en <a href="#codigo"><code>train.py</code></a>, línea 1). El riesgo es que con un dataset tan pequeño el split train/val puede acabar con ejemplos de validación muy parecidos a los de entrenamiento, haciendo las métricas más optimistas de lo que son en la práctica.</p>
+<h3 id="aumentacion-agresiva-para-compensar-el-dataset-pequeno">Aumentación agresiva para compensar el dataset pequeno<a class="headerlink" href="#aumentacion-agresiva-para-compensar-el-dataset-pequeno" title="Permanent link">&para;</a></h3>
+<p>Con solo 30 imágenes el modelo vería exactamente los mismos ejemplos cientos de veces en 100 épocas sin aumentación (→ ver parámetros en <a href="#codigo"><code>train.py</code></a>, línea 1). El riesgo es que con un dataset tan pequeno el split train/val puede acabar con ejemplos de validación muy parecidos a los de entrenamiento, haciendo las métricas más optimistas de lo que son en la práctica.</p>
 <h3 id="hilo-de-inferencia-separado">Hilo de inferencia separado<a class="headerlink" href="#hilo-de-inferencia-separado" title="Permanent link">&para;</a></h3>
 <p>YOLO11n a <code>imgsz=640</code> tarda ~250 ms en CPU. <code>YOLOInferenceThread</code> (→ ver <a href="#codigo"><code>run.py</code></a>, línea 24) lee frames de un buffer compartido, corre la inferencia y escribe los resultados bajo un lock. El hilo principal dibuja los bounding boxes del último resultado disponible sin esperar al siguiente, manteniendo el stream fluido.</p>
 <h3 id="fruit-como-clase-problematica"><code>fruit</code> como clase problemática<a class="headerlink" href="#fruit-como-clase-problematica" title="Permanent link">&para;</a></h3>
-<p><code>book</code> y <code>toy</code> son categorías visualmente compactas. <code>fruit</code> agrupa objetos con formas, colores y tamaños muy distintos (manzana, plátano, naranja). Con pocas imágenes por subclase el modelo aprende rasgos específicos y generaliza mal. La solución sería restringir la clase a una sola fruta o aumentar el dataset en esa categoría concreta.</p>
+<p><code>book</code> y <code>toy</code> son categorías visualmente compactas. <code>fruit</code> agrupa objetos con formas, colores y tamanos muy distintos (manzana, plátano, naranja). Con pocas imágenes por subclase el modelo aprende rasgos específicos y generaliza mal. La solución sería restringir la clase a una sola fruta o aumentar el dataset en esa categoría concreta.</p>
 <hr />
 <h2 id="limitaciones">Limitaciones<a class="headerlink" href="#limitaciones" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Limitaciones conocidas</p>
 <ul>
-<li>Dataset muy pequeño (30 imágenes): el modelo puede sobreajustarse a condiciones de captura específicas.</li>
+<li>Dataset muy pequeno (30 imágenes): el modelo puede sobreajustarse a condiciones de captura específicas.</li>
 <li>El split train/val usa el mismo conjunto; las métricas de validación son optimistas.</li>
 <li>La clase <code>fruit</code> es muy heterogénea (manzana, plátano, naranja…): la generalización es más difícil.</li>
 <li>Si <code>best.pt</code> no existe, <code>run.py</code> lanza <code>FileNotFoundError</code> inmediatamente.</li>
