@@ -87,4 +87,8 @@ nav:
   - Clasificador: clasificador/index.md
   - Deep Learning: dl/index.md
   - Rectificación: rectificacion/index.md
-  - Ejercicios Extra: ejercicios_extra/index.md
+  - Ejercicios Extra:
+    - Visión general: ejercicios_extra/index.md
+    - "Ej. 8 — Reconstrucción 3D": ejercicios_extra/reconstruccion.md
+    - "Ej. 7 — Realidad Aumentada": ejercicios_extra/ar.md
+    - "Ej. 2 — Control Gestual": ejercicios_extra/controlador.md
