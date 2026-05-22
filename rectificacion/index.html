@@ -1,0 +1,1374 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica de la entrega parcial de Visión Artificial">
+      
+      
+      
+      
+        <link rel="prev" href="../dl/">
+      
+      
+        <link rel="next" href="../ejercicios_extra/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Rectificación - Visión Artificial — Memoria de Prácticas</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/css/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#rectificacion-de-perspectiva" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href=".." title="Visión Artificial — Memoria de Prácticas" class="md-header__button md-logo" aria-label="Visión Artificial — Memoria de Prácticas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0 9.821 9.821 0 0 0-17.64 0"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Visión Artificial — Memoria de Prácticas
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Rectificación
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../calibracion/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Calibración
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../trafico/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Análisis de Tráfico
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../actividad/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Detector de Actividad
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../clasificador/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Clasificador
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../dl/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Deep Learning
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Rectificación
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ejercicios_extra/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Ejercicios Extra
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Visión Artificial — Memoria de Prácticas" class="md-nav__button md-logo" aria-label="Visión Artificial — Memoria de Prácticas" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0 9.821 9.821 0 0 0-17.64 0"/></svg>
+
+    </a>
+    Visión Artificial — Memoria de Prácticas
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calibracion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trafico/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análisis de Tráfico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../actividad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detector de Actividad
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clasificador/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clasificador
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rectificación
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rectificación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="En esta página">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      En esta página
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#descripcion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Descripción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requisitos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requisitos y ejecución
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Requisitos y ejecución">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flujo-de-trabajo-en-dos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flujo de trabajo en dos pasos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parametros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parámetros clave
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parámetros clave">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#homografia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Homografía
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vista-rectificada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vista rectificada
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#casos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Casos de uso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Casos de uso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#monedas-sobre-mesa-coinspng" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monedas sobre mesa (coins.png)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#muralla-ziri-del-albaicin-murallajpeg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Muralla zirí del Albaicín (muralla.jpeg)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calle-con-cuesta-del-albaicin-cuestajpeg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Calle con cuesta del Albaicín (cuesta.jpeg)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gol-de-eder-euro-2016-gol-ederpng" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gol de Éder — Euro 2016 (gol-eder.png)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Código clave
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Código clave">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#carga-de-referencias-y-homografia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Carga de referencias y homografía
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vista-rectificada_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vista rectificada
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decisiones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decisiones de diseño
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decisiones de diseño">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dos-scripts-independientes-pick_refs-rectificacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dos scripts independientes: pick_refs + rectificacion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ransac-en-findhomography" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RANSAC en findHomography
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vista-rectificada-calculada-una-sola-vez" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vista rectificada calculada una sola vez
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plano-unico-de-referencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plano único de referencia
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitaciones
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ejercicios_extra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejercicios Extra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="rectificacion-de-perspectiva">Rectificación de Perspectiva<a class="headerlink" href="#rectificacion-de-perspectiva" title="Permanent link">&para;</a></h1>
+<h2 id="descripcion">Descripción<a class="headerlink" href="#descripcion" title="Permanent link">&para;</a></h2>
+<p><code>rectificacion/rectificacion.py</code> permite <strong>medir distancias reales en imágenes estáticas</strong> tomadas desde cualquier ángulo. El usuario marca 4 o más puntos de referencia con coordenadas reales conocidas; a partir de ellos se calcula una homografía que transforma píxeles a unidades del mundo real. Un segundo script, <code>pick_refs.py</code>, asiste en la creación interactiva del fichero de referencias.</p>
+<hr />
+<h2 id="requisitos">Requisitos y ejecución<a class="headerlink" href="#requisitos" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">Entorno</p>
+<p>Python 3.10+, OpenCV 4.9, NumPy 1.26.</p>
+</div>
+<h3 id="flujo-de-trabajo-en-dos-pasos">Flujo de trabajo en dos pasos<a class="headerlink" href="#flujo-de-trabajo-en-dos-pasos" title="Permanent link">&para;</a></h3>
+<p><strong>Paso 1 — Crear el fichero de referencias con <code>pick_refs.py</code>:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>rectificacion/pick_refs.py<span class="w"> </span>--out<span class="o">=</span>mis_refs.txt<span class="w"> </span>--dev<span class="o">=</span>imagen.png
+</span></code></pre></div>
+<p>Haz clic sobre 4 o más puntos cuyas coordenadas reales conozcas. El programa pedirá las coordenadas en consola tras cada clic y guardará el fichero al pulsar <code>S</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Tecla</th>
+<th>Acción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LClick</td>
+<td>Añadir punto (pide coords reales en consola)</td>
+</tr>
+<tr>
+<td>RClick</td>
+<td>Eliminar último punto</td>
+</tr>
+<tr>
+<td>S</td>
+<td>Guardar en <code>--out</code> (mínimo 4 puntos)</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Limpiar todos los puntos</td>
+</tr>
+<tr>
+<td>Q / Esc</td>
+<td>Salir</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paso 2 — Medir con <code>rectificacion.py</code>:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python<span class="w"> </span>rectificacion/rectificacion.py<span class="w"> </span>--refs<span class="o">=</span>mis_refs.txt<span class="w"> </span>--units<span class="o">=</span>mm<span class="w"> </span>--dev<span class="o">=</span>imagen.png
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Tecla / Acción</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LClick</td>
+<td>Primer y segundo punto de medición</td>
+</tr>
+<tr>
+<td>RClick</td>
+<td>Limpiar medición actual</td>
+</tr>
+<tr>
+<td>r</td>
+<td>Activar / desactivar ventana rectificada</td>
+</tr>
+<tr>
+<td>Q / Esc</td>
+<td>Salir</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Formato del fichero de referencias</p>
+<p>Cada línea contiene cuatro valores numéricos: coordenada X e Y en píxeles y coordenada X e Y en el plano real. Las líneas que empiezan por <code>#</code> son comentarios.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a># pixel_x  pixel_y  real_x  real_y
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>204.0  252.0   0.0   2.3
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>682.0   85.0  20.0   2.3
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>704.0  138.0  20.0   0.0
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>220.0  315.0   0.0   0.0
+</span></code></pre></div></p>
+</div>
+<hr />
+<h2 id="arquitectura">Arquitectura<a class="headerlink" href="#arquitectura" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    A[pick_refs.py] --&gt;|LClick + coords reales| B[*_refs.txt]
+    B --&gt; C[rectificacion.py\n--refs=*_refs.txt]
+    C --&gt; D[load_refs\npx_img ↔ pts_real]
+    D --&gt; E[cv.findHomography\nRANSAC 3 px]
+    E --&gt; F{Click sobre\n2 puntos}
+    F --&gt; G[px_to_real\ncv.perspectiveTransform]
+    G --&gt; H[np.linalg.norm\ndistancia en unidades reales]
+    H --&gt; I[Mostrar etiqueta\nen imagen]
+    E --&gt; J{r: vista\nrectificada}
+    J --&gt; K[build_rectified_transform\nescala al canvas 640×480]
+    K --&gt; L[cv.warpPerspective\nRectificada]</code></pre>
+<figure>
+<p><img alt="pick_refs UI" src="rectif_pick_refs_ui.png" />
+  </p>
+<figcaption>Interfaz de <code>pick_refs.py</code>: cruces amarillas sobre los puntos de referencia marcados. En consola se introducen las coordenadas reales de cada punto.</figcaption>
+</figure>
+<hr />
+<h2 id="parametros">Parámetros clave<a class="headerlink" href="#parametros" title="Permanent link">&para;</a></h2>
+<h3 id="homografia">Homografía<a class="headerlink" href="#homografia" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--refs</code></td>
+<td><code>refs.txt</code></td>
+<td>Ruta al fichero de referencias</td>
+</tr>
+<tr>
+<td><code>--units</code></td>
+<td><code>mm</code></td>
+<td>Etiqueta de unidades que aparece en la medición</td>
+</tr>
+<tr>
+<td>RANSAC threshold</td>
+<td>3.0 px</td>
+<td>Tolerancia de error de reproyección en <code>findHomography</code></td>
+</tr>
+<tr>
+<td>Mínimo de referencias</td>
+<td>4 puntos</td>
+<td>Necesario para que la homografía esté determinada</td>
+</tr>
+</tbody>
+</table>
+<h3 id="vista-rectificada">Vista rectificada<a class="headerlink" href="#vista-rectificada" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Canvas de salida</td>
+<td>640 × 480 px</td>
+<td>Tamaño fijo de la ventana rectificada</td>
+</tr>
+<tr>
+<td>Margen</td>
+<td>35 px</td>
+<td>Espacio entre el borde del canvas y el contenido</td>
+</tr>
+<tr>
+<td>Escala <code>s</code></td>
+<td>calculada</td>
+<td><code>min((W-2M)/span_x, (H-2M)/span_y)</code> px/unidad</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Calidad de la homografía</p>
+<p>Al arrancar, el programa imprime <code>Homografía calculada: N/M inliers</code>. Si <code>N &lt; M</code>, algún punto de referencia fue marcado con poca precisión y fue descartado por RANSAC. Con exactamente 4 puntos, RANSAC no tiene efecto pero tampoco daña.</p>
+</div>
+<hr />
+<h2 id="casos">Casos de uso<a class="headerlink" href="#casos" title="Permanent link">&para;</a></h2>
+<h3 id="monedas-sobre-mesa-coinspng">Monedas sobre mesa (<code>coins.png</code>)<a class="headerlink" href="#monedas-sobre-mesa-coinspng" title="Permanent link">&para;</a></h3>
+<figure>
+<p><img alt="Coins refs" src="rectif_coins_refs.png" />
+  </p>
+<figcaption>Superficie plana con regla y moneda. Los 4 puntos de referencia (cruces) delimitan un rectángulo de 20 × 2.3 unidades sobre la mesa.</figcaption>
+</figure>
+<figure>
+<p><img alt="Coins measurement" src="rectif_coins_measure.png" />
+  </p>
+<figcaption>Distancia medida entre dos puntos de la superficie usando la homografía calculada a partir de la regla.</figcaption>
+</figure>
+<p>Referencia: segmento de regla visible en la imagen. Los 4 puntos definen un rectángulo de dimensiones conocidas sobre el plano de la mesa.</p>
+<hr />
+<h3 id="muralla-ziri-del-albaicin-murallajpeg">Muralla zirí del Albaicín (<code>muralla.jpeg</code>)<a class="headerlink" href="#muralla-ziri-del-albaicin-murallajpeg" title="Permanent link">&para;</a></h3>
+<figure>
+<p><img alt="Muralla refs" src="rectif_muralla_refs.png" />
+  </p>
+<figcaption>Los 4 puntos de referencia marcan las esquinas de una torre (4.5 × 7.5 m) visible en el lienzo de muralla. A partir de ellos se puede medir cualquier otro tramo.</figcaption>
+</figure>
+<figure>
+<p><img alt="Muralla measurement" src="rectif_muralla_measure.png" />
+  </p>
+<figcaption>Medición de un tramo de la muralla zirí que rodea el palacio de Dar al-Horra. La distancia se obtiene en metros.</figcaption>
+</figure>
+<figure>
+<p><img alt="Muralla rectificada" src="rectif_muralla_rect.png" />
+  </p>
+<figcaption>Vista rectificada (<code>r</code>) del plano de la muralla: la perspectiva queda eliminada y el lienzo aparece frontal.</figcaption>
+</figure>
+<p>Referencia: torre de la muralla con dimensiones estimadas de <strong>4.5 × 7.5 m</strong> (ancho × alto). El fichero <code>muralla_refs.txt</code> marca las cuatro esquinas de esa torre como sistema de coordenadas.</p>
+<hr />
+<h3 id="calle-con-cuesta-del-albaicin-cuestajpeg">Calle con cuesta del Albaicín (<code>cuesta.jpeg</code>)<a class="headerlink" href="#calle-con-cuesta-del-albaicin-cuestajpeg" title="Permanent link">&para;</a></h3>
+<figure>
+<p><img alt="Cuesta refs" src="rectif_cuesta_refs.png" />
+  </p>
+<figcaption>Las cuatro esquinas del rectángulo circunscrito al farol antiguo de calle (400 × 550 mm) actúan como referencias para calibrar la homografía del plano vertical de la fachada.</figcaption>
+</figure>
+<figure>
+<p><img alt="Cuesta measurement" src="rectif_cuesta_measure.png" />
+  </p>
+<figcaption>Medición de elementos de la calle (escalones, anchura de paso) usando el farol como referencia. Unidades en mm.</figcaption>
+</figure>
+<p>Referencia: rectángulo circunscrito al farol típico de calle española con dimensiones conocidas: <strong>400 × 550 mm</strong> (ancho × alto). El plano de referencia es el plano vertical de la fachada donde está anclado el farol.</p>
+<hr />
+<h3 id="gol-de-eder-euro-2016-gol-ederpng">Gol de Éder — Euro 2016 (<code>gol-eder.png</code>)<a class="headerlink" href="#gol-de-eder-euro-2016-gol-ederpng" title="Permanent link">&para;</a></h3>
+<figure>
+<p><img alt="Gol refs" src="rectif_gol_refs.png" />
+  </p>
+<figcaption>Puntos de referencia sobre las líneas del terreno de juego (16.5 × 11 m). Las líneas del área y del punto de penalti son coplanares y de dimensiones reglamentarias.</figcaption>
+</figure>
+<figure>
+<p><img alt="Gol measurement" src="rectif_gol_measure.png" />
+  </p>
+<figcaption>Distancia entre jugadores en el momento de la jugada, medida en metros sobre el plano del césped.</figcaption>
+</figure>
+<p>Referencia: rectángulo sobre el terreno de juego de <strong>16.5 × 11 m</strong> definido a partir de las líneas reglamentarias del área y el punto de penalti. Permite medir distancias entre jugadores directamente sobre la retransmisión.</p>
+<hr />
+<h2 id="codigo">Código clave<a class="headerlink" href="#codigo" title="Permanent link">&para;</a></h2>
+<h3 id="carga-de-referencias-y-homografia">Carga de referencias y homografía<a class="headerlink" href="#carga-de-referencias-y-homografia" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">rectificacion/rectificacion.py — load_refs() + findHomography()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span>
+<span class="normal"><a href="#__codelineno-3-17">17</a></span>
+<span class="normal"><a href="#__codelineno-3-18">18</a></span>
+<span class="normal"><a href="#__codelineno-3-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">load_refs</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a>    <span class="n">img_pts</span><span class="p">,</span> <span class="n">real_pts</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a>        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a>                <span class="k">continue</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8"></a>            <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9"></a>            <span class="n">img_pts</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10"></a>            <span class="n">real_pts</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">3</span><span class="p">])])</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11"></a>            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12"></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img_pts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">real_pts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">labels</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="c1"># Homografía imagen → plano real con RANSAC</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="n">H</span><span class="p">,</span> <span class="n">hmask</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">findHomography</span><span class="p">(</span><span class="n">pts_img</span><span class="p">,</span> <span class="n">pts_real</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">RANSAC</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16"></a>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17"></a><span class="k">def</span><span class="w"> </span><span class="nf">px_to_real</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">perspectiveTransform</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]]],</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">H</span><span class="p">)</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19"></a>    <span class="k">return</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="vista-rectificada_1">Vista rectificada<a class="headerlink" href="#vista-rectificada_1" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">rectificacion/rectificacion.py — build_rectified_transform()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span>
+<span class="normal"><a href="#__codelineno-4-12">12</a></span>
+<span class="normal"><a href="#__codelineno-4-13">13</a></span>
+<span class="normal"><a href="#__codelineno-4-14">14</a></span>
+<span class="normal"><a href="#__codelineno-4-15">15</a></span>
+<span class="normal"><a href="#__codelineno-4-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_rectified_transform</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a>    <span class="n">corners</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="n">w</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="n">h</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="n">corners_real</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">perspectiveTransform</span><span class="p">(</span><span class="n">corners</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">H</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="n">mn</span> <span class="o">=</span> <span class="n">corners_real</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6"></a>    <span class="n">mx</span> <span class="o">=</span> <span class="n">corners_real</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">span</span> <span class="o">=</span> <span class="n">mx</span> <span class="o">-</span> <span class="n">mn</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9"></a>    <span class="n">OUT_W</span><span class="p">,</span> <span class="n">OUT_H</span><span class="p">,</span> <span class="n">MARGIN</span> <span class="o">=</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">35</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10"></a>    <span class="n">s</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">OUT_W</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">MARGIN</span><span class="p">)</span> <span class="o">/</span> <span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">OUT_H</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">MARGIN</span><span class="p">)</span> <span class="o">/</span> <span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11"></a>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12"></a>    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MARGIN</span> <span class="o">-</span> <span class="n">mn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">s</span><span class="p">],</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13"></a>                  <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">MARGIN</span> <span class="o">-</span> <span class="n">mn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">s</span><span class="p">],</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14"></a>                  <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15"></a>    <span class="n">H_disp</span> <span class="o">=</span> <span class="n">M</span> <span class="o">@</span> <span class="n">H</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16"></a>    <span class="k">return</span> <span class="n">H_disp</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">mn</span><span class="p">,</span> <span class="p">(</span><span class="n">OUT_W</span><span class="p">,</span> <span class="n">OUT_H</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h3 id="dos-scripts-independientes-pick_refs-rectificacion">Dos scripts independientes: <code>pick_refs</code> + <code>rectificacion</code><a class="headerlink" href="#dos-scripts-independientes-pick_refs-rectificacion" title="Permanent link">&para;</a></h3>
+<p>Separar la creación del fichero de referencias del proceso de medición permite reutilizar el mismo <code>.txt</code> en múltiples sesiones sin repetir el marcado. Las referencias son persistentes y editables a mano.</p>
+<h3 id="ransac-en-findhomography">RANSAC en <code>findHomography</code><a class="headerlink" href="#ransac-en-findhomography" title="Permanent link">&para;</a></h3>
+<p>Con exactamente 4 puntos, RANSAC no tiene efecto (no hay suficientes muestras para votar). Sin embargo, con 5 o más referencias tolera hasta un punto marcado con error apreciable sin degradar la homografía. El umbral de 3.0 px descarta outliers claros sin ser demasiado restrictivo.</p>
+<h3 id="vista-rectificada-calculada-una-sola-vez">Vista rectificada calculada una sola vez<a class="headerlink" href="#vista-rectificada-calculada-una-sola-vez" title="Permanent link">&para;</a></h3>
+<p><code>build_rectified_transform</code> se llama al inicio sobre el primer frame. La homografía H_disp compone H con la transformación de escala/traslación al canvas, por lo que <code>warpPerspective</code> aplica todo en una sola pasada sin recomputar nada por cada pulsación de <code>r</code>.</p>
+<h3 id="plano-unico-de-referencia">Plano único de referencia<a class="headerlink" href="#plano-unico-de-referencia" title="Permanent link">&para;</a></h3>
+<p>Toda la medición asume que los puntos marcados y los puntos a medir son coplanares. Esta restricción es explícita por diseño: no hay corrección de distorsión de lente ni reconstrucción 3D.</p>
+<hr />
+<h2 id="limitaciones">Limitaciones<a class="headerlink" href="#limitaciones" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Limitaciones conocidas</p>
+<ul>
+<li>Solo mide distancias en el <strong>mismo plano</strong> que los puntos de referencia: objetos fuera de ese plano dan mediciones incorrectas.</li>
+<li>La precisión de la homografía depende directamente de con qué cuidado se hayan marcado los puntos en <code>pick_refs.py</code>; un error de unos pocos píxeles en una referencia puede propagarse a centímetros en la medición.</li>
+<li>No corrige <strong>distorsión radial</strong> de la lente: en objetivos muy angulares, las líneas rectas aparecen curvadas y la homografía plana no es suficiente.</li>
+<li>La vista rectificada puede presentar <strong>zonas negras</strong> (sin información) si la imagen original fue tomada con un ángulo muy oblicuo respecto al plano.</li>
+<li>Con referencias de un <strong>plano vertical</strong> (como el farol de la cuesta), cualquier objeto que no esté anclado a ese plano (personas, vehículos) no puede medirse correctamente.</li>
+<li>El fichero de referencias debe <strong>rehacerse</strong> cada vez que se use una imagen diferente o si la cámara se mueve entre la toma de referencia y la medición.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Pie" >
+        
+          
+          <a href="../dl/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Deep Learning">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Anterior
+              </span>
+              <div class="md-ellipsis">
+                Deep Learning
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../ejercicios_extra/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Ejercicios Extra">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Siguiente
+              </span>
+              <div class="md-ellipsis">
+                Ejercicios Extra
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "toc.integrate", "search.suggest", "search.highlight", "content.code.annotate", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

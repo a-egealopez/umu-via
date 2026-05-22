@@ -319,6 +319,44 @@
   
 
       
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../rectificacion/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Rectificación
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ejercicios_extra/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Ejercicios Extra
+
+      </a>
+    </li>
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -666,10 +704,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#deteccion-de-caras-en-hilo-separado-con-cache-de-100-frames" class="md-nav__link">
+  <a href="#deteccion-de-caras-en-hilo-separado-con-cache-de-8-frames" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Detección de caras en hilo separado con caché de 100 frames
+        Detección de caras en hilo separado con caché de 8 frames
       
     </span>
   </a>
@@ -787,6 +825,60 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rectificacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rectificación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ejercicios_extra/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ejercicios Extra
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -815,9 +907,9 @@
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Credenciales necesarias</p>
-<p>Antes de ejecutar, crea el fichero <code>token.env</code> en la raíz del proyecto con el token de tu bot de Telegram:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>TELEGRAM_TOKEN=&lt;tu_token&gt;
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>TELEGRAM_CHAT_ID=&lt;tu_chat_id&gt;
+<p>Antes de ejecutar, crea el fichero <code>token.env</code> dentro de la carpeta <code>actividad/</code> con el token de tu bot de Telegram:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>TOKEN=&lt;tu_token&gt;
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>USER_ID=&lt;tu_chat_id&gt;
 </span></code></pre></div>
 Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rápido e intencionado).</p>
 </div>
@@ -895,7 +987,7 @@ Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rá
 <tbody>
 <tr>
 <td><code>FACE_UPDATE_INTERVAL</code></td>
-<td>100 frames</td>
+<td>8 frames</td>
 <td>Frecuencia de actualización de la detección</td>
 </tr>
 <tr>
@@ -984,7 +1076,7 @@ Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rá
 <figure>
 <p><img alt="Cara anonimizada" src="actividad_face_anonymized.png" />
   </p>
-<figcaption>Cara censurada con bloque negro con margen del 35%. La detección se ejecuta en hilo separado cada 100 frames.</figcaption>
+<figcaption>Cara censurada con bloque negro con margen del 35%. La detección se ejecuta en hilo separado cada 8 frames.</figcaption>
 </figure>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">actividad/actividad.py — anonymize()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
@@ -1010,7 +1102,7 @@ Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rá
 <span class="normal"><a href="#__codelineno-3-22">22</a></span>
 <span class="normal"><a href="#__codelineno-3-23">23</a></span>
 <span class="normal"><a href="#__codelineno-3-24">24</a></span>
-<span class="normal"><a href="#__codelineno-3-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">FACE_UPDATE_INTERVAL</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="normal"><a href="#__codelineno-3-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="n">FACE_UPDATE_INTERVAL</span> <span class="o">=</span> <span class="mi">8</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="n">FACE_SCALE</span> <span class="o">=</span> <span class="mf">0.25</span>   <span class="c1"># trabaja a 1/4 de resolución</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">detect_faces</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
@@ -1056,8 +1148,8 @@ Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rá
 <h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
 <h3 id="clasificacion-heuristica-frente-a-detector-neural">Clasificación heurística frente a detector neural<a class="headerlink" href="#clasificacion-heuristica-frente-a-detector-neural" title="Permanent link">&para;</a></h3>
 <p>En lugar de HOG+SVM o YOLO, los contornos del foreground se clasifican por tres criterios geométricos (→ ver <a href="#codigo"><code>classify_motion()</code></a>, línea 1). Es una apuesta deliberada por velocidad y simplicidad — un detector neural añadiría cientos de milisegundos en CPU. El precio es conocido: personas agachadas o sentadas se clasifican como objeto.</p>
-<h3 id="deteccion-de-caras-en-hilo-separado-con-cache-de-100-frames">Detección de caras en hilo separado con caché de 100 frames<a class="headerlink" href="#deteccion-de-caras-en-hilo-separado-con-cache-de-100-frames" title="Permanent link">&para;</a></h3>
-<p><code>face_recognition</code> tarda ~80 ms (HOG) o ~300 ms (CNN), demasiado para cada frame. La solución es un <code>face_worker</code> dedicado que reutiliza el último resultado durante 100 frames (→ ver <a href="#codigo"><code>anonymize()</code></a>, línea 14). El stream no se bloquea aunque la máscara vaya ligeramente rezagada cuando una cara entra o sale de plano. La detección trabaja además a 1/4 de resolución (<code>FACE_SCALE=0.25</code>) para reducir el tiempo de inferencia.</p>
+<h3 id="deteccion-de-caras-en-hilo-separado-con-cache-de-8-frames">Detección de caras en hilo separado con caché de 8 frames<a class="headerlink" href="#deteccion-de-caras-en-hilo-separado-con-cache-de-8-frames" title="Permanent link">&para;</a></h3>
+<p><code>face_recognition</code> tarda ~80 ms (HOG) o ~300 ms (CNN), demasiado para cada frame. La solución es un <code>face_worker</code> dedicado que reutiliza el último resultado durante 8 frames (→ ver <a href="#codigo"><code>anonymize()</code></a>, línea 14). El stream no se bloquea aunque la máscara vaya ligeramente rezagada cuando una cara entra o sale de plano. La detección trabaja además a 1/4 de resolución (<code>FACE_SCALE=0.25</code>) para reducir el tiempo de inferencia. Además, <code>face_worker</code> implementa un periodo de gracia de 3 ciclos (<code>MAX_GRACE=3</code>): si la detección devuelve cero caras, mantiene las posiciones anteriores durante 3 actualizaciones antes de borrarlas, evitando parpadeos cuando una cara queda momentáneamente fuera del campo de la cámara.</p>
 <h3 id="pre-buffer-con-deque-de-tamano-dinamico">Pre-buffer con <code>deque</code> de tamaño dinámico<a class="headerlink" href="#pre-buffer-con-deque-de-tamano-dinamico" title="Permanent link">&para;</a></h3>
 <p>El clip guardado incluye los segundos previos al evento gracias a un <code>deque</code> circular. Su tamaño se recalcula cada frame a partir del FPS real (<code>max(1, int(pre_sec * fps))</code>), de forma que el pre-buffer siempre representa los mismos segundos reales independientemente de si la cámara va a 15 o 30 fps.</p>
 <h3 id="frames-pares-descartados-del-procesamiento">Frames pares descartados del procesamiento<a class="headerlink" href="#frames-pares-descartados-del-procesamiento" title="Permanent link">&para;</a></h3>
@@ -1070,9 +1162,19 @@ Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rá
 <p class="admonition-title">Limitaciones conocidas</p>
 <ul>
 <li>Clasificación heurística: personas agachadas o sentadas pueden clasificarse como "objeto".</li>
-<li>Con modelo <code>hog</code>, las caras de perfil o parcialmente tapadas pueden quedar sin anonimizar.</li>
 <li>Cualquier vibración de la cámara genera falsos positivos en todo el foreground.</li>
 <li>Si <code>token.env</code> no existe o está mal configurado, el programa lanza excepción al arrancar.</li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Dificultades de anonimización</p>
+<p>La anonimización de caras es inherentemente imperfecta en las condiciones actuales:</p>
+<ul>
+<li><strong>Resolución de inferencia reducida</strong> (<code>FACE_SCALE=0.25</code>): detectar caras a 1/4 del tamaño original hace que caras pequeñas o lejanas pasen desapercibidas, dejando rostros sin censurar.</li>
+<li><strong>Modelo HOG</strong>: no detecta caras de perfil, caras parcialmente tapadas ni caras en condiciones de poca luz. Cambiar a <code>cnn</code> mejora la cobertura pero multiplica el tiempo de inferencia (~300 ms).</li>
+<li><strong>Retraso de hasta 8 frames</strong>: la detección solo se lanza cada 8 frames. A 25 fps, una cara puede aparecer y desaparecer en pantalla sin haber sido nunca anonimizada si su tránsito dura menos de ~320 ms.</li>
+<li><strong>Descarte de frames pares</strong>: el bucle principal salta el procesamiento en frames pares, por lo que en fotogramas de buffer de pre-evento puede quedar almacenado el último frame anonimizado en lugar del frame real en esos instantes.</li>
+<li><strong>Grace period parcialmente visible</strong>: durante los 3 ciclos de gracia tras perder una cara, la región censura una posición desactualizada; si la persona se ha movido, la cara real puede quedar al descubierto momentáneamente.</li>
 </ul>
 </div>
 
