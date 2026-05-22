@@ -10,6 +10,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 from matplotlib.animation import FuncAnimation
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -233,34 +234,64 @@ def get_rates():
                  for i in range(len(ri))]
     return labels, ri, rd
 
-def launch_chart():
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 5), sharex=True)
-    fig.patch.set_facecolor("#111")
+def get_hourly():
+    now = time.time()
+    t0  = state["start_time"]
+    n   = int((now - t0) / 3600) + 1
+    counts = [0] * n
+    for ts, _ in state["history"]:
+        idx = int((ts - t0) / 3600)
+        if 0 <= idx < n:
+            counts[idx] += 1
+    labels = [time.strftime("%H:00", time.localtime(t0 + i * 3600))
+              for i in range(n)]
+    return labels, counts
 
-    def style(ax, title):
+
+def launch_charts():
+    def style(ax, title, ylabel, grid_axis="both"):
         ax.set_facecolor("#1a1a2e")
         ax.tick_params(colors="#888", labelsize=8)
-        ax.set_ylabel("veh/min", color="#888", fontsize=8)
+        ax.set_ylabel(ylabel, color="#888", fontsize=8)
         ax.set_title(title, color="white", fontsize=9)
         for sp in ax.spines.values():
             sp.set_edgecolor("#333")
-        ax.grid(color="#222", linewidth=0.5)
+        ax.grid(color="#222", linewidth=0.5, axis=grid_axis)
 
-    def update(_):
+    fig1, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 5), sharex=True)
+    fig1.patch.set_facecolor("#111")
+
+    def update1(_):
         labels, ri, rd = get_rates()
         for ax, rates, color, title in (
             (ax1, ri, "#378ADD", f"← izquierda  (total: {state['count']['izq']})"),
             (ax2, rd, "#639922", f"derecha →  (total: {state['count']['der']})"),
         ):
             ax.cla()
-            style(ax, title)
+            style(ax, title, "veh/min")
             ax.plot(labels, rates, color=color, linewidth=2)
             ax.fill_between(range(len(rates)), rates, alpha=0.15, color=color)
             ax.set_xticks(range(len(labels)))
             ax.set_xticklabels(labels, rotation=45, ha="right", color="#888", fontsize=8)
-        fig.tight_layout()
+        fig1.tight_layout()
 
-    _ani = FuncAnimation(fig, update, interval=2000, cache_frame_data=False)
+    fig2, ax3 = plt.subplots(figsize=(7, 4))
+    fig2.patch.set_facecolor("#111")
+
+    def update2(_):
+        hlabels, hcounts = get_hourly()
+        total = state["count"]["izq"] + state["count"]["der"]
+        ax3.cla()
+        style(ax3, f"Vehículos por hora  (total: {total})", "veh/hora", grid_axis="y")
+        xs = range(len(hcounts))
+        ax3.bar(xs, hcounts, color="#e07b39", alpha=0.85)
+        ax3.yaxis.set_major_locator(ticker.MaxNLocator(integer=True))
+        ax3.set_xticks(list(xs))
+        ax3.set_xticklabels(hlabels, rotation=45, ha="right", color="#888", fontsize=8)
+        fig2.tight_layout()
+
+    _ani1 = FuncAnimation(fig1, update1, interval=2000, cache_frame_data=False)
+    _ani2 = FuncAnimation(fig2, update2, interval=2000, cache_frame_data=False)
     plt.show()
 
 # ─────────────────────── MAIN ────────────────────────────
@@ -270,7 +301,7 @@ def main():
     paused = False
     frozen = None
 
-    threading.Thread(target=launch_chart, daemon=True).start()
+    threading.Thread(target=launch_charts, daemon=True).start()
 
     for key, frame in autoStream():
         if key == ord(" "):

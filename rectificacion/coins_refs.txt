@@ -1,32 +1,5 @@
-# Archivo de referencias para coins.png (800x600)
-# Uso: python rectificacion.py --refs=coins_refs.txt --units=mm --dev=coins.png
-#
-# Formato: pixel_x  pixel_y  real_x  real_y
-# Unidades: milímetros (mm)
-#
-# Sistema de coordenadas:
-#   Origen (0,0) → centro de la moneda A (1€, inferior-izquierda)
-#   Eje X → hacia la derecha
-#   Eje Y → hacia arriba en el plano real
-#
-# Monedas de euro (diámetros reales):
-#   1 céntimo  : 16.25 mm     50 céntimos :  24.25 mm
-#   2 céntimos : 18.75 mm     1 euro      :  23.25 mm
-#   5 céntimos : 21.25 mm     2 euros     :  25.75 mm
-#  10 céntimos : 19.75 mm
-#  20 céntimos : 22.25 mm
-#
-# CÓMO OBTENER VALORES PRECISOS:
-#   1. Ejecuta: python pick_refs.py --dev=coins.png --out=coins_refs.txt
-#   2. Haz clic sobre 4+ monedas identificables
-#   3. Mide con regla las distancias reales entre sus centros
-#   4. Sustituye los valores real_x, real_y por los medidos
-#
-# Los valores de pixel_x, pixel_y se han estimado con HoughCircles.
-# Los valores real_x, real_y son APROXIMADOS; ajusta con medición física.
-#
-# pixel_x   pixel_y   real_x   real_y
-  116.0     496.0      0.0      0.0    # A: 1euro inferior-izq (origen)
-  366.0     238.0     90.0    100.0    # B: moneda pequeña superior-centro
-  588.0     366.0    165.0     60.0    # C: moneda derecha
-  524.0     456.0    140.0      5.0    # D: moneda inferior-derecha
+# pixel_x  pixel_y  real_x  real_y
+204.0  252.0  0.0  2.3
+682.0  85.0  20.0  2.3
+704.0  138.0  20.0  0.0
+220.0  315.0  0.0  0.0

@@ -26,7 +26,7 @@ ensure_dev_arg(CAMERA_URL)
 
 # ── Constantes ────────────────────────────────────────────────────────────────
 COLORES              = {"persona": (0, 0, 255), "objeto": (255, 0, 0)}
-FACE_UPDATE_INTERVAL = 100
+FACE_UPDATE_INTERVAL = 8
 FACE_SCALE           = 0.25
 WORK_WIDTH           = 640
 WORK_HEIGHT          = 480
@@ -82,6 +82,9 @@ def anonymize(frame, face_state, face_queue):
 
 
 def face_worker(face_state, face_queue):
+    grace_frames = 0
+    MAX_GRACE = 3
+
     while True:
         item = face_queue.get()
         if item is None:
@@ -89,30 +92,13 @@ def face_worker(face_state, face_queue):
         frame, model = item
         faces = detect_faces(frame, model)
         with face_state["lock"]:
-            face_state["last_faces"] = faces
-'''
-def face_worker(face_state, face_queue):
-    grace_frames = 0
-    MAX_GRACE = 3
-
-    while True:
-        item = face_queue.get()
-        if item is None: break
-        
-        frame, model = item
-        faces = detect_faces(frame, model)
-        
-        with face_state["lock"]:
             if faces:
                 face_state["last_faces"] = faces
-                grace_frames = MAX_GRACE # reseteamos el seguro
+                grace_frames = MAX_GRACE
+            elif grace_frames > 0:
+                grace_frames -= 1
             else:
-                # Si no hay caras, restamos un crédito de gracia
-                if grace_frames > 0:
-                    grace_frames -= 1
-                else:
-                    face_state["last_faces"] = []
-'''
+                face_state["last_faces"] = []
 
 
 # ── Clasificación ─────────────────────────────────────────────────────────────

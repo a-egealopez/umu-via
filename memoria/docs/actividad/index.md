@@ -12,10 +12,10 @@
     Python 3.10+, OpenCV 4.9, NumPy 1.26, `face_recognition`, `python-telegram-bot`.
 
 !!! warning "Credenciales necesarias"
-    Antes de ejecutar, crea el fichero `token.env` en la raíz del proyecto con el token de tu bot de Telegram:
+    Antes de ejecutar, crea el fichero `token.env` dentro de la carpeta `actividad/` con el token de tu bot de Telegram:
     ```
-    TELEGRAM_TOKEN=<tu_token>
-    TELEGRAM_CHAT_ID=<tu_chat_id>
+    TOKEN=<tu_token>
+    USER_ID=<tu_chat_id>
     ```
     Si el fichero no existe, el programa lanza una excepción al arrancar (fallo rápido e intencionado).
 
@@ -73,7 +73,7 @@ flowchart TD
 
 | Parámetro | Valor | Descripción |
 |-----------|-------|-------------|
-| `FACE_UPDATE_INTERVAL` | 100 frames | Frecuencia de actualización de la detección |
+| `FACE_UPDATE_INTERVAL` | 8 frames | Frecuencia de actualización de la detección |
 | `FACE_SCALE` | 0.25 | Resolución de inferencia (1/4 del frame original) |
 | Margen del bloque | 35% | Ampliación del bbox antes de censurar |
 
@@ -127,11 +127,11 @@ def classify_motion(frame, mask_roi, min_area=MIN_AREA_MOV):
 
 <figure markdown>
   ![Cara anonimizada](actividad_face_anonymized.png)
-  <figcaption>Cara censurada con bloque negro con margen del 35%. La detección se ejecuta en hilo separado cada 100 frames.</figcaption>
+  <figcaption>Cara censurada con bloque negro con margen del 35%. La detección se ejecuta en hilo separado cada 8 frames.</figcaption>
 </figure>
 
 ```python title="actividad/actividad.py — anonymize()" linenums="1"
-FACE_UPDATE_INTERVAL = 100
+FACE_UPDATE_INTERVAL = 8
 FACE_SCALE = 0.25   # trabaja a 1/4 de resolución
 
 def detect_faces(frame, model):
@@ -182,9 +182,9 @@ def anonymize(frame, face_state, face_queue):
 
 En lugar de HOG+SVM o YOLO, los contornos del foreground se clasifican por tres criterios geométricos (→ ver [`classify_motion()`](#codigo), línea 1). Es una apuesta deliberada por velocidad y simplicidad — un detector neural añadiría cientos de milisegundos en CPU. El precio es conocido: personas agachadas o sentadas se clasifican como objeto.
 
-### Detección de caras en hilo separado con caché de 100 frames
+### Detección de caras en hilo separado con caché de 8 frames
 
-`face_recognition` tarda ~80 ms (HOG) o ~300 ms (CNN), demasiado para cada frame. La solución es un `face_worker` dedicado que reutiliza el último resultado durante 100 frames (→ ver [`anonymize()`](#codigo), línea 14). El stream no se bloquea aunque la máscara vaya ligeramente rezagada cuando una cara entra o sale de plano. La detección trabaja además a 1/4 de resolución (`FACE_SCALE=0.25`) para reducir el tiempo de inferencia.
+`face_recognition` tarda ~80 ms (HOG) o ~300 ms (CNN), demasiado para cada frame. La solución es un `face_worker` dedicado que reutiliza el último resultado durante 8 frames (→ ver [`anonymize()`](#codigo), línea 14). El stream no se bloquea aunque la máscara vaya ligeramente rezagada cuando una cara entra o sale de plano. La detección trabaja además a 1/4 de resolución (`FACE_SCALE=0.25`) para reducir el tiempo de inferencia. Además, `face_worker` implementa un periodo de gracia de 3 ciclos (`MAX_GRACE=3`): si la detección devuelve cero caras, mantiene las posiciones anteriores durante 3 actualizaciones antes de borrarlas, evitando parpadeos cuando una cara queda momentáneamente fuera del campo de la cámara.
 
 ### Pre-buffer con `deque` de tamaño dinámico
 
@@ -204,6 +204,14 @@ La foto se envía desde el hilo principal para garantizar que corresponde exacta
 
 !!! warning "Limitaciones conocidas"
     - Clasificación heurística: personas agachadas o sentadas pueden clasificarse como "objeto".
-    - Con modelo `hog`, las caras de perfil o parcialmente tapadas pueden quedar sin anonimizar.
     - Cualquier vibración de la cámara genera falsos positivos en todo el foreground.
     - Si `token.env` no existe o está mal configurado, el programa lanza excepción al arrancar.
+
+!!! warning "Dificultades de anonimización"
+    La anonimización de caras es inherentemente imperfecta en las condiciones actuales:
+
+    - **Resolución de inferencia reducida** (`FACE_SCALE=0.25`): detectar caras a 1/4 del tamaño original hace que caras pequeñas o lejanas pasen desapercibidas, dejando rostros sin censurar.
+    - **Modelo HOG**: no detecta caras de perfil, caras parcialmente tapadas ni caras en condiciones de poca luz. Cambiar a `cnn` mejora la cobertura pero multiplica el tiempo de inferencia (~300 ms).
+    - **Retraso de hasta 8 frames**: la detección solo se lanza cada 8 frames. A 25 fps, una cara puede aparecer y desaparecer en pantalla sin haber sido nunca anonimizada si su tránsito dura menos de ~320 ms.
+    - **Descarte de frames pares**: el bucle principal salta el procesamiento en frames pares, por lo que en fotogramas de buffer de pre-evento puede quedar almacenado el último frame anonimizado en lugar del frame real en esos instantes.
+    - **Grace period parcialmente visible**: durante los 3 ciclos de gracia tras perder una cara, la región censura una posición desactualizada; si la persona se ha movido, la cara real puede quedar al descubierto momentáneamente.

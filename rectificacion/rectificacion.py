@@ -78,8 +78,11 @@ def px_to_real(x, y):
 # ── Vista rectificada ─────────────────────────────────────────────────────────
 def build_rectified_transform(frame):
     """Calcula la transformación que elimina la perspectiva y ajusta al canvas."""
-    mn = pts_real.min(axis=0)
-    mx = pts_real.max(axis=0)
+    h, w = frame.shape[:2]
+    corners = np.array([[0,0],[w,0],[w,h],[0,h]], np.float32)
+    corners_real = cv.perspectiveTransform(corners.reshape(1,-1,2), H)[0]
+    mn = corners_real.min(axis=0)
+    mx = corners_real.max(axis=0)
     span = mx - mn
     if span[0] < 1e-6 or span[1] < 1e-6:
         return None, None, None, None
@@ -165,21 +168,23 @@ def draw_measurement_on_rect(rect_img, s, mn):
 cv.namedWindow('Rectificacion')
 cv.setMouseCallback('Rectificacion', mouse_cb)
 
-H_disp = None   # se calcula con el primer frame
-
 for key, frame in autoStream():
-    if key == ord('r'):
+    base_frame = frame.copy()
+    break
+
+H_disp, s_rect, mn_rect, rect_size = build_rectified_transform(base_frame)
+
+while True:
+    key = cv.waitKey(20) & 0xFF
+    if key == ord('q') or key == 27:
+        break
+    elif key == ord('r'):
         show_rect[0] = not show_rect[0]
 
-    # Calcular transformación rectificada (solo una vez, asumiendo cámara fija)
-    if H_disp is None:
-        H_disp, s_rect, mn_rect, rect_size = build_rectified_transform(frame)
-
-    display = frame.copy()
+    display = base_frame.copy()
     draw_refs_overlay(display)
     draw_measurement(display)
 
-    # HUD informativo
     dist_str = '---'
     if len(clicks) == 2:
         r1 = px_to_real(*clicks[0])
@@ -188,12 +193,11 @@ for key, frame in autoStream():
 
     mode = 'RECT:ON [r]' if show_rect[0] else '[r]:rectif'
     info = (f'Refs:{len(pts_img)} | Dist:{dist_str} | '
-            f'LClick:medir  RClick:reset | {mode}')
+            f'LClick:medir  RClick:reset | {mode}  Q:salir')
     cv.imshow('Rectificacion', draw_hud(display, info))
 
-    # Ventana rectificada (toggle con 'r')
     if show_rect[0] and H_disp is not None:
-        rect_img = make_rectified(frame, H_disp, rect_size)
+        rect_img = make_rectified(base_frame, H_disp, rect_size)
         draw_measurement_on_rect(rect_img, s_rect, mn_rect)
         hud_rect = (f'Vista rectificada | escala={s_rect:.2f} px/{args.units} '
                     f'| Dist:{dist_str}')

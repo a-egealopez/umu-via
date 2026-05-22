@@ -106,10 +106,6 @@ El orden de los tres pasos no es intercambiable:
   ![Máscara MOG2](trafico_mask.png)
   <figcaption>Máscara binaria del foreground dentro del ROI.</figcaption>
 </figure>
-<figure markdown>
-  ![Tracks con IDs](trafico_tracks.png)
-  <figcaption>Tracks activos con IDs en amarillo y bounding boxes en verde.</figcaption>
-</figure>
 
 ### Tracker de centroides
 

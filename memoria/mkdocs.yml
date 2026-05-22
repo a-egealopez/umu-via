@@ -86,3 +86,5 @@ nav:
   - Detector de Actividad: actividad/index.md
   - Clasificador: clasificador/index.md
   - Deep Learning: dl/index.md
+  - Rectificación: rectificacion/index.md
+  - Ejercicios Extra: ejercicios_extra/index.md
