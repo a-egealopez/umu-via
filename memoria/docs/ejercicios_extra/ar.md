@@ -79,11 +79,11 @@ for i, j in self._edges:
     cv.line(frame, tuple(ipts[i]), tuple(ipts[j]), (0, g, 255 - g // 2), 2, cv.LINE_AA)
 ```
 
-Las aristas más alejadas de la cámara (z pequeño) son azul intenso; las más cercanas (z grande) viran al verde.
+Las aristas más alejadas de la cámara (z pequeno) son azul intenso; las más cercanas (z grande) viran al verde.
 
 ---
 
-## Decisiones de diseño { #decisiones }
+## Decisiones de diseno { #decisiones }
 
 ### Separación ancla / offset
 

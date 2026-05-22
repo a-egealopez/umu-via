@@ -171,7 +171,7 @@ def count_crossings():
 
 ---
 
-## Decisiones de diseño { #decisiones }
+## Decisiones de diseno { #decisiones }
 
 ### MOG2 frente a frame differencing
 
@@ -190,11 +190,11 @@ El precio de MOG2 es que no distingue "fondo" de "objeto estático": un vehícul
 
 ### Tracker sin Kalman
 
-Con 5–10 vehículos en el ROI, la asignación por distancia euclidiana mínima es suficiente. El algoritmo húngaro daría una asignación globalmente óptima cuando dos tracks se cruzan, pero eso es raro en tráfico normal y añadiría complejidad sin beneficio claro. `MAX_AGE=5` cubre los casos de oclusión manteniendo el track vivo durante 5 frames sin detección.
+Con 5–10 vehículos en el ROI, la asignación por distancia euclidiana mínima es suficiente. El algoritmo húngaro daría una asignación globalmente óptima cuando dos tracks se cruzan, pero eso es raro en tráfico normal y anadiría complejidad sin beneficio claro. `MAX_AGE=5` cubre los casos de oclusión manteniendo el track vivo durante 5 frames sin detección.
 
 ### Doble conteo en la línea
 
-Un vehículo parado sobre la línea puede disparar conteos repetidos porque el centroide oscila ±1–2 px entre frames por variaciones de la máscara. En carretera fluida casi nunca ocurre, pero en retenciones podría ser un problema. La solución sería añadir un cooldown por `tid`: ignorar nuevos cruces del mismo vehículo durante N frames tras el primero.
+Un vehículo parado sobre la línea puede disparar conteos repetidos porque el centroide oscila ±1–2 px entre frames por variaciones de la máscara. En carretera fluida casi nunca ocurre, pero en retenciones podría ser un problema. La solución sería anadir un cooldown por `tid`: ignorar nuevos cruces del mismo vehículo durante N frames tras el primero.
 
 ### Línea divisoria y perspectiva
 

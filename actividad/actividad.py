@@ -232,7 +232,8 @@ def main():
 
             cv.rectangle(out, roi["pts"][0], roi["pts"][1], (0, 255, 255), 2)
 
-        evento = detection_mode in motion_cats
+        face_detected = bool(face_state["last_faces"])
+        evento = detection_mode in motion_cats or (detection_mode == "persona" and face_detected)
 
         if evento and not recorder.recording:
             recorder.start(out, motion_cats, fps, telegram_enabled)

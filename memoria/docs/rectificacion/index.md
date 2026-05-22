@@ -23,7 +23,7 @@ Haz clic sobre 4 o más puntos cuyas coordenadas reales conozcas. El programa pe
 
 | Tecla | Acción |
 |-------|--------|
-| LClick | Añadir punto (pide coords reales en consola) |
+| LClick | Anadir punto (pide coords reales en consola) |
 | RClick | Eliminar último punto |
 | S | Guardar en `--out` (mínimo 4 puntos) |
 | C | Limpiar todos los puntos |
@@ -93,12 +93,12 @@ flowchart TD
 
 | Parámetro | Valor | Descripción |
 |-----------|-------|-------------|
-| Canvas de salida | 640 × 480 px | Tamaño fijo de la ventana rectificada |
+| Canvas de salida | 640 × 480 px | Tamano fijo de la ventana rectificada |
 | Margen | 35 px | Espacio entre el borde del canvas y el contenido |
 | Escala `s` | calculada | `min((W-2M)/span_x, (H-2M)/span_y)` px/unidad |
 
 !!! tip "Calidad de la homografía"
-    Al arrancar, el programa imprime `Homografía calculada: N/M inliers`. Si `N < M`, algún punto de referencia fue marcado con poca precisión y fue descartado por RANSAC. Con exactamente 4 puntos, RANSAC no tiene efecto pero tampoco daña.
+    Al arrancar, el programa imprime `Homografía calculada: N/M inliers`. Si `N < M`, algún punto de referencia fue marcado con poca precisión y fue descartado por RANSAC. Con exactamente 4 puntos, RANSAC no tiene efecto pero tampoco dana.
 
 ---
 
@@ -153,7 +153,7 @@ Referencia: torre de la muralla con dimensiones estimadas de **4.5 × 7.5 m** (a
   <figcaption>Medición de elementos de la calle (escalones, anchura de paso) usando el farol como referencia. Unidades en mm.</figcaption>
 </figure>
 
-Referencia: rectángulo circunscrito al farol típico de calle española con dimensiones conocidas: **400 × 550 mm** (ancho × alto). El plano de referencia es el plano vertical de la fachada donde está anclado el farol.
+Referencia: rectángulo circunscrito al farol típico de calle espanola con dimensiones conocidas: **400 × 550 mm** (ancho × alto). El plano de referencia es el plano vertical de la fachada donde está anclado el farol.
 
 ---
 
@@ -222,7 +222,7 @@ def build_rectified_transform(frame):
 
 ---
 
-## Decisiones de diseño { #decisiones }
+## Decisiones de diseno { #decisiones }
 
 ### Dos scripts independientes: `pick_refs` + `rectificacion`
 
@@ -238,7 +238,7 @@ Con exactamente 4 puntos, RANSAC no tiene efecto (no hay suficientes muestras pa
 
 ### Plano único de referencia
 
-Toda la medición asume que los puntos marcados y los puntos a medir son coplanares. Esta restricción es explícita por diseño: no hay corrección de distorsión de lente ni reconstrucción 3D.
+Toda la medición asume que los puntos marcados y los puntos a medir son coplanares. Esta restricción es explícita por diseno: no hay corrección de distorsión de lente ni reconstrucción 3D.
 
 ---
 

@@ -23,11 +23,11 @@
 
 ## Grados de libertad { #gdl }
 
-`HandController` extrae **4 grados de libertad** a partir de los 21 landmarks que MediaPipe estima en cada frame. El enunciado pide al menos distancia y ángulo; la implementación añade roll y posición XY de la palma para un control más completo.
+`HandController` extrae **4 grados de libertad** a partir de los 21 landmarks que MediaPipe estima en cada frame. El enunciado pide al menos distancia y ángulo; la implementación anade roll y posición XY de la palma para un control más completo.
 
 <figure markdown>
   ![Landmarks de mano con GDL anotados](extra_hand_gdl.png)
-  <figcaption>Los 21 landmarks de MediaPipe con los 4 GDL anotados: diagonal del bounding box (distancia), vector palma→dedo medio (yaw), diferencia de profundidad índice–meñique (roll) y centroide de la palma (XY).</figcaption>
+  <figcaption>Los 21 landmarks de MediaPipe con los 4 GDL anotados: diagonal del bounding box (distancia), vector palma→dedo medio (yaw), diferencia de profundidad índice–menique (roll) y centroide de la palma (XY).</figcaption>
 </figure>
 
 ### GDL 1 — Distancia (`distance ∈ [0, 1]`)
@@ -51,11 +51,11 @@ Controla la **escala** del objeto AR (`_SCALE_MIN=0.3 … _SCALE_MAX=2.5`).
 
 <figure markdown>
   ![Ángulo de orientación de la mano](extra_hand_angle.png)
-  <figcaption>El ángulo se mide entre la muñeca (landmark 0) y el nudillo del dedo corazón (landmark 9). Vertical hacia arriba = 0°; rotar la mano en el plano de la imagen varía el ángulo.</figcaption>
+  <figcaption>El ángulo se mide entre la muneca (landmark 0) y el nudillo del dedo corazón (landmark 9). Vertical hacia arriba = 0°; rotar la mano en el plano de la imagen varía el ángulo.</figcaption>
 </figure>
 
 ```python title="extra_8_7_2/hand_controller.py — yaw" linenums="1"
-dv        = pts[9] - pts[0]                          # muñeca → nudillo medio
+dv        = pts[9] - pts[0]                          # muneca → nudillo medio
 angle_deg = float(np.degrees(np.arctan2(dv[0], -dv[1])))
 ```
 
@@ -65,10 +65,10 @@ Controla la **rotación Y** del objeto AR.
 
 ```python title="extra_8_7_2/hand_controller.py — roll" linenums="1"
 roll_deg = float(np.clip((z[5] - z[17]) * 500, -80, 80))
-# z[5]=nudillo índice, z[17]=nudillo meñique
+# z[5]=nudillo índice, z[17]=nudillo menique
 ```
 
-La diferencia de coordenada Z (profundidad estimada por MediaPipe) entre el nudillo del índice (landmark 5) y el del meñique (landmark 17) indica cuánto está girada la mano sobre el eje muñeca-dedos. Controla la **rotación X** del objeto AR.
+La diferencia de coordenada Z (profundidad estimada por MediaPipe) entre el nudillo del índice (landmark 5) y el del menique (landmark 17) indica cuánto está girada la mano sobre el eje muneca-dedos. Controla la **rotación X** del objeto AR.
 
 ### GDL 4 — Posición XY de la palma (`norm_x, norm_y ∈ [0, 1]`)
 
@@ -146,7 +146,7 @@ python extra_8_7_2/run.py --model=vggt_model.obj
 
 ---
 
-## Decisiones de diseño { #decisiones }
+## Decisiones de diseno { #decisiones }
 
 ### Inferencia a media resolución
 
@@ -154,7 +154,7 @@ MediaPipe Hands se ejecuta sobre el frame reducido al 50 % (`_INFER_SCALE=0.5`).
 
 ### Bounding box como proxy de distancia
 
-La distancia real de la mano a la cámara requeriría calibración de la cámara y conocimiento del tamaño físico de la mano. El tamaño del bounding box en coordenadas normalizadas es un proxy robusto y calibración-libre: siempre cae en el rango [0.10, 0.55] con independencia de la resolución del frame.
+La distancia real de la mano a la cámara requeriría calibración de la cámara y conocimiento del tamano físico de la mano. El tamano del bounding box en coordenadas normalizadas es un proxy robusto y calibración-libre: siempre cae en el rango [0.10, 0.55] con independencia de la resolución del frame.
 
 ---
 

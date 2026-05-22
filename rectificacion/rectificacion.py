@@ -1,15 +1,6 @@
 #!/usr/bin/env python
-"""
-Rectificación de perspectiva para medir distancias reales en un plano.
 
-Uso:
-    python rectificacion.py --refs=coins_refs.txt [--units=mm] [--dev=imagen.png]
-
-Controles:
-    LClick  : añadir punto de medición (2 clics = segmento + distancia)
-    RClick  : limpiar medición actual
-    r       : activar/desactivar ventana rectificada
-"""
+#python rectificacion.py --refs=coins_refs.txt [--units=mm] [--dev=imagen.png]
 
 import sys
 import argparse

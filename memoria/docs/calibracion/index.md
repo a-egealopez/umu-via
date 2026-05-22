@@ -81,7 +81,7 @@ $$
 |--------|----------|-------------|
 | **Z** | `w_z` | Distancia al plano de interés (cm) |
 | **A** | `c_h` | Altura de la cámara sobre el suelo (cm) |
-| **X** | `cell` | Tamaño de celda de la cuadrícula (cm) |
+| **X** | `cell` | Tamano de celda de la cuadrícula (cm) |
 
 !!! tip "Parámetro más sensible: A (altura)"
     Un error de pocos centímetros en `c_h` se amplifica con la distancia: las líneas horizontales de la cuadrícula se descuadran progresivamente hacia el fondo. Ajusta `A` hasta que la línea base gruesa coincida visualmente con el suelo real.
@@ -147,7 +147,7 @@ def draw_grid(img, K, w_z, c_h, cell):
 
 ---
 
-## Decisiones de diseño { #decisiones }
+## Decisiones de diseno { #decisiones }
 
 ### `getOptimalNewCameraMatrix` antes de `remap`
 

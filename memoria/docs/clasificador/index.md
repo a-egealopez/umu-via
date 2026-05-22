@@ -2,7 +2,7 @@
 
 ## Descripción
 
-`clasificador/clasificador.py` es una aplicación modular de reconocimiento en tiempo real. Acepta `--models` y `--method` como argumentos. Cada método implementa la misma interfaz (`precompute`, `compare`, `best_match`), lo que permite añadir nuevos métodos sin tocar el código principal.
+`clasificador/clasificador.py` es una aplicación modular de reconocimiento en tiempo real. Acepta `--models` y `--method` como argumentos. Cada método implementa la misma interfaz (`precompute`, `compare`, `best_match`), lo que permite anadir nuevos métodos sin tocar el código principal.
 
 ---
 
@@ -186,7 +186,7 @@ def compare(self, frame_bgr, descriptor) -> float:
 ### Interfaz
 
 <figure markdown>
-  ![Añadir modelo dinámico](clasificador_add_model.png)
+  ![Anadir modelo dinámico](clasificador_add_model.png)
   <figcaption>Captura de nuevo modelo con la tecla <code>m</code>. En la terminal se ve el flujo completo: el sistema solicita el nombre, guarda la imagen y la tiene disponible inmediatamente.</figcaption>
 </figure>
 
@@ -204,7 +204,7 @@ Las capturas muestran de forma muy clara por qué cada método es más adecuado 
 | SIFT | 0.43 | 0.03 | **+0.40** |
 | Procrustes | 0.00 | 0.00 | — |
 
-SIFT obtiene el mayor margen de separación sobre el libro (+0.40 frente a +0.32 de embedding). La portada es rica en textura: tipografía, contraste y fotografía con bordes definidos generan decenas de keypoints estables y reproducibles entre el modelo y el frame actual. Esa abundancia de puntos de anclaje locales es exactamente el escenario para el que SIFT está diseñado. Embedding también clasifica bien, pero al comparar semántica global puede confundir portadas de libros similares; SIFT los distingue por sus keypoints concretos. Procrustes es completamente ciego: sin mano, devuelve 0.00.
+SIFT obtiene el mayor margen de separación sobre el libro (+0.40 frente a +0.32 de embedding). La portada es rica en textura: tipografía, contraste y fotografía con bordes definidos generan decenas de keypoints estables y reproducibles entre el modelo y el frame actual. Esa abundancia de puntos de anclaje locales es exactamente el escenario para el que SIFT está disenado. Embedding también clasifica bien, pero al comparar semántica global puede confundir portadas de libros similares; SIFT los distingue por sus keypoints concretos. Procrustes es completamente ciego: sin mano, devuelve 0.00.
 
 ### Mano abierta — Procrustes gana
 
@@ -233,11 +233,11 @@ Embedding es el único método que clasifica el móvil con un margen útil (+0.2
 
 ---
 
-## Decisiones de diseño { #decisiones }
+## Decisiones de diseno { #decisiones }
 
 ### Interfaz común para los tres métodos
 
-Los tres métodos implementan `precompute`, `compare` y `best_match`. `precompute` se llama una sola vez al cargar o capturar un modelo; `compare` lo usa en cada frame. Añadir un método nuevo es implementar esa interfaz y registrarlo en `--method` argparse, sin tocar el código principal.
+Los tres métodos implementan `precompute`, `compare` y `best_match`. `precompute` se llama una sola vez al cargar o capturar un modelo; `compare` lo usa en cada frame. Anadir un método nuevo es implementar esa interfaz y registrarlo en `--method` argparse, sin tocar el código principal.
 
 ### Embedding: similitud del coseno
 
@@ -245,7 +245,7 @@ MobileNet V3 Small produce vectores de 1024 dimensiones donde la dirección impo
 
 ### Procrustes: invarianza como descriptor
 
-MediaPipe Hands devuelve 21 landmarks en coordenadas de imagen. Usarlos directamente no funcionaría porque el mismo gesto cambia de posición, tamaño y orientación. Procrustes normaliza traslación, escala y rotación antes de comparar, de forma que lo que se mide es solo la *forma* de la configuración de dedos (→ ver [`compare()`](#codigo), línea 28).
+MediaPipe Hands devuelve 21 landmarks en coordenadas de imagen. Usarlos directamente no funcionaría porque el mismo gesto cambia de posición, tamano y orientación. Procrustes normaliza traslación, escala y rotación antes de comparar, de forma que lo que se mide es solo la *forma* de la configuración de dedos (→ ver [`compare()`](#codigo), línea 28).
 
 ### SIFT: filtro de Lowe
 

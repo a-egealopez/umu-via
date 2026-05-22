@@ -95,7 +95,7 @@ flowchart LR
 | `CONF_THRESH` | configurable | Umbral de confianza para mostrar detección |
 
 !!! tip "INFER_SIZE: precisión vs latencia"
-    A `imgsz=640` la inferencia tarda ~250 ms en CPU — demasiado para el bucle principal. Con `INFER_SIZE=320` baja a ~80 ms a costa de algo de precisión en objetos pequeños.
+    A `imgsz=640` la inferencia tarda ~250 ms en CPU — demasiado para el bucle principal. Con `INFER_SIZE=320` baja a ~80 ms a costa de algo de precisión en objetos pequenos.
 
 ---
 
@@ -174,17 +174,17 @@ Las tres pérdidas de entrenamiento (`box_loss`, `cls_loss`, `dfl_loss`) descien
  
 **Pérdidas de validación (fila inferior izquierda):**
  
-La `val/box_loss` y la `val/cls_loss` también descienden, aunque con más ruido que las de entrenamiento. La `val/dfl_loss` presenta un pico pronunciado alrededor de la época 55 seguido de recuperación; esto es habitual con datasets muy pequeños donde un solo ejemplo difícil puede distorsionar la métrica. El hecho de que las pérdidas de validación no suban sostenidamente indica que no hay sobreajuste severo, aunque el margen entre train y val es estrecho precisamente por el pequeño tamaño del dataset.
+La `val/box_loss` y la `val/cls_loss` también descienden, aunque con más ruido que las de entrenamiento. La `val/dfl_loss` presenta un pico pronunciado alrededor de la época 55 seguido de recuperación; esto es habitual con datasets muy pequenos donde un solo ejemplo difícil puede distorsionar la métrica. El hecho de que las pérdidas de validación no suban sostenidamente indica que no hay sobreajuste severo, aunque el margen entre train y val es estrecho precisamente por el pequeno tamano del dataset.
  
 **Métricas (columnas derechas):**
  
-- `metrics/precision(B)`: Muy inestable en las primeras épocas (sube a ~1.0 y cae a ~0.0 antes de estabilizarse). Esto es característico de datasets pequeños donde pocas predicciones correctas o incorrectas cambian la precisión drásticamente. Se estabiliza en torno a 0.85–0.93 a partir de la época 40.
+- `metrics/precision(B)`: Muy inestable en las primeras épocas (sube a ~1.0 y cae a ~0.0 antes de estabilizarse). Esto es característico de datasets pequenos donde pocas predicciones correctas o incorrectas cambian la precisión drásticamente. Se estabiliza en torno a 0.85–0.93 a partir de la época 40.
 - `metrics/recall(B)`: Parte alto (~0.96), cae bruscamente (~época 5) y recupera gradualmente hasta ~0.63 al final. La caída coincide con la inestabilidad de precisión; el modelo al principio detecta casi todo (recall alto, precisión baja) y luego calibra su umbral.
 - `metrics/mAP50(B)`: Crece desde ~0.2 hasta ~0.67–0.75 con oscilaciones. La tendencia es claramente ascendente, confirmando que el entrenamiento es beneficioso.
 - `metrics/mAP50-95(B)`: Comportamiento similar al mAP50 pero con valores menores (~0.20 → ~0.65), lo cual es esperado ya que mide precisión a umbrales de IoU más estrictos.
  
 !!! warning "Interpretación con cautela"
-    Las oscilaciones fuertes en precisión y recall no indican inestabilidad del entrenamiento, sino la alta varianza estadística causada por el pequeño conjunto de validación. Con 30 imágenes en total, el split val puede contener apenas 5–8 imágenes, haciendo que cada falso positivo o negativo mueva la métrica varios puntos porcentuales.
+    Las oscilaciones fuertes en precisión y recall no indican inestabilidad del entrenamiento, sino la alta varianza estadística causada por el pequeno conjunto de validación. Con 30 imágenes en total, el split val puede contener apenas 5–8 imágenes, haciendo que cada falso positivo o negativo mueva la métrica varios puntos porcentuales.
  
 ---
  
@@ -200,7 +200,7 @@ La matriz está normalizada por columnas (true label), por lo que cada columna s
 - **`background`**: Recall perfecto (1.00) — las regiones de fondo se rechazan correctamente.
  
 !!! danger "Clase `book` problemática"
-    La ausencia de detecciones correctas de `book` (diagonal vacía para esa clase) es la principal debilidad del modelo. Las causas posibles son: pocas imágenes de entrenamiento de esa clase, variabilidad alta en apariencia (tamaño, color, orientación del libro), o solapamiento visual con el fondo. Soluciones: ampliar el dataset de `book`, o aplicar aumentaciones específicas como recortes aleatorios más agresivos.
+    La ausencia de detecciones correctas de `book` (diagonal vacía para esa clase) es la principal debilidad del modelo. Las causas posibles son: pocas imágenes de entrenamiento de esa clase, variabilidad alta en apariencia (tamano, color, orientación del libro), o solapamiento visual con el fondo. Soluciones: ampliar el dataset de `book`, o aplicar aumentaciones específicas como recortes aleatorios más agresivos.
  
 ---
  
@@ -259,15 +259,15 @@ class YOLOInferenceThread(threading.Thread):
 
 ---
 
-## Decisiones de diseño { #decisiones }
+## Decisiones de diseno { #decisiones }
 
 ### YOLO11n y fine-tuning sobre COCO
 
 YOLO11n es la variante más ligera — menos parámetros, más rápida en CPU, suficiente para tres clases sobre objetos domésticos grandes. Partir de los pesos preentrenados en COCO tiene sentido porque COCO ya incluye categorías visualmente parecidas a `book`, `fruit` y `toy`; el fine-tuning solo ajusta las capas finales a las clases propias. Con 30 imágenes, entrenar desde cero no sería viable.
 
-### Aumentación agresiva para compensar el dataset pequeño
+### Aumentación agresiva para compensar el dataset pequeno
 
-Con solo 30 imágenes el modelo vería exactamente los mismos ejemplos cientos de veces en 100 épocas sin aumentación (→ ver parámetros en [`train.py`](#codigo), línea 1). El riesgo es que con un dataset tan pequeño el split train/val puede acabar con ejemplos de validación muy parecidos a los de entrenamiento, haciendo las métricas más optimistas de lo que son en la práctica.
+Con solo 30 imágenes el modelo vería exactamente los mismos ejemplos cientos de veces en 100 épocas sin aumentación (→ ver parámetros en [`train.py`](#codigo), línea 1). El riesgo es que con un dataset tan pequeno el split train/val puede acabar con ejemplos de validación muy parecidos a los de entrenamiento, haciendo las métricas más optimistas de lo que son en la práctica.
 
 ### Hilo de inferencia separado
 
@@ -275,14 +275,14 @@ YOLO11n a `imgsz=640` tarda ~250 ms en CPU. `YOLOInferenceThread` (→ ver [`run
 
 ### `fruit` como clase problemática
 
-`book` y `toy` son categorías visualmente compactas. `fruit` agrupa objetos con formas, colores y tamaños muy distintos (manzana, plátano, naranja). Con pocas imágenes por subclase el modelo aprende rasgos específicos y generaliza mal. La solución sería restringir la clase a una sola fruta o aumentar el dataset en esa categoría concreta.
+`book` y `toy` son categorías visualmente compactas. `fruit` agrupa objetos con formas, colores y tamanos muy distintos (manzana, plátano, naranja). Con pocas imágenes por subclase el modelo aprende rasgos específicos y generaliza mal. La solución sería restringir la clase a una sola fruta o aumentar el dataset en esa categoría concreta.
 
 ---
 
 ## Limitaciones { #limitaciones }
 
 !!! warning "Limitaciones conocidas"
-    - Dataset muy pequeño (30 imágenes): el modelo puede sobreajustarse a condiciones de captura específicas.
+    - Dataset muy pequeno (30 imágenes): el modelo puede sobreajustarse a condiciones de captura específicas.
     - El split train/val usa el mismo conjunto; las métricas de validación son optimistas.
     - La clase `fruit` es muy heterogénea (manzana, plátano, naranja…): la generalización es más difícil.
     - Si `best.pt` no existe, `run.py` lanza `FileNotFoundError` inmediatamente.

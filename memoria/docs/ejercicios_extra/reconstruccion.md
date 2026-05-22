@@ -18,7 +18,7 @@
 | `std_ratio` (outlier removal) | 2.0 | Umbral estadístico para eliminar puntos aislados |
 
 !!! tip "Parámetro más sensible: `CONF_THRESH`"
-    Bajar `CONF_THRESH` de 0.5 a 0.3 incluye más puntos pero añade ruido de fondo. Subirlo a 0.7 da nubes más limpias pero puede dejar huecos en zonas de baja confianza (bordes, reflejos).
+    Bajar `CONF_THRESH` de 0.5 a 0.3 incluye más puntos pero anade ruido de fondo. Subirlo a 0.7 da nubes más limpias pero puede dejar huecos en zonas de baja confianza (bordes, reflejos).
 
 ---
 
@@ -130,11 +130,11 @@ o3d.io.write_triangle_mesh('colmap_model.obj', mesh)
 
 ---
 
-## Decisiones de diseño { #decisiones }
+## Decisiones de diseno { #decisiones }
 
 ### COLMAP sin reconstrucción densa
 
-El binario de COLMAP disponible en `apt` de Colab no tiene CUDA habilitado en `patch_match_stereo`. En lugar de forzar una compilación desde fuente (que añadiría 20-30 min al proceso), se usa la nube sparse como entrada a Poisson, obteniendo una malla cerrada con calidad suficiente para visualización.
+El binario de COLMAP disponible en `apt` de Colab no tiene CUDA habilitado en `patch_match_stereo`. En lugar de forzar una compilación desde fuente (que anadiría 20-30 min al proceso), se usa la nube sparse como entrada a Poisson, obteniendo una malla cerrada con calidad suficiente para visualización.
 
 ### VGGT con umbral de confianza adaptable
 

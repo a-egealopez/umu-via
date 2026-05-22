@@ -2,7 +2,7 @@
 
 ## Descripción
 
-`actividad/actividad.py` detecta movimiento en una ROI manual, clasifica objetos detectados (persona / objeto), **anonimiza caras** y envía notificaciones con foto y clip de vídeo vía **bot de Telegram**.
+`actividad/actividad.py` detecta actividad en una ROI manual y dispara un evento cuando clasifica un contorno como **persona** (por forma del contorno MOG2) **o** cuando `face_recognition` reconoce una cara, lo que ocurra primero. Además **anonimiza** las caras detectadas y envía notificaciones con foto y clip de vídeo vía **bot de Telegram**.
 
 ---
 
@@ -39,9 +39,14 @@ flowchart TD
     E --> F[MOG2 + morfología]
     F --> G{¿ROI activa?}
     G -- Sí --> H[classify_motion\npersona / objeto]
-    H --> I{¿Categoría\nde interés?}
-    I -- Sí --> J[EventRecorder.start\nfoto Telegram]
-    I -- No --> K[Dibujar HUD]
+    H --> I{¿'persona'\nen motion_cats?}
+    E --> FR{¿Cara\ndetectada?}
+    I -- Sí --> EV[evento = True]
+    FR -- Sí --> EV
+    I -- No --> EV2[evento = False]
+    FR -- No --> EV2
+    EV --> J[EventRecorder.start\nfoto Telegram]
+    EV2 --> K[Dibujar HUD]
     J --> L[Grabar pre+post buffer]
     L --> M{¿Evento\nacabado?}
     M -- Sí --> N[save_frames_to_video\nevents/*.avi]
@@ -102,11 +107,6 @@ flowchart TD
   <figcaption>Objeto detectado dentro de la ROI (bbox azul).</figcaption>
 </figure>
 
-<figure markdown>
-  ![Máscara MOG2](actividad_mask_mog2.png)
-  <figcaption>Máscara de foreground del MOG2 aplicada exclusivamente dentro del ROI.</figcaption>
-</figure>
-
 ```python title="actividad/actividad.py — classify_motion()" linenums="1"
 def classify_motion(frame, mask_roi, min_area=MIN_AREA_MOV):
     results = []
@@ -122,6 +122,15 @@ def classify_motion(frame, mask_roi, min_area=MIN_AREA_MOV):
         results.append((cat, x, y, w, h))
     return results
 ```
+
+La detección de personas combina la clasificación por contorno con el reconocimiento facial. Si cualquiera de las dos condiciones se cumple, se dispara el evento:
+
+```python title="actividad/actividad.py — condición de evento" linenums="1"
+face_detected = bool(face_state["last_faces"])
+evento = detection_mode in motion_cats or (detection_mode == "persona" and face_detected)
+```
+
+Esto cubre casos que MOG2 no detecta: una persona que entra despacio en el encuadre (sin movimiento brusco suficiente para superar el umbral de área) o una cara visible aunque la silueta no cumpla el ratio h/w > 1.35.
 
 ### Anonimización de caras
 
@@ -176,19 +185,28 @@ def anonymize(frame, face_state, face_queue):
 
 ---
 
-## Decisiones de diseño { #decisiones }
+## Decisiones de diseno { #decisiones }
+
+### Detección de personas con doble criterio (MOG2 + cara)
+
+Para que el modo "persona" sea robusto, el evento se dispara si **cualquiera** de las dos condiciones es cierta:
+
+1. `classify_motion()` clasifica un contorno MOG2 como "persona" (ratio h/w > 1.35, h > 60 px, fill < 0.80).
+2. `face_recognition` detecta al menos una cara en el frame actual.
+
+El criterio de silueta falla con personas agachadas o sentadas; el de cara falla si la persona está de espaldas o fuera de encuadre. Juntos se complementan. El criterio facial aprovecha el hilo de detección que ya existe para la anonimización, sin coste extra.
 
 ### Clasificación heurística frente a detector neural
 
-En lugar de HOG+SVM o YOLO, los contornos del foreground se clasifican por tres criterios geométricos (→ ver [`classify_motion()`](#codigo), línea 1). Es una apuesta deliberada por velocidad y simplicidad — un detector neural añadiría cientos de milisegundos en CPU. El precio es conocido: personas agachadas o sentadas se clasifican como objeto.
+En lugar de HOG+SVM o YOLO, los contornos del foreground se clasifican por tres criterios geométricos (→ ver [`classify_motion()`](#codigo), línea 1). Es una apuesta deliberada por velocidad y simplicidad — un detector neural anadiría cientos de milisegundos en CPU. El precio es conocido: personas agachadas o sentadas se clasifican como objeto; en ese caso el criterio de cara actúa como respaldo.
 
 ### Detección de caras en hilo separado con caché de 8 frames
 
 `face_recognition` tarda ~80 ms (HOG) o ~300 ms (CNN), demasiado para cada frame. La solución es un `face_worker` dedicado que reutiliza el último resultado durante 8 frames (→ ver [`anonymize()`](#codigo), línea 14). El stream no se bloquea aunque la máscara vaya ligeramente rezagada cuando una cara entra o sale de plano. La detección trabaja además a 1/4 de resolución (`FACE_SCALE=0.25`) para reducir el tiempo de inferencia. Además, `face_worker` implementa un periodo de gracia de 3 ciclos (`MAX_GRACE=3`): si la detección devuelve cero caras, mantiene las posiciones anteriores durante 3 actualizaciones antes de borrarlas, evitando parpadeos cuando una cara queda momentáneamente fuera del campo de la cámara.
 
-### Pre-buffer con `deque` de tamaño dinámico
+### Pre-buffer con `deque` de tamano dinámico
 
-El clip guardado incluye los segundos previos al evento gracias a un `deque` circular. Su tamaño se recalcula cada frame a partir del FPS real (`max(1, int(pre_sec * fps))`), de forma que el pre-buffer siempre representa los mismos segundos reales independientemente de si la cámara va a 15 o 30 fps.
+El clip guardado incluye los segundos previos al evento gracias a un `deque` circular. Su tamano se recalcula cada frame a partir del FPS real (`max(1, int(pre_sec * fps))`), de forma que el pre-buffer siempre representa los mismos segundos reales independientemente de si la cámara va a 15 o 30 fps.
 
 ### Frames pares descartados del procesamiento
 
@@ -210,7 +228,7 @@ La foto se envía desde el hilo principal para garantizar que corresponde exacta
 !!! warning "Dificultades de anonimización"
     La anonimización de caras es inherentemente imperfecta en las condiciones actuales:
 
-    - **Resolución de inferencia reducida** (`FACE_SCALE=0.25`): detectar caras a 1/4 del tamaño original hace que caras pequeñas o lejanas pasen desapercibidas, dejando rostros sin censurar.
+    - **Resolución de inferencia reducida** (`FACE_SCALE=0.25`): detectar caras a 1/4 del tamano original hace que caras pequenas o lejanas pasen desapercibidas, dejando rostros sin censurar.
     - **Modelo HOG**: no detecta caras de perfil, caras parcialmente tapadas ni caras en condiciones de poca luz. Cambiar a `cnn` mejora la cobertura pero multiplica el tiempo de inferencia (~300 ms).
     - **Retraso de hasta 8 frames**: la detección solo se lanza cada 8 frames. A 25 fps, una cara puede aparecer y desaparecer en pantalla sin haber sido nunca anonimizada si su tránsito dura menos de ~320 ms.
     - **Descarte de frames pares**: el bucle principal salta el procesamiento en frames pares, por lo que en fotogramas de buffer de pre-evento puede quedar almacenado el último frame anonimizado en lugar del frame real en esos instantes.

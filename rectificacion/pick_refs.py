@@ -62,7 +62,7 @@ cv.namedWindow('pick_refs')
 cv.setMouseCallback('pick_refs', mouse_cb)
 
 print('\nInstrucciones:')
-print('  LClick : añadir punto (te pedirá coords reales en consola)')
+print('  LClick : anadir punto (te pedirá coords reales en consola)')
 print('  RClick : eliminar último punto')
 print('  S      : guardar en', OUT_PATH)
 print('  C      : limpiar todos')
@@ -112,7 +112,7 @@ while True:
 
     n = len(points)
     estado = 'OK — S para guardar' if n >= 4 else f'Faltan {4-n} puntos mínimo'
-    info = f'Puntos: {n} | {estado} | LClick:añadir  RClick:quitar  C:limpiar  S:guardar  Q:salir'
+    info = f'Puntos: {n} | {estado} | LClick:anadir  RClick:quitar  C:limpiar  S:guardar  Q:salir'
     cv.imshow('pick_refs', draw_hud(display, info))
 
 cv.destroyAllWindows()

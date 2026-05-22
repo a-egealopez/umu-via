@@ -20,7 +20,7 @@ from hand_controller import HandController
 from ar_viewer import ARViewer
 from ui import draw_hud
 
-if len(sys.argv) == 1:
+if len(sys.argv) == 1 or len(sys.argv) == 2:
     ensure_dev_arg(CAMERA_URL)
 
 parser.add_argument("--model", default="", metavar="RUTA",

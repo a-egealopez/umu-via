@@ -2,7 +2,7 @@
 """
 Controlador gestual de YouTube — MediaPipe + Procrustes.
 
-  Gestos (Procrustes):   puño=pausa, pulgar_dcha=avanzar, pulgar_izq=retroceder
+  Gestos (Procrustes):   puno=pausa, pulgar_dcha=avanzar, pulgar_izq=retroceder
   Distancia mano-cámara: cerca=acelerar, lejos=decelerar
   Ángulo inclinación:    arriba=subir volumen, abajo=bajar volumen
 
@@ -150,7 +150,7 @@ def hand_size(pts):
 
 
 def hand_angle(pts):
-    d = pts[12] - pts[0]   # muñeca -> dedo corazón
+    d = pts[12] - pts[0]   # muneca -> dedo corazón
     return float(np.degrees(np.arctan2(d[0], -d[1])))
 
 
