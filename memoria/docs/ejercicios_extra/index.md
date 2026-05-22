@@ -23,6 +23,12 @@ Cámara  →  hand_controller.py  →  HandState  →  ar_viewer.py  →  run.py
 !!! abstract "Ejercicio 2"
     Haz un controlador sin contacto de varios grados de libertad que mida, al menos, distancia de la mano a la cámara y ángulo de orientación. Utilízalo para controlar alguno de tus programas.
 
+| Ejercicio | Técnica principal |
+|-----------|-------------------|
+| [🎲 Ej. 8 — Reconstrucción 3D](reconstruccion.md) | COLMAP SfM, VGGT Transformer, Poisson mesh |
+| [🥽 Ej. 7 — Realidad Aumentada](ar.md) | ARViewer wireframe, ancla ratón, suavizado exponencial |
+| [🖐️ Ej. 2 — Control Gestual](controlador.md) | MediaPipe Hands, 4 GDL, HandState |
+
 ---
 
 ## Requisitos y ejecución { #requisitos }
