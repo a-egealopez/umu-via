@@ -895,7 +895,7 @@
 <h3 id="memoria-tecnica-de-la-entrega-parcial">Memoria técnica de la entrega parcial<a class="headerlink" href="#memoria-tecnica-de-la-entrega-parcial" title="Permanent link">&para;</a></h3>
 <h3 id="curso-20252026">Curso 2025–2026<a class="headerlink" href="#curso-20252026" title="Permanent link">&para;</a></h3>
 <h2 id="presentacion">Presentación<a class="headerlink" href="#presentacion" title="Permanent link">&para;</a></h2>
-<p>Esta memoria documenta la resolución de los cinco bloques propuestos para la entrega parcial de la asignatura de <strong>Visión Artificial</strong>. Se incluyen soluciones implementadas, fragmentos de código relevantes, capturas de pantalla del sistema en funcionamiento y un análisis crítico de resultados, limitaciones y casos de fallo conocidos.</p>
+<p>Esta memoria documenta la resolución de los bloques propuestos para la entrega de la asignatura de <strong>Visión Artificial</strong>, incluyendo los cinco ejercicios de la entrega parcial, el ejercicio de rectificación de perspectiva y tres ejercicios opcionales (reconstrucción 3D, realidad aumentada y control gestual). Se incluyen soluciones implementadas, fragmentos de código relevantes, capturas de pantalla del sistema en funcionamiento y un análisis crítico de resultados, limitaciones y casos de fallo conocidos.</p>
 <table>
 <thead>
 <tr>
@@ -935,9 +935,18 @@
 </span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│   └── house_objects.yolov8/     # Dataset: book, fruit, toy
 </span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>├── trafico/
 </span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│   └── trafico.py                # Contador bidireccional de vehículos
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>├── config.py                     # Configuración centralizada
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>├── ui.py                         # SliderPanel y helpers de visualización
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>└── utils.py                      # Utilidades compartidas
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>├── rectificacion/
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│   ├── rectificacion.py          # Medición de distancias reales con homografía
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│   ├── pick_refs.py              # Selección interactiva de puntos de referencia
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│   └── *_refs.txt                # Ficheros de referencias por imagen
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>├── extra_8_7_2/
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│   ├── run.py                    # Punto de entrada del sistema AR+gestual
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│   ├── hand_controller.py        # Controlador gestual MediaPipe (4 GDL)
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│   ├── ar_viewer.py              # Visor AR wireframe con carga de .obj
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│   └── reconstruct_colab.ipynb   # Notebook Colab: COLMAP vs VGGT
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>├── config.py                     # Configuración centralizada
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>├── ui.py                         # SliderPanel y helpers de visualización
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>└── utils.py                      # Utilidades compartidas
 </span></code></pre></div>
 <hr />
 <h2 id="resumen-de-ejercicios">Resumen de ejercicios<a class="headerlink" href="#resumen-de-ejercicios" title="Permanent link">&para;</a></h2>
@@ -963,7 +972,7 @@
 <tr>
 <td><a href="actividad/">🔔 Actividad</a></td>
 <td>MOG2, <code>face_recognition</code>, bot Telegram, EventRecorder</td>
-<td>❌ No completado (ISSUE: ARREGLAR ANONIMIZACIÓN)</td>
+<td>✅ Completado</td>
 </tr>
 <tr>
 <td><a href="clasificador/">🏷️ Clasificador</a></td>
@@ -973,6 +982,26 @@
 <tr>
 <td><a href="dl/">🧠 Deep Learning</a></td>
 <td>YOLO11n fine-tuning, dataset Roboflow propio</td>
+<td>✅ Completado</td>
+</tr>
+<tr>
+<td><a href="rectificacion/">📏 Rectificación</a></td>
+<td>Homografía, RANSAC, <code>pick_refs</code> + <code>rectificacion</code></td>
+<td>✅ Completado</td>
+</tr>
+<tr>
+<td><a href="ejercicios_extra/reconstruccion/">🎲 Ej. 8 — Reconstrucción 3D</a></td>
+<td>COLMAP SfM, VGGT Transformer, Poisson mesh</td>
+<td>✅ Completado</td>
+</tr>
+<tr>
+<td><a href="ejercicios_extra/ar/">🥽 Ej. 7 — Realidad Aumentada</a></td>
+<td>ARViewer wireframe, ancla ratón, suavizado exponencial</td>
+<td>✅ Completado</td>
+</tr>
+<tr>
+<td><a href="ejercicios_extra/controlador/">🖐️ Ej. 2 — Control Gestual</a></td>
+<td>MediaPipe Hands, 4 GDL, HandState</td>
 <td>✅ Completado</td>
 </tr>
 </tbody>
