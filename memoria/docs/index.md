@@ -4,7 +4,7 @@
 
 ## Presentación
 
-Esta memoria documenta la resolución de los cinco bloques propuestos para la entrega parcial de la asignatura de **Visión Artificial**. Se incluyen soluciones implementadas, fragmentos de código relevantes, capturas de pantalla del sistema en funcionamiento y un análisis crítico de resultados, limitaciones y casos de fallo conocidos.
+Esta memoria documenta la resolución de los bloques propuestos para la entrega de la asignatura de **Visión Artificial**, incluyendo los cinco ejercicios de la entrega parcial, el ejercicio de rectificación de perspectiva y tres ejercicios opcionales (reconstrucción 3D, realidad aumentada y control gestual). Se incluyen soluciones implementadas, fragmentos de código relevantes, capturas de pantalla del sistema en funcionamiento y un análisis crítico de resultados, limitaciones y casos de fallo conocidos.
 
 | Estudiante | Titulación | Fecha |
 |------------|------------|-------|
@@ -36,6 +36,15 @@ proyecto/
 │   └── house_objects.yolov8/     # Dataset: book, fruit, toy
 ├── trafico/
 │   └── trafico.py                # Contador bidireccional de vehículos
+├── rectificacion/
+│   ├── rectificacion.py          # Medición de distancias reales con homografía
+│   ├── pick_refs.py              # Selección interactiva de puntos de referencia
+│   └── *_refs.txt                # Ficheros de referencias por imagen
+├── extra_8_7_2/
+│   ├── run.py                    # Punto de entrada del sistema AR+gestual
+│   ├── hand_controller.py        # Controlador gestual MediaPipe (4 GDL)
+│   ├── ar_viewer.py              # Visor AR wireframe con carga de .obj
+│   └── reconstruct_colab.ipynb   # Notebook Colab: COLMAP vs VGGT
 ├── config.py                     # Configuración centralizada
 ├── ui.py                         # SliderPanel y helpers de visualización
 └── utils.py                      # Utilidades compartidas
@@ -49,9 +58,13 @@ proyecto/
 |-----------|-------------------|--------|
 | [📐 Calibración](calibracion/index.md) | `cv2.calibrateCamera`, proyección 3D, SliderPanel | ✅ Completado |
 | [🚗 Tráfico](trafico/index.md) | MOG2, tracker de centroides, cruce de línea virtual | ✅ Completado |
-| [🔔 Actividad](actividad/index.md) | MOG2, `face_recognition`, bot Telegram, EventRecorder | ❌ No completado (ISSUE: ARREGLAR ANONIMIZACIÓN) |
+| [🔔 Actividad](actividad/index.md) | MOG2, `face_recognition`, bot Telegram, EventRecorder | ✅ Completado |
 | [🏷️ Clasificador](clasificador/index.md) | MediaPipe embedding, distancia Procrustes, SIFT | ✅ Completado |
 | [🧠 Deep Learning](dl/index.md) | YOLO11n fine-tuning, dataset Roboflow propio | ✅ Completado |
+| [📏 Rectificación](rectificacion/index.md) | Homografía, RANSAC, `pick_refs` + `rectificacion` | ✅ Completado |
+| [🎲 Ej. 8 — Reconstrucción 3D](ejercicios_extra/reconstruccion.md) | COLMAP SfM, VGGT Transformer, Poisson mesh | ✅ Completado |
+| [🥽 Ej. 7 — Realidad Aumentada](ejercicios_extra/ar.md) | ARViewer wireframe, ancla ratón, suavizado exponencial | ✅ Completado |
+| [🖐️ Ej. 2 — Control Gestual](ejercicios_extra/controlador.md) | MediaPipe Hands, 4 GDL, HandState | ✅ Completado |
 
 ---
 
