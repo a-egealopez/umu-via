@@ -113,7 +113,13 @@ def draw_text(frame, text, pos, color=None, scale=0.5, thickness=1) -> None:
 
 def draw_hud(frame, text, color=None) -> np.ndarray:
     _, w = frame.shape[:2]
-    hud = np.zeros((32, w, 3), np.uint8)
-    cv.putText(hud, str(text), (8, 22),
+    lines = str(text).split("  ")
+    mid   = len(lines) // 2
+    line1 = "  ".join(lines[:mid])
+    line2 = "  ".join(lines[mid:])
+    hud = np.zeros((52, w, 3), np.uint8)
+    cv.putText(hud, line1, (8, 18),
+               cv.FONT_HERSHEY_DUPLEX, 0.5, color or T["C_TEXT"], 1, cv.LINE_AA)
+    cv.putText(hud, line2, (8, 42),
                cv.FONT_HERSHEY_DUPLEX, 0.5, color or T["C_TEXT"], 1, cv.LINE_AA)
     return np.vstack([frame, hud])

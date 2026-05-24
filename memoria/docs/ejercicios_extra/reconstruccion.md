@@ -29,6 +29,21 @@
   <figcaption>Celda de subida de imágenes en Google Colab. Se recomienda entre 40 y 50 fotos con solapamiento mínimo del 60 % entre vistas consecutivas.</figcaption>
 </figure>
 
+### Objeto elegido: piña tropical
+
+Se eligió una piña como objeto de estudio por su textura superficial rica y heterogénea (escamas, corona), que en principio favorece la detección de keypoints SIFT. Se capturaron **64 imágenes**: aproximadamente la mitad a media altura rodeando el objeto en pasos de ~10°, y la otra mitad en picado (~45°) para cubrir la corona y los polos superiores.
+
+<div style="display:flex; gap:8px; margin:1em 0;">
+  <figure style="flex:1; margin:0;">
+    <img src="pina_foto_1.jpeg" alt="Piña — vista lateral" style="width:100%; border-radius:4px;">
+    <figcaption style="font-size:.85em; text-align:center;">Vista lateral (media altura)</figcaption>
+  </figure>
+  <figure style="flex:1; margin:0;">
+    <img src="pina_foto_2.jpeg" alt="Piña — vista en picado" style="width:100%; border-radius:4px;">
+    <figcaption style="font-size:.85em; text-align:center;">Vista en picado (45°)</figcaption>
+  </figure>
+</div>
+
 !!! tip "Cómo fotografiar el objeto"
     - Dar una vuelta completa al objeto en pasos de ~10°, manteniendo distancia constante.
     - Incluir vistas desde arriba (45°) y desde abajo (45°) para cubrir los polos.
@@ -111,26 +126,52 @@ o3d.io.write_triangle_mesh('colmap_model.obj', mesh)
 
 | Métrica | COLMAP | VGGT |
 |---------|--------|------|
-| Tiempo total en T4 (s) | — | — |
-| Tiempo extracción + matching (s) | — | — |
-| Tiempo inferencia / mapper (s) | — | — |
-| Tiempo Poisson (s) | — | — |
-| Cámaras registradas / total | — / — | — / — |
-| Puntos 3D tras filtrado | — | — |
-| Triángulos en malla final | — | — |
+| Tiempo total en T4 (s) | 3 704 | 407 |
+| Tiempo extracción + matching (s) | 3 354 | — |
+| Tiempo carga de modelo (s) | — | 208 |
+| Tiempo inferencia / mapper (s) | 349 | 388 |
+| Tiempo Poisson (s) | 2 | 19 |
+| Cámaras registradas / total | 1 / 64 | 64 / 64 |
+| Puntos 3D tras filtrado | 59 148 | 400 000 (submuestreado de 17 172 736) |
+| Triángulos en malla final | 29 800 | 621 740 |
 | Reconstrucción densa | No (sparse + Poisson) | Siempre |
-
-!!! warning "Tabla pendiente de rellenar"
-    Ejecutar `reconstruct_colab.ipynb` en Colab T4 con el objeto definitivo e introducir aquí los valores impresos por la celda de comparativa.
-
-<figure markdown>
-  ![Vista 3D interactiva Plotly](extra_3d_interactive.png)
-  <figcaption>Visualización interactiva Plotly del notebook: ambas mallas superpuestas con opacidad 0.6. Permite inspeccionar la completitud y el nivel de detalle de cada reconstrucción.</figcaption>
-</figure>
 
 ---
 
-## Decisiones de diseno { #decisiones }
+## Objetos descartados: proceso de ensayo y error { #ensayo-error }
+
+Antes de llegar a la piña se probaron varios objetos. Cada intento reveló una limitación distinta del pipeline, y el proceso de descarte fue tan informativo como el resultado final.
+
+<div style="display:flex; gap:8px; margin:1em 0; flex-wrap:wrap;">
+  <figure style="flex:1; min-width:140px; margin:0;">
+    <img src="objeto_molino.jpeg" alt="Molino de papel" style="width:100%; border-radius:4px;">
+    <figcaption style="font-size:.8em; text-align:center;"><strong>Molino de viento</strong></figcaption>
+  </figure>
+  <figure style="flex:1; min-width:140px; margin:0;">
+    <img src="objeto_peluche.jpeg" alt="Peluche" style="width:100%; border-radius:4px;">
+    <figcaption style="font-size:.8em; text-align:center;"><strong>Peluche</strong></figcaption>
+  </figure>
+  <figure style="flex:1; min-width:140px; margin:0;">
+    <img src="objeto_uvas.jpeg" alt="Racimo de uvas" style="width:100%; border-radius:4px;">
+    <figcaption style="font-size:.8em; text-align:center;"><strong>Uvas</strong></figcaption>
+  </figure>
+  <figure style="flex:1; min-width:140px; margin:0;">
+    <img src="objeto_pina.jpeg" alt="Piña — objeto final" style="width:100%; border-radius:4px;">
+    <figcaption style="font-size:.8em; text-align:center;"><strong>Piña ✓</strong></figcaption>
+  </figure>
+</div>
+
+**Molino de viento** — La superficie blanca y sin textura de las aspas impide a SIFT detectar keypoints estables. Además, las aspas son demasiado delgadas para producir una nube de puntos coherente; COLMAP fallaba al emparejar vistas consecutivas porque no encontraba suficientes correspondencias.
+
+**Peluche** — El pelaje presenta colores muy homogéneos y repetitivos (sin puntos de anclaje únicos), y la sesión se realizó sobre un fondo completamente blanco que eliminó cualquier referencia de contexto adicional. Las patas finas sufrieron el mismo problema que las aspas del molino: demasiado estrechas para ser trianguladas.
+
+**Racimo de uvas** — La textura esférica de cada uva parecía ideal, pero su superficie brillante generaba especularidades que confundían al matcher. El problema se agravó porque el racimo se apoyaba sobre una mesa de cristal (otra fuente masiva de reflejos) y sobre un folio escrito, que resultó tener más textura visible para SIFT que la propia fruta.
+
+**Piña (objeto final)** — La textura regular pero heterogénea de las escamas, combinada con la silueta inconfundible de la corona, proporciona suficientes keypoints estables. Es el objeto que mejor equilibra textura, opacidad y geometría manejable dentro de las limitaciones del entorno Colab.
+
+---
+
+## Decisiones de diseño { #decisiones }
 
 ### COLMAP sin reconstrucción densa
 

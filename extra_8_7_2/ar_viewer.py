@@ -39,7 +39,7 @@ def load_obj(path: str | Path, max_edges: int = 4_000) -> tuple[np.ndarray, list
     if not verts:
         raise ValueError(f"No se encontraron vértices en {path}")
 
-    # sin caras → nube de puntos (ej. COLMAP/VGGT); derivar aristas por convex hull
+    # sin caras -> nube de puntos (ej. COLMAP/VGGT); derivar aristas por convex hull
     if not edges:
         from scipy.spatial import ConvexHull
         arr = np.array(verts, dtype=np.float32)
@@ -78,9 +78,8 @@ def _Ry(a: float) -> np.ndarray:
 
 class ARViewer:
 
-    _BASE_PX   = 80
-    _SCALE_MIN = 0.3
-    _SCALE_MAX = 2.5
+    _SCALE_MIN = 0.1
+    _SCALE_MAX = 4.5
     _XY_FRAC   = 0.60
     _SMOOTH    = 0.25
     _SMOOTH_RY = 0.18   # roll_deg viene de z-depth, más ruidoso
@@ -95,15 +94,24 @@ class ARViewer:
         self._ox:    float      = 0.0
         self._oy:    float      = 0.0
 
+        self._base_px: int      = 200    # default para el cubo
+
     def load(self, path: str | Path) -> None:
         v, e = load_obj(path)
+
+        v[1, :] = v[1, :] * -1  # invertimoooos el eje Y debido a los modelos Colmap/Vggt
+
         self._verts = _normalize(v)
         self._edges = e
+
         print(f"[AR] {Path(path).name}: {len(v)} verts, {len(e)} aristas")
 
     def use_fallback(self) -> None:
         self._verts = _normalize(_CUBE_V)
         self._edges = list(_CUBE_E)
+
+        self._base_px = 80 # se cambia para los modelos (distinto del cubo)
+        
         print("[AR] Cubo de referencia (sin modelo .obj)")
 
     def reset(self) -> None:
@@ -135,18 +143,21 @@ class ARViewer:
     def draw(self, frame: np.ndarray) -> None:
         R    = _Ry(self._ry) @ _Rx(self._rx)
         rot  = (R @ self._verts.T).T
-        px   = self._BASE_PX * self._scale
+        px   = self._base_px * self._scale
         cx   = self._anchor[0] + self._ox
         cy   = self._anchor[1] + self._oy
+        
         pts  = rot[:, :2].copy()
         pts[:, 0] = pts[:, 0] * px + cx
         pts[:, 1] = pts[:, 1] * px + cy
         ipts = pts.astype(np.int32)
 
-        for i, j in self._edges:
-            z   = float(rot[i, 2] + rot[j, 2]) * 0.5
-            g   = int(np.clip((z + 1) * 0.5 * 155 + 100, 100, 255))
-            cv.line(frame, tuple(ipts[i]), tuple(ipts[j]), (0, g, 255 - g // 2), 2, cv.LINE_AA)
+        if self._edges:
+            edges_arr = np.array(self._edges, dtype=np.int32)
+            
+            lines = ipts[edges_arr]
+            
+            cv.polylines(frame, lines, isClosed=False, color=(0, 230, 150), thickness=1, lineType=cv.LINE_AA)
 
         cv.drawMarker(frame,
                       (int(cx), int(cy)),
@@ -154,5 +165,8 @@ class ARViewer:
 
     def status(self, state) -> str:
         if state.detected:
-            return f"escala={self._scale:.2f}  rotacion={np.degrees(self._ry):+.0f}deg  clic=anclar  r=reset  q=salir"
+            return (f"escala={self._scale:.2f}  "
+                    f"rotacion={np.degrees(self._ry):+.0f}deg  "
+                    f"roll={np.degrees(self._rx):+.0f}deg  "
+                    f"clic=anclar  r=reset  q=salir")
         return "Sin mano — clic=anclar  r=reset  q=salir"

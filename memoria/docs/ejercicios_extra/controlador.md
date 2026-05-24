@@ -63,6 +63,11 @@ Controla la **rotación Y** del objeto AR.
 
 ### GDL 3 — Roll (`roll_deg ∈ [-80°, +80°]`)
 
+<figure markdown>
+  ![Roll de la mano: vista lateral](extra_hand_roll.png)
+  <figcaption>Vista de perfil de la mano: cuando el nudillo del índice (landmark 5) sobresale hacia la cámara respecto al del meñique (landmark 17), la diferencia z[5]−z[17] es positiva y el objeto AR gira en un sentido; al invertir la inclinación el giro se invierte. La flecha curva sobre el eje muñeca–dedos ilustra la rotación de roll.</figcaption>
+</figure>
+
 ```python title="extra_8_7_2/hand_controller.py — roll" linenums="1"
 roll_deg = float(np.clip((z[5] - z[17]) * 500, -80, 80))
 # z[5]=nudillo índice, z[17]=nudillo menique
