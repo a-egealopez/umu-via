@@ -1056,7 +1056,7 @@
 <h2 id="gdl">Grados de libertad<a class="headerlink" href="#gdl" title="Permanent link">&para;</a></h2>
 <p><code>HandController</code> extrae <strong>4 grados de libertad</strong> a partir de los 21 landmarks que MediaPipe estima en cada frame. El enunciado pide al menos distancia y ángulo; la implementación anade roll y posición XY de la palma para un control más completo.</p>
 <figure>
-<p><img alt="Landmarks de mano con GDL anotados" src="../extra_hand_gdl.png" />
+<p><img alt="Landmarks de mano con GDL anotados" src="extra_hand_gdl.png" />
   </p>
 <figcaption>Los 21 landmarks de MediaPipe con los 4 GDL anotados: diagonal del bounding box (distancia), vector palma→dedo medio (yaw), diferencia de profundidad índice–menique (roll) y centroide de la palma (XY).</figcaption>
 </figure>
@@ -1089,6 +1089,11 @@
 </span></code></pre></div></td></tr></table></div>
 <p>Controla la <strong>rotación Y</strong> del objeto AR.</p>
 <h3 id="gdl-3-roll-roll_deg-80-80">GDL 3 — Roll (<code>roll_deg ∈ [-80°, +80°]</code>)<a class="headerlink" href="#gdl-3-roll-roll_deg-80-80" title="Permanent link">&para;</a></h3>
+<figure>
+<p><img alt="Roll de la mano: vista lateral" src="../extra_hand_roll.png" />
+  </p>
+<figcaption>Vista de perfil de la mano: cuando el nudillo del índice (landmark 5) sobresale hacia la cámara respecto al del meñique (landmark 17), la diferencia z[5]−z[17] es positiva y el objeto AR gira en un sentido; al invertir la inclinación el giro se invierte. La flecha curva sobre el eje muñeca–dedos ilustra la rotación de roll.</figcaption>
+</figure>
 <div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">extra_8_7_2/hand_controller.py — roll</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
 <span class="normal"><a href="#__codelineno-2-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">roll_deg</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">z</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">-</span> <span class="n">z</span><span class="p">[</span><span class="mi">17</span><span class="p">])</span> <span class="o">*</span> <span class="mi">500</span><span class="p">,</span> <span class="o">-</span><span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="c1"># z[5]=nudillo índice, z[17]=nudillo menique</span>

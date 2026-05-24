@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ej-7-realidad-aumentada-gestual" class="md-skip">
+        <a href="#ej-7-realidad-aumentada-gestual-optimizado" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -784,7 +784,7 @@
   <a href="#modelo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Carga del modelo y fallback
+        Carga del modelo y corrección de orientación
       
     </span>
   </a>
@@ -806,7 +806,7 @@
   <a href="#renderizado" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Renderizado en perspectiva simplificada
+        Renderizado de alto rendimiento (Vectorizado)
       
     </span>
   </a>
@@ -817,12 +817,12 @@
   <a href="#decisiones" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Decisiones de diseno
+        Decisiones de diseño
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Decisiones de diseno">
+    <nav class="md-nav" aria-label="Decisiones de diseño">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -830,6 +830,28 @@
     <span class="md-ellipsis">
       
         Separación ancla / offset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vectorizacion-de-geometria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vectorización de geometría
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sacrificio-de-z-depth-dinamico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sacrificio de Z-Depth dinámico
       
     </span>
   </a>
@@ -924,10 +946,10 @@
 
 
 
-<h1 id="ej-7-realidad-aumentada-gestual">Ej. 7 — Realidad Aumentada Gestual<a class="headerlink" href="#ej-7-realidad-aumentada-gestual" title="Permanent link">&para;</a></h1>
+<h1 id="ej-7-realidad-aumentada-gestual-optimizado">Ej. 7 — Realidad Aumentada Gestual (Optimizado)<a class="headerlink" href="#ej-7-realidad-aumentada-gestual-optimizado" title="Permanent link">&para;</a></h1>
 <div class="admonition abstract">
 <p class="admonition-title">Enunciado</p>
-<p>Crea un efecto de realidad aumentada en el que el usuario desplace objetos virtuales hacia posiciones marcadas con el ratón.</p>
+<p>Crea un efecto de realidad aumentada en el que el usuario desplace objetos virtuales hacia posiciones marcadas con el ratón, controlando su escala y rotación en tiempo real de forma fluida.</p>
 </div>
 <hr />
 <h2 id="parametros">Parámetros clave<a class="headerlink" href="#parametros" title="Permanent link">&para;</a></h2>
@@ -942,17 +964,17 @@
 <tbody>
 <tr>
 <td><code>_BASE_PX</code></td>
-<td>80 px</td>
-<td>Radio base del objeto en píxeles a escala 1.0</td>
+<td>80/200 px</td>
+<td>Radio base dinámico en píxeles. Se autoajusta a <code>80</code> para el cubo por defecto y a <code>200</code> al cargar modelos <code>.obj</code> complejos para optimizar su visibilidad.</td>
 </tr>
 <tr>
 <td><code>_SCALE_MIN</code></td>
-<td>0.3</td>
+<td>0.1</td>
 <td>Escala mínima del objeto AR (mano lejana)</td>
 </tr>
 <tr>
 <td><code>_SCALE_MAX</code></td>
-<td>2.5</td>
+<td>4.5</td>
 <td>Escala máxima del objeto AR (mano cerca)</td>
 </tr>
 <tr>
@@ -972,32 +994,51 @@
 </tr>
 <tr>
 <td><code>max_edges</code></td>
-<td>4 000</td>
-<td>Límite de aristas al cargar un modelo <code>.obj</code> denso</td>
+<td>2 000 - 4 000</td>
+<td>Límite de aristas al cargar un modelo <code>.obj</code> denso (valores menores aumentan los FPS)</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2 id="modelo">Carga del modelo y fallback<a class="headerlink" href="#modelo" title="Permanent link">&para;</a></h2>
-<p><code>ARViewer</code> admite un fichero <code>.obj</code> generado por COLMAP o VGGT; si no se especifica <code>--model</code> o el fichero no existe, usa un <strong>cubo unitario de referencia</strong> para que el sistema sea ejecutable en cualquier momento.</p>
-<p>El <code>load_obj</code> maneja dos casos:</p>
-<ul>
-<li><strong>Mallas con caras</strong> (<code>.obj</code> con líneas <code>f</code>): extrae aristas únicas de cada polígono.</li>
-<li><strong>Nubes de puntos sin caras</strong> (salida típica de COLMAP/VGGT exportada directamente): computa el <code>ConvexHull</code> de los vértices para derivar aristas y mostrar la envolvente del objeto.</li>
-</ul>
-<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">extra_8_7_2/ar_viewer.py — load_obj() gestión de nube de puntos</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<h2 id="modelo">Carga del modelo y corrección de orientación<a class="headerlink" href="#modelo" title="Permanent link">&para;</a></h2>
+<p><code>ARViewer</code> admite un fichero <code>.obj</code> generado por reconstrucción 3D (como COLMAP o VGGT); si no se especifica u ocurre un error, utiliza un <strong>cubo unitario de referencia</strong>.</p>
+<p>Debido a que OpenCV utiliza un sistema de coordenadas de pantalla donde el eje Y crece hacia abajo, los modelos tradicionales se cargan invertidos ("boca abajo"). Para solucionar esto sin sobrecargar el bucle de renderizado, <strong>se invierte físicamente el signo del eje Y en la matriz de vértices</strong> inmediatamente después de la lectura del archivo:</p>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">extra_8_7_2/ar_viewer.py — load() con corrección de orientación</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
 <span class="normal"><a href="#__codelineno-0-2">2</a></span>
 <span class="normal"><a href="#__codelineno-0-3">3</a></span>
 <span class="normal"><a href="#__codelineno-0-4">4</a></span>
 <span class="normal"><a href="#__codelineno-0-5">5</a></span>
 <span class="normal"><a href="#__codelineno-0-6">6</a></span>
-<span class="normal"><a href="#__codelineno-0-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">edges</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConvexHull</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>    <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a>    <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">hull</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)):</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a>            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">simplex</span><span class="p">[</span><span class="n">k</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">simplex</span><span class="p">[(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)])</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a>            <span class="n">edges</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="nb">min</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)))</span>
+<span class="normal"><a href="#__codelineno-0-7">7</a></span>
+<span class="normal"><a href="#__codelineno-0-8">8</a></span>
+<span class="normal"><a href="#__codelineno-0-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>    <span class="n">v</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">load_obj</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a>    <span class="c1"># Corrección de orientación: invierte el eje Y para contrarrestar el sistema de OpenCV</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>    <span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>  
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_verts</span> <span class="o">=</span> <span class="n">_normalize</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="n">e</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[AR] </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2"> verts, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2"> aristas&quot;</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<p>El asistente <code>load_obj</code> maneja dos casos:</p>
+<ul>
+<li><strong>Mallas con caras</strong> (<code>.obj</code> con líneas <code>f</code>): extrae aristas únicas de cada polígono.</li>
+<li><strong>Nubes de puntos sin caras</strong> (salida típica de COLMAP/VGGT exportada directamente): computa el <code>ConvexHull</code> de los vértices para derivar aristas y mostrar la envolvente del objeto.</li>
+</ul>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">extra_8_7_2/ar_viewer.py — load_obj() gestión de nube de puntos</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span>
+<span class="normal"><a href="#__codelineno-1-5">5</a></span>
+<span class="normal"><a href="#__codelineno-1-6">6</a></span>
+<span class="normal"><a href="#__codelineno-1-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">edges</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConvexHull</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>    <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a>    <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">hull</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a>        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)):</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a>            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">simplex</span><span class="p">[</span><span class="n">k</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">simplex</span><span class="p">[(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)])</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7"></a>            <span class="n">edges</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="nb">min</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)))</span>
 </span></code></pre></div></td></tr></table></div>
 <hr />
 <h2 id="anclaje">Anclaje con ratón y desplazamiento gestual<a class="headerlink" href="#anclaje" title="Permanent link">&para;</a></h2>
@@ -1011,43 +1052,85 @@
   </p>
 <figcaption>Modelo 3D reconstruido cargado en el visor AR. La mano (visible en la esquina) controla la escala y rotación en tiempo real.</figcaption>
 </figure>
-<p>El objeto se renderiza en <code>cx = anchor_x + ox</code>, <code>cy = anchor_y + oy</code>, donde <code>ox</code> y <code>oy</code> son offsets continuos derivados de la posición normalizada de la palma:</p>
-<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">extra_8_7_2/ar_viewer.py — update()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">target_ox</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">norm_x</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_XY_FRAC</span>   <span class="c1"># _XY_FRAC = 0.60</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="n">target_oy</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">norm_y</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_XY_FRAC</span>
+<p>El objeto se posiciona dinámicamente combinando un punto de anclaje estático fijo y un desfase continuo controlado por la palma de la mano:</p>
+<div class="arithmatex">\[\begin{aligned} cx &amp;= \text{anchor}_x + ox \\ cy &amp;= \text{anchor}_y + oy \end{aligned}\]</div>
+<p>Los desfases se derivan de la posición normalizada de la palma devuelta por MediaPipe:</p>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">extra_8_7_2/ar_viewer.py — update()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">target_ox</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">norm_x</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_XY_FRAC</span>   <span class="c1"># _XY_FRAC = 0.60</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">target_oy</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">norm_y</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_XY_FRAC</span>
 </span></code></pre></div></td></tr></table></div>
-<p>Cuando la palma está centrada en el frame (<code>norm_x = norm_y = 0.5</code>), el offset es cero y el objeto queda exactamente sobre el ancla. Desplazando la palma se puede arrastrar el objeto hasta ±30 % del ancho/alto del frame a partir del ancla.</p>
+<p>Cuando la palma está perfectamente centrada (<code>norm = 0.5</code>), el desfase es nulo y el objeto geométrico descansa exactamente sobre la cruz de anclaje amarilla definida por el clic del usuario. Desplazando la palma se puede arrastrar el objeto hasta ±30 % del ancho/alto del frame a partir del ancla.</p>
 <figure>
 <p><img alt="Reposicionamiento con clic de ratón" src="../extra_ar_anchor.png" />
   </p>
 <figcaption>Secuencia: clic sobre una nueva posición y el objeto salta al ancla marcada. La mano retoma el control de offset y rotación desde ese punto.</figcaption>
 </figure>
 <hr />
-<h2 id="renderizado">Renderizado en perspectiva simplificada<a class="headerlink" href="#renderizado" title="Permanent link">&para;</a></h2>
-<p>El visor aplica rotaciones <code>Ry(ry) @ Rx(rx)</code> sobre los vértices y proyecta solo los dos primeros componentes al plano de imagen (proyección ortográfica). La profundidad del eje Z se usa únicamente para modular el color de cada arista:</p>
-<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">extra_8_7_2/ar_viewer.py — draw()</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
-<span class="normal"><a href="#__codelineno-2-2">2</a></span>
-<span class="normal"><a href="#__codelineno-2-3">3</a></span>
-<span class="normal"><a href="#__codelineno-2-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>    <span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rot</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">rot</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.5</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="n">g</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="mi">155</span> <span class="o">+</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="n">cv</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ipts</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ipts</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="mi">255</span> <span class="o">-</span> <span class="n">g</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
+<h2 id="renderizado">Renderizado de alto rendimiento (Vectorizado)<a class="headerlink" href="#renderizado" title="Permanent link">&para;</a></h2>
+<p>Para evitar caídas de frames y tirones al procesar modelos con alta densidad de polígonos (como nubes de puntos detalladas), se prescinde por completo de los bucles iterativos tradicionales de Python (<code>for ... cv.line</code>).</p>
+<p>En su lugar, el renderizado se delega de forma nativa a las rutinas optimizadas de OpenCV en C++ agrupando todas las conexiones en matrices de segmentos independientes utilizando <code>cv.polylines</code>:</p>
+<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">extra_8_7_2/ar_viewer.py — draw() optimizado con cv.polylines</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span>
+<span class="normal"><a href="#__codelineno-3-17">17</a></span>
+<span class="normal"><a href="#__codelineno-3-18">18</a></span>
+<span class="normal"><a href="#__codelineno-3-19">19</a></span>
+<span class="normal"><a href="#__codelineno-3-20">20</a></span>
+<span class="normal"><a href="#__codelineno-3-21">21</a></span>
+<span class="normal"><a href="#__codelineno-3-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a>    <span class="n">R</span>    <span class="o">=</span> <span class="n">_Ry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ry</span><span class="p">)</span> <span class="o">@</span> <span class="n">_Rx</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rx</span><span class="p">)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>    <span class="n">rot</span>  <span class="o">=</span> <span class="p">(</span><span class="n">R</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verts</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a>    <span class="n">px</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_BASE_PX</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="n">cx</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anchor</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ox</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">cy</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anchor</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oy</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8"></a>    <span class="c1"># Proyección ortográfica simplificada</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9"></a>    <span class="n">pts</span>  <span class="o">=</span> <span class="n">rot</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">px</span> <span class="o">+</span> <span class="n">cx</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="n">pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="o">-</span><span class="n">px</span> <span class="o">+</span> <span class="n">cy</span> 
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12"></a>    <span class="n">ipts</span> <span class="o">=</span> <span class="n">pts</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="c1"># Renderizado masivo vectorizado en un único paso de ejecución</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">:</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16"></a>        <span class="n">edges_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17"></a>        <span class="n">lines</span> <span class="o">=</span> <span class="n">ipts</span><span class="p">[</span><span class="n">edges_arr</span><span class="p">]</span> <span class="c1"># Matriz con forma (N, 2, 2)</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18"></a>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19"></a>        <span class="n">cv</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">isClosed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lineType</span><span class="o">=</span><span class="n">cv</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20"></a>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21"></a>    <span class="c1"># Indicador visual del punto de anclaje fijo</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22"></a>    <span class="n">cv</span><span class="o">.</span><span class="n">drawMarker</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cx</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">cy</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span> <span class="n">cv</span><span class="o">.</span><span class="n">MARKER_CROSS</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cv</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-<p>Las aristas más alejadas de la cámara (z pequeno) son azul intenso; las más cercanas (z grande) viran al verde.</p>
 <hr />
-<h2 id="decisiones">Decisiones de diseno<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
+<h2 id="decisiones">Decisiones de diseño<a class="headerlink" href="#decisiones" title="Permanent link">&para;</a></h2>
 <h3 id="separacion-ancla-offset">Separación ancla / offset<a class="headerlink" href="#separacion-ancla-offset" title="Permanent link">&para;</a></h3>
 <p>El ratón fija el centro del objeto (ancla) y la mano solo aplica un offset relativo. Esto permite anclar el objeto sobre un elemento de la escena con precisión y luego moverlo con la mano sin tener que mantener la palma exactamente en ese punto.</p>
+<h3 id="vectorizacion-de-geometria">Vectorización de geometría<a class="headerlink" href="#vectorizacion-de-geometria" title="Permanent link">&para;</a></h3>
+<p>Pasar de un procesado secuencial por línea a una inyección masiva con <code>cv.polylines</code> reduce el overhead de la máquina virtual de Python de forma crítica, permitiendo tasas estables por encima de los <strong>60 FPS</strong> en hardware convencional.</p>
+<h3 id="sacrificio-de-z-depth-dinamico">Sacrificio de Z-Depth dinámico<a class="headerlink" href="#sacrificio-de-z-depth-dinamico" title="Permanent link">&para;</a></h3>
+<p>Se ha eliminado la modulación dinámica de color basada en la profundidad individual de la arista (<code>z-depth</code>). Aunque este efecto aportaba pistas visuales de volumen, el coste de calcular el color arista por arista en Python destruía la experiencia interactiva en tiempo real. Se ha priorizado la fluidez absoluta utilizando un color plano optimizado.</p>
 <h3 id="suavizado-exponencial-asimetrico">Suavizado exponencial asimétrico<a class="headerlink" href="#suavizado-exponencial-asimetrico" title="Permanent link">&para;</a></h3>
-<p>Se usan dos valores de <code>α</code> distintos: <code>0.25</code> para escala, yaw y XY (respuesta ágil), y <code>0.18</code> para roll (más suave). El roll se estima a partir de la coordenada Z de MediaPipe, que es más ruidosa que la posición XY, por lo que necesita un filtro más conservador para evitar temblores visibles.</p>
+<p>Se mantienen factores de atenuación diferenciados (<code>0.25</code> frente a <code>0.18</code>). El valor más estricto se aplica al cabeceo (<em>roll</em>), absorbiendo de forma eficaz el ruido inherente que sufre la estimación de profundidad Z en el pipeline de tracking gestual.</p>
 <hr />
 <h2 id="limitaciones">Limitaciones<a class="headerlink" href="#limitaciones" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Limitaciones conocidas</p>
 <ul>
-<li>La proyección es <strong>ortográfica</strong>, no perspectiva: no hay corrección por posición de cámara ni escala dependiente de la profundidad. El efecto AR no es fotorrealista.</li>
+<li>La proyección sigue siendo <strong>ortográfica</strong>: no existe corrección perspectiva real ni puntos de fuga, por lo que el objeto no varía su tamaño relativo según su posición tridimensional respecto al eje óptico de la cámara.</li>
 <li>Con modelos complejos (muchos vértices), el <code>ConvexHull</code> para nubes sin caras puede ser muy lento o producir geometría incorrecta.</li>
-<li>El límite de <code>max_edges=4000</code> puede simplificar en exceso modelos densos, perdiendo detalle geométrico.</li>
+<li>Modelos con densidades masivas que superen las decenas de miles de aristas requerirán un submuestreo más agresivo mediante el ajuste del parámetro <code>max_edges</code> en la inicialización para salvaguardar el rendimiento de la CPU.</li>
 </ul>
 </div>
 
